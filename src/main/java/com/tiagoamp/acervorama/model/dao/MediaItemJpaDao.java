@@ -56,7 +56,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public MediaItem findById(int id) throws SQLException {
+	public MediaItem findById(long id) throws SQLException {
 		return em.find(MediaItem.class, id);
 	}
 

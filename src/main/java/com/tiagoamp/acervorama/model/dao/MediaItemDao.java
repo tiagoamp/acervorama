@@ -35,11 +35,11 @@ public interface MediaItemDao {
 	/**
 	 * Search the entity by 'id' in the database.
 	 * 
-	 * @param id Entity id.
+	 * @param l Entity id.
 	 * @return Person 
 	 * @throws SQLException 
 	 */
-	MediaItem findById(int id) throws SQLException;
+	MediaItem findById(long l) throws SQLException;
 	
 	/**
 	 * Search the entity by 'path' in the database.
