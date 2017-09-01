@@ -7,6 +7,7 @@ public class MediaItem {
 	
 	public MediaItem(Path path) {
 		this.filePath = path;
+		this.filename = path.getFileName().toString();
 		this.registerDate = LocalDateTime.now();
 	}
 	

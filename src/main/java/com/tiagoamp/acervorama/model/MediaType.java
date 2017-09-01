@@ -1,9 +1,5 @@
 package com.tiagoamp.acervorama.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public enum MediaType {
 	
 	
@@ -11,26 +7,27 @@ public enum MediaType {
 	
 	
 	public String[] getFileExtensions() {
-		List<String> list = new ArrayList<>();		
+		String[] arr;
 		switch (this) {
 		case AUDIO:
-			list.addAll(Arrays.asList("mp3","wav"));
+			arr = new String[]{"mp3","wav"};
 			break;
 		case IMAGE:
-			list.addAll(Arrays.asList("png","jpg","gif","bmp"));
+			arr = new String[]{"png","jpg","gif","bmp"};
 			break;
 		case TEXT:
-			list.addAll(Arrays.asList("doc","docx","odt","pdf","rtf","txt"));
+			arr = new String[]{"doc","docx","odt","pdf","rtf","txt"};
 			break;
 		case VIDEO:
-			list.addAll(Arrays.asList("3gp","avi","flv","m4v","mp4","mpeg","mpg","wmv"));
+			arr = new String[]{"3gp","avi","flv","m4v","mp4","mpeg","mpg","wmv"};
 			break;
 
 		default:
+			arr = new String[0];
 			break;
-		}
-		
-		return (String[]) list.toArray();
+		}		
+					
+		return arr;
 	}
 	
 

@@ -2,19 +2,14 @@ package com.tiagoamp.acervorama.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Represents the file scanner.
@@ -66,6 +61,22 @@ public class MediaItemFileScanner {
 	private static final Path ROOT_DIR = File.listRoots()[0].toPath();  
 	
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\"Scanner from ");
+		sb.append("'" + origin + "'");
+		sb.append(" for ");
+		if (type == null) {
+			sb.append("'ALL'");
+		} else {
+			sb.append("'" + type + "'");
+		}
+		sb.append(".");
+		return sb.toString();
+	}
+	
+	
 	/**
 	 * Scans the file system for a media type from a given origin path.
 	 * 
@@ -73,28 +84,28 @@ public class MediaItemFileScanner {
 	 * @throws IOException 
 	 */
 	public List<MediaItem> perform() throws IOException {
-		String[] extensions = getFileExtensionsToBeSearched();		
+		List<String> extensions = getFileExtensionsToBeSearched();		
 		List<Path> filesFound = findFilesByExtensios(extensions);		
 		List<MediaItem> mediaItems = getMediaItemsFromPathList(filesFound);		
 		return mediaItems;		
 	}
 	
-	private String[] getFileExtensionsToBeSearched() {
+	private List<String> getFileExtensionsToBeSearched() {
 		List<String> list = new ArrayList<>();		
 		for (MediaType t : MediaType.values()) {
 			if (type == null || type == t) {
 				list.addAll(Arrays.asList(t.getFileExtensions()));
 			}
 		}		
-		return (String[]) list.toArray();
+		return list;
 	}
 	
-	private List<Path> findFilesByExtensios(String[] extensions) throws IOException {
+	private List<Path> findFilesByExtensios(List<String> extensions) throws IOException {
 		
 		Predicate<Path> predicate =	(p) -> { 
 				boolean result = false;
 				for (String ext : extensions) {
-					if (p.getFileName().endsWith(ext)) {
+					if (p.getFileName().toString().endsWith(ext)) {
 						result = true;
 						break;
 					}
@@ -102,45 +113,12 @@ public class MediaItemFileScanner {
 				return result;
 			};		
 
-		Path[] pathArray = (Path[]) Files.walk(origin).filter(predicate).toArray();
-		return Arrays.asList(pathArray);
-		
-		/* List<Path> filesFound = new ArrayList<>();
-		
-		Files.walkFileTree(origin, new FileVisitor<Path>() {
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				for (String ext : extensions) {
-					if (file.getFileName().endsWith(ext)) {
-						filesFound.add(file);
-					}
-				}				 
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				return FileVisitResult.CONTINUE;
-			}
-		});
-		
-		return filesFound;*/
+		return Files.walk(origin).filter(predicate).collect(Collectors.toList());		
 	}
 	
 	private List<MediaItem> getMediaItemsFromPathList(List<Path> paths) {
 		Function<Path, MediaItem> function = (p) -> new MediaItem(p);
-		MediaItem[] itemsArray = (MediaItem[]) paths.stream().map(function).toArray();
-		return Arrays.asList(itemsArray);		
+		return paths.stream().map(function).collect(Collectors.toList());
 	}
 	
 	
