@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model;
+package com.tiagoamp.acervorama.model.scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +10,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaType;
+import com.tiagoamp.acervorama.model.scanner.MediaItemFileScanner;
 
 public class MediaItemFileScannerTest {
 

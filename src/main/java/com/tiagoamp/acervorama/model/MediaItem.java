@@ -3,6 +3,12 @@ package com.tiagoamp.acervorama.model;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
+/**
+ * 
+ * Represents a generic media item/file.
+ * 
+ * @author tiagoamp
+ */
 public class MediaItem {
 	
 	

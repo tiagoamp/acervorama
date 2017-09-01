@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model;
+package com.tiagoamp.acervorama.model.scanner;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaType;
 
 /**
  * Represents the file scanner.
@@ -101,7 +104,7 @@ public class MediaItemFileScanner {
 	
 	private List<Path> findFilesByExtensios(List<String> extensions) throws IOException {
 		
-		Predicate<Path> predicate =	(p) -> { 
+		Predicate<Path> predicate =	p -> { 
 				boolean result = false;
 				for (String ext : extensions) {
 					if (p.getFileName().toString().endsWith(ext)) {
@@ -116,7 +119,7 @@ public class MediaItemFileScanner {
 	}
 	
 	private List<MediaItem> getMediaItemsFromPathList(List<Path> paths) {
-		Function<Path, MediaItem> function = (p) -> new MediaItem(p);
+		Function<Path, MediaItem> function = p -> new MediaItem(p);
 		return paths.stream().map(function).collect(Collectors.toList());
 	}
 	
