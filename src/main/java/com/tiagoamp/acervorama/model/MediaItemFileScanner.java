@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
  */
 public class MediaItemFileScanner {
 	
+	private Path origin;
+	private MediaType type;
+	
+	private static final Path ROOT_DIR = File.listRoots()[0].toPath();
+	
+	
 	/**
 	 * Assumes the root directory as origin path, and all media types to be searched.
 	 */
@@ -55,12 +61,6 @@ public class MediaItemFileScanner {
 	}
 	
 	
-	private Path origin;
-	private MediaType type;
-	
-	private static final Path ROOT_DIR = File.listRoots()[0].toPath();  
-	
-	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -86,8 +86,7 @@ public class MediaItemFileScanner {
 	public List<MediaItem> perform() throws IOException {
 		List<String> extensions = getFileExtensionsToBeSearched();		
 		List<Path> filesFound = findFilesByExtensios(extensions);		
-		List<MediaItem> mediaItems = getMediaItemsFromPathList(filesFound);		
-		return mediaItems;		
+		return getMediaItemsFromPathList(filesFound);
 	}
 	
 	private List<String> getFileExtensionsToBeSearched() {

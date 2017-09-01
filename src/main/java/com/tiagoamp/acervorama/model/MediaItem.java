@@ -5,12 +5,6 @@ import java.time.LocalDateTime;
 
 public class MediaItem {
 	
-	public MediaItem(Path path) {
-		this.filePath = path;
-		this.filename = path.getFileName().toString();
-		this.registerDate = LocalDateTime.now();
-	}
-	
 	
 	private long id;
 	private LocalDateTime registerDate;
@@ -22,6 +16,13 @@ public class MediaItem {
 	private String additionalInformation;
 	
 	
+	public MediaItem(Path path) {
+		this.filePath = path;
+		this.filename = path.getFileName().toString();
+		this.registerDate = LocalDateTime.now();
+	}
+	
+		
 	public long getId() {
 		return id;
 	}
