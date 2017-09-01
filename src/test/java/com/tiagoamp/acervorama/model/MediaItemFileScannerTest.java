@@ -18,7 +18,7 @@ public class MediaItemFileScannerTest {
 	
 	
 	@Before
-	private void setUp() throws Exception {
+	public void setUp() throws Exception {
 		this.baseTestFilesDirectory = Paths.get("testFiles", "basedir");
 	}
 	
