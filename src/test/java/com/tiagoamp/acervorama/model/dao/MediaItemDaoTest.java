@@ -48,9 +48,11 @@ public class MediaItemDaoTest {
 		dao.create(item);
 		
 		LocalDateTime registerDate = item.getRegisterDate();
+		Path filePath = item.getFilePath();
 		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
 		assertEquals("Must retrieve inserted entity.", item, itemRetrieved);
-		assertEquals("LocalDateTime should be correctly persisted.", registerDate, itemRetrieved.getRegisterDate());
+		assertEquals("LocalDateTime should be correctly persisted (converter should work!).", registerDate, itemRetrieved.getRegisterDate());
+		assertEquals("Path should be correctly persisted (converter should work!).", filePath, itemRetrieved.getFilePath());
 	}
 	
 	@Test

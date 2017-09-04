@@ -27,19 +27,19 @@ public interface MediaItemDao {
 	/**
 	 * Deletes the entity in the database.
 	 * 
-	 * @param l 
+	 * @param id 
 	 * @throws SQLException
 	 */
-	void delete(long l) throws SQLException;
+	void delete(long id) throws SQLException;
 	
 	/**
 	 * Search the entity by 'id' in the database.
 	 * 
-	 * @param l Entity id.
+	 * @param id Entity id.
 	 * @return Person 
 	 * @throws SQLException 
 	 */
-	MediaItem findById(long l) throws SQLException;
+	MediaItem findById(long id) throws SQLException;
 	
 	/**
 	 * Search the entity by 'path' in the database.
