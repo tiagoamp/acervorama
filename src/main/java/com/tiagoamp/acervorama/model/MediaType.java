@@ -16,7 +16,7 @@ public enum MediaType {
 			arr = new String[]{"png","jpg","gif","bmp"};
 			break;
 		case TEXT:
-			arr = new String[]{"doc","docx","odt","pdf","rtf","txt"};
+			arr = new String[]{"doc","docx","odt","pdf","rtf","txt","epub","mobi"};
 			break;
 		case VIDEO:
 			arr = new String[]{"3gp","avi","flv","m4v","mp4","mpeg","mpg","wmv"};

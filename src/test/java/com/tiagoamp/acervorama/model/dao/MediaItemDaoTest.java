@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class MediaItemDaoTest {
 	
 	private MediaItemDao dao;
 
+	
 	@Before
 	public void setUp() throws Exception {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("PU_ACERVO");
@@ -46,8 +47,10 @@ public class MediaItemDaoTest {
 		MediaItem item = this.getItemForTests(); 
 		dao.create(item);
 		
+		LocalDateTime registerDate = item.getRegisterDate();
 		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
-		assertEquals("Must retrieve inserted entity.", item, itemRetrieved);		
+		assertEquals("Must retrieve inserted entity.", item, itemRetrieved);
+		assertEquals("LocalDateTime should be correctly persisted.", registerDate, itemRetrieved.getRegisterDate());
 	}
 	
 	@Test
@@ -95,21 +98,74 @@ public class MediaItemDaoTest {
 		assertNotNull("Must return entities previously inserted.", list);
 		assertEquals("Should return 2 entities.", 2, list.size());
 	}
-	
+		
+	@Test
+	public void testFindByPath_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
+		assertNotNull(itemRetrieved);
+	}
 	
 	@Test
-	public void testFindByPath() {
-		fail("Not yet implemented");
+	public void testFindByFileNameLike_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		String partialFileName = item.getFilename().substring(0,3);
+		
+		List<MediaItem> list = dao.findByFileNameLike(partialFileName);
+		assertNotNull("Must return entity by partial 'file name'." , list);
+		assertTrue("Must contain entity by partial 'file name'." ,list.contains(item));
 	}
 
 	@Test
-	public void testFindByFileNameLike() {
-		fail("Not yet implemented");
+	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), item.getSubject(), item.getDescription().substring(0,3));
+		assertTrue(!list.isEmpty());
+		assertTrue(list.size() == 1);
+		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
 	}
-
+	
 	@Test
-	public void testFindByFields() {
-		fail("Not yet implemented");
+	public void testFindByFields_byFileName_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		List<MediaItem> list = dao.findByFields(item.getFilename(), null, null, null);
+		assertTrue(!list.isEmpty());
+		assertTrue(list.size() == 1);
+		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+	}
+	
+	@Test
+	public void testFindByFields_byClassification_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		List<MediaItem> list = dao.findByFields(null, item.getClassification(), null, null);
+		assertTrue(!list.isEmpty());
+		assertTrue(list.size() == 1);
+		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+	}
+	
+	@Test
+	public void testFindByFields_bySubject_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		List<MediaItem> list = dao.findByFields(null, null, item.getSubject(), null);
+		assertTrue(!list.isEmpty());
+		assertTrue(list.size() == 1);
+		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+	}
+	
+	@Test
+	public void testFindByFields_byDescription_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		String partialDescription = item.getDescription().substring(0,3);
+		List<MediaItem> list = dao.findByFields(null, null, null, partialDescription);
+		assertTrue(!list.isEmpty());
+		assertTrue(list.size() == 1);
+		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
 	}
 
 	
@@ -129,6 +185,9 @@ public class MediaItemDaoTest {
 	private MediaItem getItemForTests() {
 		Path testFilePath = Paths.get("fake","test","file.txt");
 		MediaItem item = new MediaItem(testFilePath);
+		item.setClassification("Classification");
+		item.setSubject("Subject");
+		item.setDescription("Description");
 		return item;
 	}
 	

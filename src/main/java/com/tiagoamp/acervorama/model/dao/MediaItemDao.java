@@ -63,14 +63,13 @@ public interface MediaItemDao {
 	 * Search the entity by given parameters in the database.
 	 * 
 	 * @param filename
-	 * @param path
 	 * @param classification
 	 * @param subject
 	 * @param description
 	 * @return List<MediaItem>
 	 * @throws SQLException
 	 */
-	List<MediaItem> findByFields(String filename, Path path, String classification, String subject, String description) throws SQLException;
+	List<MediaItem> findByFields(String filename, String classification, String subject, String description) throws SQLException;
 	
 	/**
 	 * Retrieve all entities from the database.
