@@ -57,6 +57,17 @@ public class MediaItemServiceTest extends EasyMockSupport {
 	}
 	
 	@Test(expected=AcervoramaBusinessException.class)
+	public void testInsert_sameFilePath_shouldThrowException() throws Exception {
+		daoMock.create(item);
+		EasyMock.expect(daoMock.findByPath(item.getFilePath())).andReturn(item);
+		replayAll();
+		
+		service.insert(item);
+		service.insert(item);
+		verifyAll();		
+	}
+	
+	@Test(expected=AcervoramaBusinessException.class)
 	public void testInsert_shouldThrowException() throws Exception {
 		daoMock.create(item);
 		EasyMock.expectLastCall().andThrow(new SQLException());

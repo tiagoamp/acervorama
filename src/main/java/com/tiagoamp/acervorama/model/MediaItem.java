@@ -10,7 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tiagoamp.acervorama.model.dao.LocalDateTimeConverter;
 import com.tiagoamp.acervorama.model.dao.PathConverter;
 
@@ -22,6 +27,8 @@ import com.tiagoamp.acervorama.model.dao.PathConverter;
  */
 @Entity
 @Table(name="MEDIA_ITEM")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MediaItem {
 	
 	@Id
@@ -29,19 +36,11 @@ public class MediaItem {
 	@Column(name="ID")
 	private long id;
 	
-	@Convert(converter = LocalDateTimeConverter.class)
-    @Column(name="REGISTRATION_DATE")
-	private LocalDateTime registerDate;
-	
 	@Column(name="FILENAME")
 	private String filename;
 	
 	@Column(name="DESCRIPTION")
 	private String description;
-	
-	@Convert(converter = PathConverter.class)
-	@Column(name="PATH")	
-	private Path filePath;
 	
 	@Column(name="CLASSIFICATION")
 	private String classification;
@@ -52,6 +51,14 @@ public class MediaItem {
 	@Column(name="ADDITIONAL_INFO")
 	private String additionalInformation;
 	
+	@Convert(converter = LocalDateTimeConverter.class)
+    @Column(name="REGISTRATION_DATE")
+	private LocalDateTime registerDate;
+	
+	@Convert(converter = PathConverter.class)
+	@Column(name="PATH")	
+	private Path filePath;
+	
 	
 	@Deprecated
 	public MediaItem() {		
@@ -59,8 +66,8 @@ public class MediaItem {
 	
 	public MediaItem(Path path) {
 		this.filePath = path;
-		this.filename = path.getFileName().toString();
 		this.registerDate = LocalDateTime.now();
+		this.filename = path.getFileName().toString();
 	}
 	
 	
@@ -70,18 +77,17 @@ public class MediaItem {
 		return this.filename.equals( ((MediaItem)obj).filename );
 	}
 	
+	
+	public String toJson() {
+		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
+		return gson.toJson(this);
+	}
 		
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
-	}
-	public LocalDateTime getRegisterDate() {
-		return registerDate;
-	}
-	public void setRegisterDate(LocalDateTime registerDate) {
-		this.registerDate = registerDate;
 	}
 	public String getFilename() {
 		return filename;
@@ -100,6 +106,12 @@ public class MediaItem {
 	}
 	public void setFilePath(Path filePath) {
 		this.filePath = filePath;
+	}
+	public LocalDateTime getRegisterDate() {
+		return registerDate;
+	}
+	public void setRegisterDate(LocalDateTime registerDate) {
+		this.registerDate = registerDate;
 	}
 	public String getClassification() {
 		return classification;

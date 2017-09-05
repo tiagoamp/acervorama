@@ -9,7 +9,7 @@
   <version>1.0-SNAPSHOT</version>
   
   <name>Acervorama Media Center</name>
-  <url>http://tiagoamp</url>
+  <url>http://tiagoamp.wordpress.com</url>
   
   <properties>
   	<java.version>1.8</java.version>
@@ -63,8 +63,82 @@
 	    <artifactId>mysql-connector-java</artifactId>
 	    <version>5.1.6</version>
 	</dependency>
-			    
-    
+	
+	<!-- Json / Gson -->
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.8.1</version>
+	</dependency>
+		
+	
+	<!-- REST / JERSEY / JAX-RS -->
+	<dependency>
+	    <groupId>org.glassfish.jersey.containers</groupId>
+	    <artifactId>jersey-container-servlet</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-client</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-server</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-common</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	<!-- <dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-common</artifactId>
+	    <version>2.0-m03</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.grizzly</groupId>
+	    <artifactId>grizzly-http-server</artifactId>
+	    <version>2.4.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.grizzly</groupId>
+	    <artifactId>grizzly-rcm</artifactId>
+	    <version>2.3.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.grizzly</groupId>
+	    <artifactId>grizzly-framework</artifactId>
+	    <version>2.4.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.grizzly</groupId>
+	    <artifactId>grizzly-http</artifactId>
+	    <version>2.4.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.containers</groupId>
+	    <artifactId>jersey-container-grizzly2-http</artifactId>
+	    <version>2.0-m05-2</version>
+	</dependency>	
+	<dependency>
+	    <groupId>org.glassfish.jersey.bundles</groupId>
+	    <artifactId>jaxrs-ri</artifactId>
+	    <version>2.21</version>
+	</dependency>	
+	<dependency>
+	    <groupId>com.google.guava</groupId>
+	    <artifactId>guava</artifactId>
+	    <version>19.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+	    <artifactId>jersey-guava</artifactId>
+	    <version>2.6</version>
+	</dependency> -->
+				   
   </dependencies>
   
   <build>
@@ -77,15 +151,12 @@
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>0.7.5.201505241946</version>
 			<executions>
-				<!-- Prepares the property pointing to the JaCoCo runtime agent which is passed as VM argument when Maven the Surefire plugin is executed. -->
 				<execution>
 					<id>pre-unit-test</id>
 					<goals>
 						<goal>prepare-agent</goal>
 					</goals>					
 				</execution>
-				<!-- Ensures that the code coverage report for unit tests is created 
-					after unit tests have been run. -->
 				<execution>
 					<id>post-unit-test</id>
 					<phase>test</phase>
