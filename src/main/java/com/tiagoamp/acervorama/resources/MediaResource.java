@@ -83,8 +83,10 @@ public class MediaResource {
 	}
 	
 	@PUT
-	public Response update(String content) {
+	@Path("{id}")
+	public Response update(@PathParam("id") long id, String content) {
 		MediaItem item = new Gson().fromJson(content, MediaItem.class);
+		item.setId(id);
 		try {
 			service.update(item);
 		} catch (AcervoramaBusinessException e) {
