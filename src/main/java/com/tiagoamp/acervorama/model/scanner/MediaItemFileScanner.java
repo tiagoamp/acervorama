@@ -122,14 +122,5 @@ public class MediaItemFileScanner {
 		Function<Path, MediaItem> function = p -> new MediaItem(p);
 		return paths.stream().map(function).collect(Collectors.toList());
 	}
-	
-	
-	public Path from() {
-		return origin;
-	}
-	
-	public MediaType getType() {
-		return type;
-	}
 
 }
