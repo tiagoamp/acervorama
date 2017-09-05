@@ -19,7 +19,7 @@ public class MediaItemService {
 	public MediaItemService() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("PU_ACERVO");
 		EntityManager em = emf.createEntityManager();
-		this.dao = new MediaItemJpaDao(em);		
+		this.dao = new MediaItemJpaDao(em);
 	}
 	
 	
