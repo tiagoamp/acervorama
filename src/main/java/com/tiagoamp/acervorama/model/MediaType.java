@@ -23,7 +23,7 @@ public enum MediaType {
 			break;
 
 		default:
-			arr = new String[0];
+			arr = null;
 			break;
 		}		
 					
