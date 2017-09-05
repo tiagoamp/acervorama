@@ -16,8 +16,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
@@ -45,15 +47,15 @@ public class MediaResource {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(String content) {
+	public Response add(String content, @Context UriInfo uriInfo) {
 		MediaItem item = new Gson().fromJson(content, MediaItem.class);
 		try {
 			service.insert(item);
-			item = service.findByPath(item.getFilePath());
+			item = service.findByPath(item.getFilePath());			
 		} catch (AcervoramaBusinessException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
-		}
-		URI uri = URI.create("/webapi/media/" + item.getId());
+		}	
+		URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(item.getId())).build();
 		return Response.created(uri).build();
 	}
 	
