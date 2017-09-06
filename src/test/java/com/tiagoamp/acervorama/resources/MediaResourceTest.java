@@ -1,14 +1,7 @@
 package com.tiagoamp.acervorama.resources;
 
-import static org.junit.Assert.*;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 public class MediaResourceTest extends MediaResource {
 

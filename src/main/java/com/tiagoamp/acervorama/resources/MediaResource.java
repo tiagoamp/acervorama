@@ -1,10 +1,8 @@
 package com.tiagoamp.acervorama.resources;
 
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +21,6 @@ import javax.ws.rs.core.UriInfo;
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.scanner.MediaItemFileScanner;
 import com.tiagoamp.acervorama.model.service.MediaItemService;
 
 @Path("media")
@@ -34,15 +30,27 @@ public class MediaResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getMediaItems() {
-		List<MediaItem> list;
+	public List<MediaItem> getMediaItems() {
+		List<MediaItem> list = new ArrayList<>();
 		try {
 			list = service.getAll();
 		} catch (AcervoramaBusinessException e) {			
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}
-		List<String> jsonList = list.stream().map(item -> item.toJson()).collect(Collectors.toList());
-		return new Gson().toJson(jsonList);
+		return list;
+	}
+	
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MediaItem getMedia(@PathParam("id") long id) {
+		MediaItem item = new MediaItem(java.nio.file.Paths.get(""));
+		try {
+			item = service.findById(id);
+		} catch (AcervoramaBusinessException e) {
+			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
+		}
+		return item;
 	}
 
 	@POST
@@ -61,15 +69,15 @@ public class MediaResource {
 	
 	@POST
 	@Path("scan")
-	public Response scan(@QueryParam("from") String from, @QueryParam("media") String type) {
-		java.nio.file.Path origin = Paths.get(from);
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type);
-		MediaItemFileScanner scanner = new MediaItemFileScanner(origin, mediaType);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response scan(String content) {
+		//TODO Converts json content message body to Scanner object...
+		/*MediaItemFileScanner scanner = new MediaItemFileScanner(origin, mediaType);
 		try {
 			List<MediaItem> list = scanner.perform();
 		} catch (IOException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), e);
-		}
+		}*/
 		return Response.ok().build();
 	}
 	
