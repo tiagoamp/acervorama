@@ -1,8 +1,8 @@
 package com.tiagoamp.acervorama.resources;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -30,15 +30,27 @@ public class MediaResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getMediaItems() {
-		List<MediaItem> list;
+	public List<MediaItem> getMediaItems() {
+		List<MediaItem> list = new ArrayList<>();
 		try {
 			list = service.getAll();
 		} catch (AcervoramaBusinessException e) {			
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}
-		List<String> jsonList = list.stream().map(item -> item.toJson()).collect(Collectors.toList());
-		return new Gson().toJson(jsonList);
+		return list;
+	}
+	
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MediaItem getMedia(@PathParam("id") long id) {
+		MediaItem item = new MediaItem(java.nio.file.Paths.get(""));
+		try {
+			item = service.findById(id);
+		} catch (AcervoramaBusinessException e) {
+			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
+		}
+		return item;
 	}
 
 	@POST
