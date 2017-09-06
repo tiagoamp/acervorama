@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.service.MediaItemService;
@@ -56,7 +55,7 @@ public class MediaResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(String content, @Context UriInfo uriInfo) {
-		MediaItem item = new Gson().fromJson(content, MediaItem.class);
+		MediaItem item = MediaItem.fromJson(content);
 		try {
 			service.insert(item);
 			item = service.findByPath(item.getFilePath());			
@@ -95,7 +94,7 @@ public class MediaResource {
 	@PUT
 	@Path("{id}")
 	public Response update(@PathParam("id") long id, String content) {
-		MediaItem item = new Gson().fromJson(content, MediaItem.class);
+		MediaItem item = MediaItem.fromJson(content);
 		item.setId(id);
 		try {
 			service.update(item);

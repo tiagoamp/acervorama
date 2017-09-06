@@ -70,7 +70,7 @@ public class MediaItem {
 		this.filename = path.getFileName().toString();
 	}
 	
-	
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MediaItem)) return false;
@@ -82,6 +82,11 @@ public class MediaItem {
 		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
 		return gson.toJson(this);
 	}
+	
+	public static MediaItem fromJson(String jsonString) {
+		return new Gson().fromJson(jsonString, MediaItem.class);
+	}
+	
 		
 	public long getId() {
 		return id;
