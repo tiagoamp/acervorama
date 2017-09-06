@@ -41,7 +41,7 @@ public class MediaResource {
 		return new Gson().toJson(jsonList);
 	}
 	
-	@PUT
+	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMedia(@PathParam("id") long id) {
