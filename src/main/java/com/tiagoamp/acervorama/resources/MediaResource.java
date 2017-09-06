@@ -61,15 +61,15 @@ public class MediaResource {
 	
 	@POST
 	@Path("scan")
-	public Response scan(@QueryParam("from") String from, @QueryParam("media") String type) {
-		java.nio.file.Path origin = Paths.get(from);
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type);
-		MediaItemFileScanner scanner = new MediaItemFileScanner(origin, mediaType);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response scan(String content) {
+		//TODO Converts json content message body to Scanner object...
+		/*MediaItemFileScanner scanner = new MediaItemFileScanner(origin, mediaType);
 		try {
 			List<MediaItem> list = scanner.perform();
 		} catch (IOException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), e);
-		}
+		}*/
 		return Response.ok().build();
 	}
 	
