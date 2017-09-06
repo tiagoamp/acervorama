@@ -40,6 +40,19 @@ public class MediaResource {
 		List<String> jsonList = list.stream().map(item -> item.toJson()).collect(Collectors.toList());
 		return new Gson().toJson(jsonList);
 	}
+	
+	@PUT
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getMedia(@PathParam("id") long id) {
+		MediaItem item = new MediaItem(java.nio.file.Paths.get(""));
+		try {
+			item = service.findById(id);
+		} catch (AcervoramaBusinessException e) {
+			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
+		}
+		return item.toJson();
+	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
