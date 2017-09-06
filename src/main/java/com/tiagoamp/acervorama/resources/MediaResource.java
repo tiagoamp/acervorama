@@ -1,8 +1,6 @@
 package com.tiagoamp.acervorama.resources;
 
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +21,6 @@ import javax.ws.rs.core.UriInfo;
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.scanner.MediaItemFileScanner;
 import com.tiagoamp.acervorama.model.service.MediaItemService;
 
 @Path("media")
