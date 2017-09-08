@@ -1,5 +1,7 @@
 package com.tiagoamp.acervorama.model;
 
+import java.nio.file.Path;
+
 public enum MediaType {
 	
 	
@@ -25,10 +27,56 @@ public enum MediaType {
 		default:
 			arr = null;
 			break;
-		}		
-					
+		}			
 		return arr;
 	}
 	
-
+	@SuppressWarnings("unchecked")
+	public <T extends MediaItem> T getItemSubclassInstance(Path path) {
+		T item;
+		
+		switch (this) {
+		case AUDIO:
+			item = (T) new AudioItem(path);
+			break;
+		case IMAGE:
+			item = (T) new ImageItem(path);
+			break;
+		case TEXT:
+			item = (T) new TextItem(path);
+			break;
+		case VIDEO:
+			item = (T) new VideoItem(path);
+			break;
+		default:
+			item = null;
+			break;
+		}	
+		
+		return item;
+	}
+	
+	public Class<? extends MediaItem> getItemSubclass() {		
+		Class<? extends MediaItem> clazz;
+		
+		switch (this) {
+		case AUDIO:
+			clazz = AudioItem.class;
+			break;
+		case IMAGE:
+			clazz = ImageItem.class;
+			break;
+		case TEXT:
+			clazz = TextItem.class;
+			break;
+		case VIDEO:
+			clazz = VideoItem.class;
+			break;
+		default:
+			clazz = null;
+			break;
+		}
+		return clazz;		
+	}
+	
 }

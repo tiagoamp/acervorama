@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
+import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
@@ -220,7 +221,7 @@ public class MediaItemServiceTest extends EasyMockSupport {
 	// helper private methods
 	private MediaItem getItemForTests() {
 		Path testFilePath = Paths.get("fake", "test", "file.txt");
-		MediaItem item = new MediaItem(testFilePath);
+		MediaItem item = new AudioItem(testFilePath);
 		item.setClassification("Classification");
 		item.setSubject("Subject");
 		item.setDescription("Description");

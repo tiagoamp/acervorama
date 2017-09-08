@@ -20,9 +20,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.tiagoamp.acervorama.dao.MediaItemDao;
-import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
+import com.tiagoamp.acervorama.model.AudioItem;
+import com.tiagoamp.acervorama.model.ImageItem;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaType;
+import com.tiagoamp.acervorama.model.TextItem;
+import com.tiagoamp.acervorama.model.VideoItem;
 
 public class MediaItemDaoTest {
 	
@@ -46,7 +49,8 @@ public class MediaItemDaoTest {
 	
 	@Test
 	public void testCreate_shouldInsertEntity() throws SQLException {
-		MediaItem item = this.getItemForTests(); 
+		AudioItem item = this.getItemForTests();
+		item.setType(MediaType.AUDIO);
 		dao.create(item);
 		
 		LocalDateTime registerDate = item.getRegisterDate();
@@ -81,7 +85,7 @@ public class MediaItemDaoTest {
 	
 	@Test
 	public void testFindById_shouldReturnValidOutput() throws SQLException {
-		MediaItem itemInserted = insertItemInDatabaseForTests();
+		AudioItem itemInserted = (AudioItem) insertItemInDatabaseForTests();
 		
 		MediaItem itemRetrievedById = dao.findById(itemInserted.getId());
 		assertNotNull("Must retrieve the entity by Id.", itemRetrievedById);
@@ -100,7 +104,7 @@ public class MediaItemDaoTest {
 		
 		List<MediaItem> list = dao.findAll();
 		assertNotNull("Must return entities previously inserted.", list);
-		assertEquals("Should return 2 entities.", 2, list.size());
+		assertEquals("Should return 4 entities.", 4, list.size());
 	}
 		
 	@Test
@@ -186,17 +190,18 @@ public class MediaItemDaoTest {
 		}
 	}
 	
-	private MediaItem getItemForTests() {
+	private AudioItem getItemForTests() {
 		Path testFilePath = Paths.get("fake","test","file.txt");
-		MediaItem item = new MediaItem(testFilePath);
+		AudioItem item = new AudioItem(testFilePath);
 		item.setClassification("Classification");
 		item.setSubject("Subject");
 		item.setDescription("Description");
+		item.setTitle("Title");
 		return item;
 	}
 	
 	private MediaItem insertItemInDatabaseForTests() throws SQLException {
-		MediaItem item = this.getItemForTests();
+		AudioItem item = this.getItemForTests();
 		dao.create(item);
 		return dao.findByPath(item.getFilePath());
 	}
@@ -204,10 +209,16 @@ public class MediaItemDaoTest {
 	private List<MediaItem> insertItemsInDatabaseForTests() throws SQLException {
 		Path testFilePath1 = Paths.get("fake","test","file1.txt");
 		Path testFilePath2 = Paths.get("fake","test","file2.txt");
-		MediaItem item1 = new MediaItem(testFilePath1);
-		MediaItem item2 = new MediaItem(testFilePath2);
+		Path testFilePath3 = Paths.get("fake","test","file3.txt");
+		Path testFilePath4 = Paths.get("fake","test","file4.txt");
+		MediaItem item1 = new AudioItem(testFilePath1);
+		MediaItem item2 = new ImageItem(testFilePath2);
+		MediaItem item3 = new TextItem(testFilePath3);
+		MediaItem item4 = new VideoItem(testFilePath4);
 		dao.create(item1);
 		dao.create(item2);
+		dao.create(item3);
+		dao.create(item4);
 		return dao.findAll();
 	}
 
