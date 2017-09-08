@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,6 +60,10 @@ public class MediaItem {
 	@Convert(converter = PathConverter.class)
 	@Column(name="PATH")	
 	private Path filePath;
+	
+	@Column(name="TYPE")
+	@Enumerated(EnumType.STRING)
+	private MediaType type;
 	
 	
 	@Deprecated
@@ -131,6 +137,12 @@ public class MediaItem {
 	}
 	public void setAdditionalInformation(String additionalInformation) {
 		this.additionalInformation = additionalInformation;
+	}
+	public MediaType getType() {
+		return type;
+	}
+	public void setType(MediaType type) {
+		this.type = type;
 	}
 	
 }

@@ -23,6 +23,7 @@ import org.junit.Test;
 import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaType;
 
 public class MediaItemDaoTest {
 	
@@ -46,7 +47,8 @@ public class MediaItemDaoTest {
 	
 	@Test
 	public void testCreate_shouldInsertEntity() throws SQLException {
-		MediaItem item = this.getItemForTests(); 
+		MediaItem item = this.getItemForTests();
+		item.setType(MediaType.AUDIO);
 		dao.create(item);
 		
 		LocalDateTime registerDate = item.getRegisterDate();
