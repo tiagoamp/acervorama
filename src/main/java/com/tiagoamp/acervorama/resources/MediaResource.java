@@ -57,7 +57,7 @@ public class MediaResource {
 	@Path("{type}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(@PathParam("type") String type, String content, @Context UriInfo uriInfo) {
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type);
+		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type.toUpperCase());
 		MediaItem item = MediaItemFactory.fromJson(content, mediaType.getItemSubclass());
 		try {
 			service.insert(item);
@@ -83,7 +83,7 @@ public class MediaResource {
 	@PUT
 	@Path("{type}/{id}")
 	public Response update(@PathParam("type") String type, @PathParam("id") long id, String content) {
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type);
+		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type.toUpperCase());
 		MediaItem item = MediaItemFactory.fromJson(content, mediaType.getItemSubclass());
 		item.setId(id);
 		try {
