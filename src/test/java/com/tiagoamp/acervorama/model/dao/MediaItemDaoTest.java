@@ -20,6 +20,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tiagoamp.acervorama.dao.MediaItemDao;
+import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.MediaItem;
 
 public class MediaItemDaoTest {

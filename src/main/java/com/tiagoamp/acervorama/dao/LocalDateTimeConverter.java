@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model.dao;
+package com.tiagoamp.acervorama.dao;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model.dao;
+package com.tiagoamp.acervorama.dao;
 
 import java.nio.file.Path;
 import java.sql.SQLException;

@@ -16,8 +16,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tiagoamp.acervorama.model.dao.LocalDateTimeConverter;
-import com.tiagoamp.acervorama.model.dao.PathConverter;
+import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
+import com.tiagoamp.acervorama.dao.PathConverter;
 
 /**
  * 

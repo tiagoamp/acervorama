@@ -20,7 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.service.MediaItemService;
+import com.tiagoamp.acervorama.service.MediaItemService;
 
 @Path("media")
 public class MediaResource {
