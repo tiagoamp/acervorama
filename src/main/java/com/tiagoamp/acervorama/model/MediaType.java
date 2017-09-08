@@ -28,27 +28,5 @@ public enum MediaType {
 		}			
 		return arr;
 	}
-	
-	public Class<? extends MediaItem> getItemSubclass() {		
-		Class<? extends MediaItem> clazz;
-		
-		switch (this) {
-		case AUDIO:
-			clazz = AudioItem.class;
-			break;
-		case IMAGE:
-			clazz = ImageItem.class;
-			break;
-		case TEXT:
-			clazz = TextItem.class;
-			break;
-		case VIDEO:
-			clazz = VideoItem.class;
-			break;
-		default:
-			clazz = null;
-			break;
-		}
-		return clazz;		
-	}	
+			
 }

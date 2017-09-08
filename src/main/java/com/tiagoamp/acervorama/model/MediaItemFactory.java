@@ -18,6 +18,30 @@ public class MediaItemFactory {
 		return list.stream().map(function).collect(Collectors.toList());
 	}
 	
+	public static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
+		Class<? extends MediaItem> clazz;
+		
+		switch (type) {
+		case AUDIO:
+			clazz = AudioItem.class;
+			break;
+		case IMAGE:
+			clazz = ImageItem.class;
+			break;
+		case TEXT:
+			clazz = TextItem.class;
+			break;
+		case VIDEO:
+			clazz = VideoItem.class;
+			break;
+		default:
+			clazz = null;
+			break;
+		}
+		
+		return clazz;		
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T extends MediaItem> T getItemSubclassInstance(Path path, MediaType type) {
 		T item;
