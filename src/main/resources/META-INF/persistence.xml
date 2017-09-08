@@ -6,6 +6,10 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
 		<class>com.tiagoamp.acervorama.model.MediaItem</class>
+		<class>com.tiagoamp.acervorama.model.AudioItem</class>
+		<class>com.tiagoamp.acervorama.model.ImageItem</class>
+		<class>com.tiagoamp.acervorama.model.TextItem</class>
+		<class>com.tiagoamp.acervorama.model.VideoItem</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
