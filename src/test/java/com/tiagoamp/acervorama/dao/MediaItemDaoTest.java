@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model.dao;
+package com.tiagoamp.acervorama.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
