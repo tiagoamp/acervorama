@@ -16,8 +16,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tiagoamp.acervorama.model.dao.LocalDateTimeConverter;
-import com.tiagoamp.acervorama.model.dao.PathConverter;
+import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
+import com.tiagoamp.acervorama.dao.PathConverter;
 
 /**
  * 
@@ -70,7 +70,7 @@ public class MediaItem {
 		this.filename = path.getFileName().toString();
 	}
 	
-	
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MediaItem)) return false;
@@ -82,6 +82,11 @@ public class MediaItem {
 		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
 		return gson.toJson(this);
 	}
+	
+	public static MediaItem fromJson(String jsonString) {
+		return new Gson().fromJson(jsonString, MediaItem.class);
+	}
+	
 		
 	public long getId() {
 		return id;
