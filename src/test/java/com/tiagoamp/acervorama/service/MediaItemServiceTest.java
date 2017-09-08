@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model.service;
+package com.tiagoamp.acervorama.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
