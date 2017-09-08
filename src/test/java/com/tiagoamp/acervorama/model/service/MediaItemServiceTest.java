@@ -16,9 +16,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.dao.MediaItemDao;
+import com.tiagoamp.acervorama.service.MediaItemService;
 
 
 public class MediaItemServiceTest extends EasyMockSupport {

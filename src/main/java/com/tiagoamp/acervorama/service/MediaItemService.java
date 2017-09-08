@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama.model.service;
+package com.tiagoamp.acervorama.service;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -8,10 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.tiagoamp.acervorama.dao.MediaItemDao;
+import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.dao.MediaItemDao;
-import com.tiagoamp.acervorama.model.dao.MediaItemJpaDao;
 
 public class MediaItemService {
 	
