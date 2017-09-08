@@ -82,11 +82,7 @@ public class MediaItem {
 		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
 		return gson.toJson(this);
 	}
-	
-	public static MediaItem fromJson(String jsonString) {
-		return new Gson().fromJson(jsonString, MediaItem.class);
-	}
-	
+		
 		
 	public long getId() {
 		return id;

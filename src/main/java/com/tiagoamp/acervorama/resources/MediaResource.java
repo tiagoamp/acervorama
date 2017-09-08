@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaItemFactory;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
 @Path("media")
@@ -55,7 +56,7 @@ public class MediaResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(String content, @Context UriInfo uriInfo) {
-		MediaItem item = MediaItem.fromJson(content);
+		MediaItem item = MediaItemFactory.fromJson(content);
 		try {
 			service.insert(item);
 			item = service.findByPath(item.getFilePath());			
@@ -64,20 +65,6 @@ public class MediaResource {
 		}	
 		URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(item.getId())).build();
 		return Response.created(uri).build();
-	}
-	
-	@POST
-	@Path("scan")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response scan(String content) {
-		//TODO Converts json content message body to Scanner object...
-		/*MediaItemFileScanner scanner = new MediaItemFileScanner(origin, mediaType);
-		try {
-			List<MediaItem> list = scanner.perform();
-		} catch (IOException e) {
-			throw new ResponseProcessingException(Response.serverError().build(), e);
-		}*/
-		return Response.ok().build();
 	}
 	
 	@DELETE
@@ -94,7 +81,7 @@ public class MediaResource {
 	@PUT
 	@Path("{id}")
 	public Response update(@PathParam("id") long id, String content) {
-		MediaItem item = MediaItem.fromJson(content);
+		MediaItem item = MediaItemFactory.fromJson(content);
 		item.setId(id);
 		try {
 			service.update(item);
