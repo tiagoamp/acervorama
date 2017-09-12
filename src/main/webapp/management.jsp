@@ -100,22 +100,22 @@
                         <div class="col-md-9 col-sm-9 col-xs-12">                          
                           <div class="radio">
                             <label>
-                              <input type="radio" checked="" value="AUDIO" id="mediaTypeRadio1" name="mediaTypeRadio"> Audio
+                              <input type="radio" value="AUDIO" id="mediaTypeRadio1" name="mediaTypeRadio"> Audio
                             </label>                            
                           </div>
                           <div class="radio">
                             <label>
-                              <input type="radio" checked="" value="IMAGE" id="mediaTypeRadio2" name="mediaTypeRadio"> Image
+                              <input type="radio" value="IMAGE" id="mediaTypeRadio2" name="mediaTypeRadio"> Image
                             </label>
                           </div>
                           <div class="radio">
                             <label>
-                              <input type="radio" checked="" value="TEXT" id="mediaTypeRadio3" name="mediaTypeRadio"> Text
+                              <input type="radio" value="TEXT" id="mediaTypeRadio3" name="mediaTypeRadio"> Text
                             </label>
                           </div>
                           <div class="radio">
                             <label>
-                              <input type="radio" checked="" value="VIDEO" id="mediaTypeRadio4" name="mediaTypeRadio"> Video
+                              <input type="radio" value="VIDEO" id="mediaTypeRadio4" name="mediaTypeRadio"> Video
                             </label>
                           </div>
                         </div>
