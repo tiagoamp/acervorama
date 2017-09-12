@@ -67,7 +67,7 @@ public class FileScanner {
 		if (fileExtensions == null) {
 			sb.append("'ALL file extensions'");
 		} else {
-			sb.append("'" + fileExtensions + "'");
+			sb.append("'" + fileExtensions.toString() + "'");
 		}
 		sb.append(".");
 		return sb.toString();
