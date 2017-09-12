@@ -43,9 +43,9 @@ public class MediaItemDaoTest {
 
 	@After
 	public void tearDown() throws Exception {
-		dao = null;
+		cleanDatabaseDataForTests();
+		dao = null;		
 	}
-
 	
 	@Test
 	public void testCreate_shouldInsertEntity() throws SQLException {
