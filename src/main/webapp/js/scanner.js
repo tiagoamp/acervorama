@@ -9,8 +9,19 @@ $(document).ready(function () {
 	
 });
 
-function scanFiles(path, mediatype) {
+function scanFiles(from, mediatype) {
+	var input = { type: mediatype, path: from };
 	
-	console.log("Scanning with Ajax... " + path + " | " + mediatype);
+	console.log(input);
 	
+	$.get("http://localhost:8080/acervorama/webapi/scanner", { type: mediatype, dirPath: from }, function( data ) {
+		console.log("Data = " + data );
+	});
+	
+	console.log("Após get ...");
+	
+}
+
+function pegaRetorno(dados) {
+	console.log(dados);
 }
