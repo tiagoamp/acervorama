@@ -19,18 +19,22 @@ public class ScannerResource {
 	
 		
 	@GET
-	@Path("scan")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<java.nio.file.Path> scan(String content) {
 		//TODO Converts json content message body to Scanner object...
+		
 		List<java.nio.file.Path> result = new ArrayList<>();
-		try {
+		
+		System.out.println(content);
+		
+		/*try {
 			result = scanner.perform();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		
 		return result;
 	}
 		
