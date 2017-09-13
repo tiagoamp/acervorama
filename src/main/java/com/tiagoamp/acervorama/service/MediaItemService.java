@@ -34,8 +34,8 @@ public class MediaItemService {
 	 * @throws AcervoramaBusinessException
 	 */
 	public void insert(MediaItem item) throws AcervoramaBusinessException {
-		item.setRegisterDate(LocalDateTime.now());
-		item.setFilename(item.getFilePath().getFileName().toString());
+		if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
+		if (item.getFilename() == null) item.setFilename(item.getFilePath().getFileName().toString());
 		try {
 			MediaItem dbItem = dao.findByPath(item.getFilePath());
 			if (dbItem != null) throw new AcervoramaBusinessException("File path already exists!");

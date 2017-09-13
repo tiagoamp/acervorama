@@ -79,25 +79,21 @@ function saveSelectedFiles() {
     	return showErrorMessage("No items selected.");
     }
     
-    var selectedPaths = [];        
     for (var i=0; i<checkeds.length; i++){
-    	selectedPaths.push(checkeds[i].value);
-    }
-    
-    var data = [];
-    for (var i=0; i<selectedPaths.length; i++){
     	mediaitem = {
-    			 "filePath":selectedPath[i],
-    			 "type":mediatype
-    			};
-    	data.push(mediaitem);
+   			 "filePath":checkeds[i].value,
+   			 "type":mediatype
+   			};
+    	
+        $.post("http://localhost:8080/acervorama/webapi/media", mediaitem, function(){
+        	divScanResult.hide();
+        })
+        .fail( function() { showErrorMessage("Fail to save this file: " + mediaitem.filePath) } )
+        .success( function() { showSuccessMessage("File saved: " + mediaitem.filePath) } );
     }
     
-    // TODO: for each data, call post request !!!!
+
     
-    $.post("http://localhost:8080/acervorama/webapi/media", dados, function(){
-        console.log("Placar sincronizado com sucesso");
-    });
     
 }
 
