@@ -197,6 +197,7 @@ public class MediaItemDaoTest {
 		item.setSubject("Subject");
 		item.setDescription("Description");
 		item.setTitle("Title");
+		item.setAuthor("Author");
 		return item;
 	}
 	
@@ -215,6 +216,9 @@ public class MediaItemDaoTest {
 		MediaItem item2 = new ImageItem(testFilePath2);
 		MediaItem item3 = new TextItem(testFilePath3);
 		MediaItem item4 = new VideoItem(testFilePath4);
+		
+		((AudioItem)item1).setTitle("New Title");
+		
 		dao.create(item1);
 		dao.create(item2);
 		dao.create(item3);

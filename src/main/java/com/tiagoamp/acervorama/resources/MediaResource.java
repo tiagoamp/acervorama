@@ -54,11 +54,9 @@ public class MediaResource {
 	}
 
 	@POST
-	@Path("{type}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(@PathParam("type") String type, String content, @Context UriInfo uriInfo) {
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type.toUpperCase());
-		MediaItem item = MediaItemFactory.fromJson(content, MediaItemFactory.getItemSubclass(mediaType));
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response add(MediaItem item, @Context UriInfo uriInfo) {
 		try {
 			service.insert(item);
 			item = service.findByPath(item.getFilePath());			
@@ -66,7 +64,7 @@ public class MediaResource {
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}	
 		URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(item.getId())).build();
-		return Response.created(uri).build();
+		return Response.created(uri).entity(item).build();
 	}
 	
 	@DELETE
@@ -91,7 +89,7 @@ public class MediaResource {
 		} catch (AcervoramaBusinessException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}
-		return Response.ok().build();
+		return Response.ok().entity(item).build();
 	}
 	
 }
