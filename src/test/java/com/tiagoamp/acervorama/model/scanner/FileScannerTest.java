@@ -34,7 +34,7 @@ public class FileScannerTest {
 		List<Path> result = scanner.perform();
 		
 		assertNotNull("Should return not null instance.", result);
-		assertEquals("Should find all the media types.", 34, result.size());		
+		assertEquals("Should find all the media types.", 28, result.size());		
 	}
 	
 	@Test

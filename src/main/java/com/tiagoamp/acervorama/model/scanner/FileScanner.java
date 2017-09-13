@@ -83,7 +83,8 @@ public class FileScanner {
 	public List<Path> perform() throws IOException {
 		
 		Predicate<Path> predicate =	p -> { 
-			if (fileExtensions == null) return true;
+			if (Files.isDirectory(p)) return false;
+			if (fileExtensions == null) return true;			
 			boolean result = false;			
 			for (String ext : fileExtensions) {
 				if (p.getFileName().toString().endsWith(ext)) {

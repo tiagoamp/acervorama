@@ -37,7 +37,8 @@ function showScanResultTable(data) {
 	var itemCount = data.length;
 	
 	for (i=0; i < itemCount; i++) {
-		var newRow = createNewRow("File Name", "File Path");
+		var filename = data[i].split("/").pop();
+		var newRow = createNewRow(filename, data[i]);
 		tbodyResult.append(newRow);
 	}
 		
@@ -80,8 +81,11 @@ function saveSelectedFiles() {
     	selectedPaths.push(checkeds[i].value);
     }
     
-    console.log(selectedPaths);  // FIXME
-    
+    console.l
+
+    $.post("http://localhost:3blablabla", dados, function(){
+        console.log("Placar sincronizado com sucesso");
+    });
     
 }
 
