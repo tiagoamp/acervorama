@@ -10,6 +10,10 @@ $(document).ready(function () {
         e.preventDefault();
         var from = $('#form-scan-input').find('input[name="dirpath"]').val();
         var mediatype = $('input[name="mediatype"]:checked').val();
+        if (from == "" || mediatype == null) {
+        	showErrorMessage("Parameters not setted.")
+        	return;
+        }
         scanFiles(from, mediatype);
 	});
 	
@@ -68,22 +72,30 @@ function createNewRow(fileName, filePath) {
 }
 
 function saveSelectedFiles() {
-	var selectedPaths = [];        
-    var checkeds = $('input[name="table_records"]:checked');
+	var mediatype = $('input[name="mediatype"]:checked').val();
+	var checkeds = $('input[name="table_records"]:checked');
     
     if (checkeds.length == 0) {
     	return showErrorMessage("No items selected.");
     }
     
-    console.log(checkeds);
-    
-    for (var i=0;i<checkeds.length;i++){
+    var selectedPaths = [];        
+    for (var i=0; i<checkeds.length; i++){
     	selectedPaths.push(checkeds[i].value);
     }
     
-    console.l
-
-    $.post("http://localhost:3blablabla", dados, function(){
+    var data = [];
+    for (var i=0; i<selectedPaths.length; i++){
+    	mediaitem = {
+    			 "filePath":selectedPath[i],
+    			 "type":mediatype
+    			};
+    	data.push(mediaitem);
+    }
+    
+    // TODO: for each data, call post request !!!!
+    
+    $.post("http://localhost:8080/acervorama/webapi/media", dados, function(){
         console.log("Placar sincronizado com sucesso");
     });
     
