@@ -51,6 +51,15 @@ public interface MediaItemDao {
 	MediaItem findByPath(Path path) throws SQLException;
 	
 	/**
+	 * Search the entity by 'hash' in the database.
+	 * 
+	 * @param hash
+	 * @return MediaItem
+	 * @throws SQLException
+	 */
+	MediaItem findByHash(String hash) throws SQLException;
+	
+	/**
 	 * Search the entity by 'file name-like' in the database.
 	 * 
 	 * @param filename

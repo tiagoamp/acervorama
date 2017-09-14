@@ -160,6 +160,26 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		service.findByPath(filePath);
 		verifyAll();
 	}
+	
+	@Test
+	public void testFindByHash() throws Exception {
+		String hash = item.getHash();
+		EasyMock.expect(daoMock.findByHash(hash)).andReturn(item);
+		replayAll();
+		
+		service.findByHash(hash);
+		verifyAll();
+	}
+	
+	@Test(expected=AcervoramaBusinessException.class)
+	public void testFindByHash_shouldThrowException() throws Exception {
+		String hash = item.getHash();
+		EasyMock.expect(daoMock.findByHash(hash)).andThrow(new SQLException());
+		replayAll();
+		
+		service.findByHash(hash);
+		verifyAll();
+	}
 
 	@Test
 	public void testFindByFileNameLike() throws Exception {

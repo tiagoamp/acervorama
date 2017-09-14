@@ -116,6 +116,14 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
+	public void testFindByHash_shouldReturnValidOutput() throws SQLException {
+		MediaItem item = insertItemInDatabaseForTests();
+		
+		MediaItem itemRetrieved = dao.findByHash(item.getHash());
+		assertNotNull(itemRetrieved);
+	}
+	
+	@Test
 	public void testFindByFileNameLike_shouldReturnValidOutput() throws SQLException {
 		MediaItem item = insertItemInDatabaseForTests();
 		String partialFileName = item.getFilename().substring(0,3);

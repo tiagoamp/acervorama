@@ -104,6 +104,21 @@ public class MediaItemService {
 	}
 	
 	/**
+	 * Search Media Item by 'hash'.
+	 * 
+	 * @param hash
+	 * @return MediaItem
+	 * @throws AcervoramaBusinessException
+	 */
+	public MediaItem findByHash(String hash) throws AcervoramaBusinessException {
+		try {
+			return dao.findByHash(hash);
+		} catch (SQLException e) {
+			throw new AcervoramaBusinessException("Database error!" , e);			
+		}
+	}
+	
+	/**
 	 * Search Media Item by 'file name-like'.
 	 * 
 	 * @param filename

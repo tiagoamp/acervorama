@@ -1,6 +1,9 @@
 package com.tiagoamp.acervorama.model;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -44,33 +47,36 @@ public abstract class MediaItem {
 	@Column(name="ID")
 	private long id;
 	
-	@Column(name="FILENAME")
-	private String filename;
-	
-	@Column(name="DESCRIPTION")
-	private String description;
-	
-	@Column(name="CLASSIFICATION")
-	private String classification;
-	
-	@Column(name="SUBJECT")
-	private String subject;
-	
-	@Column(name="ADDITIONAL_INFO")
-	private String additionalInformation;
-	
-	@Convert(converter = LocalDateTimeConverter.class)
-    @Column(name="REGISTRATION_DATE")
-	private LocalDateTime registerDate;
-	
 	@Convert(converter = PathConverter.class)
 	@Column(name="PATH")	
 	private Path filePath;
+	
+	@Column(name="FILENAME")
+	private String filename;
+	
+	@Convert(converter = LocalDateTimeConverter.class)
+    @Column(name="REGISTRATION_DATE")
+	private LocalDateTime registerDate;	
 	
 	@Column(name="TYPE")
 	@Enumerated(EnumType.STRING)
 	private MediaType type;
 	
+	@Column(name="HASH")
+	private String hash;
+	
+	@Column(name="SUBJECT")
+	private String subject;
+	
+	@Column(name="CLASSIFICATION")
+	private String classification;
+	
+	@Column(name="DESCRIPTION")
+	private String description;
+		
+	@Column(name="ADDITIONAL_INFO")
+	private String additionalInformation;
+			
 	
 	@Deprecated
 	public MediaItem() {		
@@ -78,8 +84,9 @@ public abstract class MediaItem {
 	
 	public MediaItem(Path path) {
 		this.filePath = path;
-		this.registerDate = LocalDateTime.now();
 		this.filename = path.getFileName().toString();
+		this.hash = generateHash();
+		this.registerDate = LocalDateTime.now();		
 	}
 	
 		
@@ -93,6 +100,27 @@ public abstract class MediaItem {
 	public String toJson() {
 		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
 		return gson.toJson(this);
+	}
+	
+	
+	private String generateHash() {
+		String hexHash = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(filePath.toString().getBytes("UTF-8"));
+			
+			byte[] byteData = md.digest();
+
+	        //convert the byte to hex format
+	        StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < byteData.length; i++) {
+	        	sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+	        }
+			hexHash = sb.toString();
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return hexHash;
 	}
 		
 		
@@ -149,6 +177,12 @@ public abstract class MediaItem {
 	}
 	public void setType(MediaType type) {
 		this.type = type;
+	}
+	public String getHash() {
+		return hash;
+	}
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 	
 }

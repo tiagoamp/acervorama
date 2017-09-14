@@ -71,6 +71,19 @@ public class MediaItemJpaDao implements MediaItemDao {
 		}		
 		return item;
 	}
+	
+	@Override
+	public MediaItem findByHash(String hash) throws SQLException {
+		Query query = em.createQuery("SELECT m from MediaItem m WHERE m.hash = :pHash");
+		query.setParameter("pHash", hash);
+		MediaItem item;
+		try {
+			item = (MediaItem) query.getSingleResult();
+		} catch (NoResultException nre) {
+			item = null;
+		}		
+		return item;
+	}
 
 	@Override
 	public List<MediaItem> findByFileNameLike(String filename) throws SQLException {
