@@ -41,10 +41,10 @@ public class MediaResource {
 										 @QueryParam(value = "classification") String classificationParam, 
 										 @QueryParam(value = "tags") String tagsParam ) {
 		
-		if (pathParam.isEmpty()) pathParam = null;
-		if (nameParam.isEmpty()) nameParam = null;
-		if (classificationParam.isEmpty()) classificationParam = null;
-		if (tagsParam.isEmpty()) tagsParam = null;
+		if (pathParam != null && pathParam.isEmpty()) pathParam = null;
+		if (nameParam != null && nameParam.isEmpty()) nameParam = null;
+		if (classificationParam != null && classificationParam.isEmpty()) classificationParam = null;
+		if (tagsParam != null && tagsParam.isEmpty()) tagsParam = null;
 		
 		List<MediaItem> list = new ArrayList<>();
 		
