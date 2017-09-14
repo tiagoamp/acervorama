@@ -29,11 +29,8 @@ public class MediaItemMessageBodyReader implements MessageBodyReader<MediaItem>{
 
 	@Override
 	public MediaItem readFrom(Class<MediaItem> mediaitem, Type type, Annotation[] ants, MediaType arg3,
-			MultivaluedMap<String, String> mm, InputStream inputStream) throws IOException, WebApplicationException {
-		
-		//InputStreamReader reader = new InputStreamReader( inputStream, "UTF-8" );
+				MultivaluedMap<String, String> mm, InputStream inputStream) throws IOException, WebApplicationException {
 		String json = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));		
-		
 		return MediaItemFactory.fromJson(json);
 	}
 

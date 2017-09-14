@@ -2,7 +2,6 @@ package com.tiagoamp.acervorama.service;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,8 +33,6 @@ public class MediaItemService {
 	 * @throws AcervoramaBusinessException
 	 */
 	public void insert(MediaItem item) throws AcervoramaBusinessException {
-		if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
-		if (item.getFilename() == null) item.setFilename(item.getFilePath().getFileName().toString());
 		try {
 			MediaItem dbItem = dao.findByPath(item.getFilePath());
 			if (dbItem != null) throw new AcervoramaBusinessException("File path already exists!");

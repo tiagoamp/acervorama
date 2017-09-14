@@ -2,6 +2,7 @@ package com.tiagoamp.acervorama.model;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,8 @@ public class MediaItemFactory {
 		MediaType itemMediaType = MediaType.valueOf(mediaTypeStr);
 		
 		T item = (T) fromJson(jsonString, getItemSubclass(itemMediaType));
+		if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
+		if (item.getFilename() == null) item.setFilename(item.getFilePath().getFileName().toString());
 		if (item.getHash() == null) item.fillHash();
 		return item;
 	}
