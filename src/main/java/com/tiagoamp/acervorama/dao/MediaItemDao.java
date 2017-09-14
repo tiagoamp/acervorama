@@ -73,12 +73,11 @@ public interface MediaItemDao {
 	 * 
 	 * @param filename
 	 * @param classification
-	 * @param subject
 	 * @param description
 	 * @return List<MediaItem>
 	 * @throws SQLException
 	 */
-	List<MediaItem> findByFields(String filename, String classification, String subject, String description) throws SQLException;
+	List<MediaItem> findByFields(String filename, String classification, String description) throws SQLException;
 	
 	/**
 	 * Retrieve all entities from the database.

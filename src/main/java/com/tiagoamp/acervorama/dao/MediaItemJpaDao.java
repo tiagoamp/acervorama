@@ -100,14 +100,13 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public List<MediaItem> findByFields(String filename, String classification, String subject, String description) throws SQLException {
+	public List<MediaItem> findByFields(String filename, String classification, String description) throws SQLException {
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);
 		
 		Root<MediaItem> root = query.from(MediaItem.class);
 		javax.persistence.criteria.Path<String> filenamePath = root.<String>get("filename");
 		javax.persistence.criteria.Path<String> classificationPath = root.<String>get("classification");
-		javax.persistence.criteria.Path<String> subjectPath = root.<String>get("subject");
 		javax.persistence.criteria.Path<String> descriptionPath = root.<String>get("description");
 		
 		List<Predicate> predicates = new ArrayList<>();		
@@ -118,10 +117,6 @@ public class MediaItemJpaDao implements MediaItemDao {
 		if (classification != null && !classification.isEmpty()) {
 			Predicate classificationEqual = criteriaBuilder.equal(classificationPath, classification);
 			predicates.add(classificationEqual);
-		}
-		if (subject != null && !subject.isEmpty()) {
-			Predicate subjectEqual = criteriaBuilder.equal(subjectPath, subject);
-			predicates.add(subjectEqual);
 		}
 		if (description != null && !description.isEmpty()) {
 			Predicate descriptionLike = criteriaBuilder.like(descriptionPath, "%" + description + "%");

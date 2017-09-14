@@ -65,8 +65,8 @@ public abstract class MediaItem {
 	@Column(name="HASH")
 	private String hash;
 	
-	@Column(name="SUBJECT")
-	private String subject;
+	@Column(name="TAGS")
+	private String tags;
 	
 	@Column(name="CLASSIFICATION")
 	private String classification;
@@ -101,10 +101,21 @@ public abstract class MediaItem {
 		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
 		return gson.toJson(this);
 	}
-	
-	
+		
 	public void fillHash() {
 		this.hash = generateHash();
+	}
+	
+	public Boolean containsTag(String tag) {
+		String[] tagsArr = tags.split(" ; ");
+		for (int i = 0; i < tagsArr.length; i++) {
+			if( tag.equalsIgnoreCase(tagsArr[i].trim()) ) return true;
+		}
+		return false;
+	}
+	
+	public void addTag(String tag) {
+		this.tags += " ; " + tag;
 	}
 	
 	
@@ -165,12 +176,6 @@ public abstract class MediaItem {
 	public void setClassification(String classification) {
 		this.classification = classification;
 	}
-	public String getSubject() {
-		return subject;
-	}
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
 	public String getAdditionalInformation() {
 		return additionalInformation;
 	}
@@ -188,6 +193,12 @@ public abstract class MediaItem {
 	}
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 	
 }

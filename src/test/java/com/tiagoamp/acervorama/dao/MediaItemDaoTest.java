@@ -137,7 +137,7 @@ public class MediaItemDaoTest {
 	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput() throws SQLException {
 		MediaItem item = insertItemInDatabaseForTests();
 		
-		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), item.getSubject(), item.getDescription().substring(0,3));
+		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), item.getDescription().substring(0,3));
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
@@ -147,7 +147,7 @@ public class MediaItemDaoTest {
 	public void testFindByFields_byFileName_shouldReturnValidOutput() throws SQLException {
 		MediaItem item = insertItemInDatabaseForTests();
 		
-		List<MediaItem> list = dao.findByFields(item.getFilename(), null, null, null);
+		List<MediaItem> list = dao.findByFields(item.getFilename(), null, null);
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
@@ -157,17 +157,7 @@ public class MediaItemDaoTest {
 	public void testFindByFields_byClassification_shouldReturnValidOutput() throws SQLException {
 		MediaItem item = insertItemInDatabaseForTests();
 		
-		List<MediaItem> list = dao.findByFields(null, item.getClassification(), null, null);
-		assertTrue(!list.isEmpty());
-		assertTrue(list.size() == 1);
-		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
-	}
-	
-	@Test
-	public void testFindByFields_bySubject_shouldReturnValidOutput() throws SQLException {
-		MediaItem item = insertItemInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findByFields(null, null, item.getSubject(), null);
+		List<MediaItem> list = dao.findByFields(null, item.getClassification(), null);
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
@@ -178,7 +168,7 @@ public class MediaItemDaoTest {
 		MediaItem item = insertItemInDatabaseForTests();
 		
 		String partialDescription = item.getDescription().substring(0,3);
-		List<MediaItem> list = dao.findByFields(null, null, null, partialDescription);
+		List<MediaItem> list = dao.findByFields(null, null, partialDescription);
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
@@ -202,7 +192,7 @@ public class MediaItemDaoTest {
 		Path testFilePath = Paths.get("fake","test","file.txt");
 		AudioItem item = new AudioItem(testFilePath);
 		item.setClassification("Classification");
-		item.setSubject("Subject");
+		item.setTags("Tag 01 ; Tag 02; Tag 03");
 		item.setDescription("Description");
 		item.setTitle("Title");
 		item.setAuthor("Author");
