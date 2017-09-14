@@ -80,21 +80,30 @@ function saveSelectedFiles() {
     }
     
     for (var i=0; i<checkeds.length; i++){
+    	var fpath = checkeds[i].value;
+    	
     	mediaitem = {
-   			 "filePath":checkeds[i].value,
+   			 "filePath":fpath,
    			 "type":mediatype
    			};
     	
-        $.post("http://localhost:8080/acervorama/webapi/media", mediaitem, function(){
-        	divScanResult.hide();
-        })
-        .fail( function() { showErrorMessage("Fail to save this file: " + mediaitem.filePath) } )
-        .success( function() { showSuccessMessage("File saved: " + mediaitem.filePath) } );
+    	$.ajax({
+    	      url:"http://localhost:8080/acervorama/webapi/media",
+    	      type:"POST",
+    	      headers: { 
+    	        "Content-Type":"application/json"
+    	      },
+    	      data: JSON.stringify (mediaitem),
+    	      dataType:"json",
+    	      success: function (data){
+    	    	  showSuccessMessage("File saved: " + mediaitem.filePath);
+    	      },
+    	      error: function (data){
+    	    	  showErrorMessage("Fail to save this file: " + mediaitem.filePath) ;        
+    	      }
+    	    });
     }
-    
-
-    
-    
+        
 }
 
 

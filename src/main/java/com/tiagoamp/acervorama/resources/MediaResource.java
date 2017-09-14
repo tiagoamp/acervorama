@@ -20,7 +20,6 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.MediaItemFactory;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
 @Path("media")
@@ -79,10 +78,9 @@ public class MediaResource {
 	}
 	
 	@PUT
-	@Path("{type}/{id}")
-	public Response update(@PathParam("type") String type, @PathParam("id") long id, String content) {
-		com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(type.toUpperCase());
-		MediaItem item = MediaItemFactory.fromJson(content, MediaItemFactory.getItemSubclass(mediaType));
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response update(@PathParam("id") long id, MediaItem item) {
 		item.setId(id);
 		try {
 			service.update(item);

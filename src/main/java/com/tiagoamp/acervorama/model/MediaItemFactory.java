@@ -1,11 +1,7 @@
 package com.tiagoamp.acervorama.model;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,16 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MediaItemFactory {
-	
-	public static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {
-		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.fromJson(jsonString, itemClass);
-	}
-	
-	public static <T extends MediaItem> T fromJson(InputStreamReader inputStreamReader, Class<T> itemClass) {
-		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.fromJson(inputStreamReader, itemClass);
-	}
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends MediaItem> T fromJson(String jsonString) {
@@ -39,12 +25,12 @@ public class MediaItemFactory {
 		return (T) fromJson(jsonString, getItemSubclass(itemMediaType));
 	}
 	
-	public static List<? extends MediaItem> fromPathList(List<Path> list, MediaType type) {		
-		Function<Path, ? extends MediaItem> function = p -> getItemSubclassInstance(p, type);
-		return list.stream().map(function).collect(Collectors.toList());
+	private static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {
+		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
+		return gson.fromJson(jsonString, itemClass);
 	}
 	
-	public static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
+	private static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
 		Class<? extends MediaItem> clazz;
 		
 		switch (type) {
@@ -68,8 +54,14 @@ public class MediaItemFactory {
 		return clazz;		
 	}
 	
+	//FIXME
+	/*public static List<? extends MediaItem> fromPathList(List<Path> list, MediaType type) {		
+		Function<Path, ? extends MediaItem> function = p -> getItemSubclassInstance(p, type);
+		return list.stream().map(function).collect(Collectors.toList());
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static <T extends MediaItem> T getItemSubclassInstance(Path path, MediaType type) {
+	private static <T extends MediaItem> T getItemSubclassInstance(Path path, MediaType type) {
 		T item;
 		
 		switch (type) {
@@ -91,12 +83,6 @@ public class MediaItemFactory {
 		}	
 		
 		return item;
-	}
-	
-	public static <T extends MediaItem> T makeSubclassCast(MediaItem mediaItemSubclassInstance) {
-		@SuppressWarnings("unchecked")
-		T item = (T) mediaItemSubclassInstance;
-		return item;
-	}
-	
+	}*/
+			
 }
