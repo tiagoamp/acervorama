@@ -22,7 +22,9 @@ public class MediaItemFactory {
 		String mediaTypeStr = jsonNode.get("type").asText();
 		MediaType itemMediaType = MediaType.valueOf(mediaTypeStr);
 		
-		return (T) fromJson(jsonString, getItemSubclass(itemMediaType));
+		T item = (T) fromJson(jsonString, getItemSubclass(itemMediaType));
+		if (item.getHash() == null) item.fillHash();
+		return item;
 	}
 	
 	private static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {

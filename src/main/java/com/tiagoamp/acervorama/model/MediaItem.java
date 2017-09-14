@@ -103,6 +103,11 @@ public abstract class MediaItem {
 	}
 	
 	
+	public void fillHash() {
+		this.hash = generateHash();
+	}
+	
+	
 	private String generateHash() {
 		String hexHash = null;
 		try {
