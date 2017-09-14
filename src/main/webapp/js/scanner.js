@@ -96,7 +96,7 @@ function saveSelectedFiles() {
     	      data: JSON.stringify (mediaitem),
     	      dataType:"json",
     	      success: function (data){
-    	    	  showSuccessMessage("File saved: " + mediaitem.filePath);
+    	    	  showSuccessMessage("File saved: " + fpath);
     	      },
     	      error: function (data){
     	    	  showErrorMessage("Fail to save this file: " + mediaitem.filePath) ;        

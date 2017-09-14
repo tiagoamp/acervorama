@@ -1,6 +1,7 @@
 package com.tiagoamp.acervorama.resources;
 
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -20,19 +22,50 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.service.MediaItemFilter;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
 @Path("media")
 public class MediaResource {
 	
+	
 	private MediaItemService service = new MediaItemService();
+	private MediaItemFilter filter = new MediaItemFilter();
+	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<MediaItem> getMediaItems() {
+	public List<MediaItem> getMediaItems(@QueryParam(value = "type") String mediatype, 
+										 @QueryParam(value = "filepath") String pathParam, 
+										 @QueryParam(value = "filename") String nameParam, 
+										 @QueryParam(value = "classification") String classificationParam, 
+										 @QueryParam(value = "tags") String tagsParam ) {
+		
+		if (pathParam.isEmpty()) pathParam = null;
+		if (nameParam.isEmpty()) nameParam = null;
+		if (classificationParam.isEmpty()) classificationParam = null;
+		if (tagsParam.isEmpty()) tagsParam = null;
+		
 		List<MediaItem> list = new ArrayList<>();
+		
 		try {
-			list = service.getAll();
+			
+			if (pathParam != null) {
+				MediaItem item = service.findByPath(Paths.get(pathParam));
+				if (item != null) list.add(item);
+			} else if (nameParam != null || classificationParam != null) {
+				list = service.findByFields(nameParam, classificationParam, null); 
+			} else {
+				list = service.getAll();
+			}		
+			
+			if (mediatype != null) {
+				list = filter.filterByMediaType(list, com.tiagoamp.acervorama.model.MediaType.valueOf(mediatype));
+			}
+			if (tagsParam != null) {
+				list = filter.filterByTags(list, tagsParam.split(","));
+			}			
+			
 		} catch (AcervoramaBusinessException e) {			
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}

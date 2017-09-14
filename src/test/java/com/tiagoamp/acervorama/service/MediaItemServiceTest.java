@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRule;
@@ -17,13 +16,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.service.MediaItemService;
 
 
 public class MediaItemServiceTest extends EasyMockSupport {
@@ -213,15 +209,6 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test
-	public void testFilterByTags() throws Exception {
-		List<MediaItem> originList = getItemsForTests();
-		List<MediaItem> result = service.filterByTags(originList, new String[] {"Tag 03"});
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(originList.get(1), result.get(0));
-	}
-	
 	@Test(expected=AcervoramaBusinessException.class)
 	public void testFindByFields_shouldThrowException() throws Exception {
 		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(),  EasyMock.anyString(), EasyMock.anyString())).andThrow(new SQLException());
@@ -261,29 +248,4 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		return item;
 	}
 	
-	private List<MediaItem> getItemsForTests() {
-		Path testFilePath1 = Paths.get("fake", "test", "file1.txt");
-		Path testFilePath2 = Paths.get("fake", "test", "file2.txt");
-		
-		MediaItem item1 = new AudioItem(testFilePath1);
-		item1.setClassification("Classification");
-		item1.setTags("Tag 01 ; Tag 02");
-		item1.addTag("Added tag");
-		item1.setDescription("Description");
-		item1.setId(10L);
-		
-		MediaItem item2 = new AudioItem(testFilePath2);
-		item2.setClassification("Classification");
-		item2.setTags("Tag 03 ; Tag 04");
-		item2.addTag("Added tag");
-		item2.setDescription("Description");
-		item2.setId(20L);
-		
-		List<MediaItem> list = new ArrayList<>();
-		list.add(item1);
-		list.add(item2);
-		
-		return list;
-	}
-
 }

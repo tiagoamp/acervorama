@@ -3,8 +3,6 @@ package com.tiagoamp.acervorama.service;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -161,22 +159,6 @@ public class MediaItemService {
 		} catch (SQLException e) {
 			throw new AcervoramaBusinessException("Database error!" , e);			
 		}
-	}
-	
-	/**
-	 * Retrieve filtered Media Items by given tag.
-	 * 
-	 * @return List<MediaItem>
-	 */
-	public List<MediaItem> filterByTags(List<MediaItem> list, String[] tags) {
-		
-		Predicate<MediaItem> predicate = m -> {
-			for (int i = 0; i < tags.length; i++) {
-				if ( m.containsTag(tags[i]) ) return true;
-			}
-			return false;
-		};		
-		return list.stream().filter(predicate).collect(Collectors.toList());
 	}
 		
 }
