@@ -34,6 +34,8 @@ function searchByParams(filepathParam, filenameParam, classificationParam, tagsP
 		console.log("DAta = " + data);
 		if (data.length == 0) { 
 			showInfoMessage("Search returned no results.");
+		} else {
+			//showSearchResultTable(data);
 		}
 	})
 	.fail( function() { showErrorMessage("Fail to search files with given parameters.") } )
