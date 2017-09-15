@@ -1,6 +1,6 @@
 var formMediaSearch = $('#form-media-search');
 var divSearchResult = $("#div-search-result");
-var tableResult = $("#table-search-result")
+var tableResult = $("#table-search-result");
 
 $(document).ready(function () {
 	
@@ -18,7 +18,7 @@ $(document).ready(function () {
         
         searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam);        
 	});	
-	
+					
 });
 
 function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
@@ -43,19 +43,25 @@ function showSearchResultTable(data) {
 	
 	for (i=0; i < itemCount; i++) {
 		var item =  JSON.parse(data[i]);
-		var newRow = createNewRow(i, item.filename, item.filePath, item.type);
+		var newRow = createNewRow(i, item.hash, item.filename, item.filePath, item.type);
 		tbodyResult.append(newRow);
-	}				
+	}
+	
+	tableResult.find(".view-link").on('click', function (e) {
+        e.preventDefault();
+        
+        console.log("link clicado = " + $(this).closest("tr").attr("scope"));
+	});
 }
 
-function createNewRow(rownum, fileName, filePath, fileType) {
-	var rowTr = $("<tr>");
+function createNewRow(rownum, hash, fileName, filePath, fileType) {
+	var rowTr = $("<tr>").attr("scope",hash);
 	
 	var thNum = $("<th>").attr("scope","row").text(rownum+1);
 	var filenameTd = $("<td>").text(fileName);
 	var filepathTd = $("<td>").text(filePath);
 	var filetypeTd = $("<td>").text(fileType);
-	var aViewEl = $("<a>").attr("href","#").text(" View ");
+	var aViewEl = $("<a>").attr("href","#").addClass("view-link").text(" View ");
 	var aEditEl = $("<a>").attr("href","#").text(" Edit ");
 	var aDeleteEl = $("<a>").attr("href","#").text(" Delete ");
 	var actionTd = $("<td>").addClass(" last");
