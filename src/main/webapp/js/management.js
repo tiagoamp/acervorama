@@ -50,7 +50,11 @@ function showSearchResultTable(data) {
 	tableResult.find(".view-link").on('click', function (e) {
         e.preventDefault();
         
-        console.log("link clicado = " + $(this).closest("tr").attr("scope"));
+        var itemhash = $(this).closest("tr").attr("scope");
+        console.log("link clicado = " + itemhash);
+        
+        showItemModal(itemhash);
+        
 	});
 }
 
@@ -61,7 +65,9 @@ function createNewRow(rownum, hash, fileName, filePath, fileType) {
 	var filenameTd = $("<td>").text(fileName);
 	var filepathTd = $("<td>").text(filePath);
 	var filetypeTd = $("<td>").text(fileType);
-	var aViewEl = $("<a>").attr("href","#").addClass("view-link").text(" View ");
+	
+	var aViewEl = $("<a>").attr("href","#").addClass("view-link").attr("data-toggle","modal").attr("data-target",".item-view-modal").text(" View ");
+	
 	var aEditEl = $("<a>").attr("href","#").text(" Edit ");
 	var aDeleteEl = $("<a>").attr("href","#").text(" Delete ");
 	var actionTd = $("<td>").addClass(" last");
@@ -76,6 +82,12 @@ function createNewRow(rownum, hash, fileName, filePath, fileType) {
 	rowTr.append(actionTd);
 	
 	return rowTr;	
+}
+
+function showItemModal(hash) {
+	var divModal = $("#item-modal-view");
+	divModal.find("#item-hash").text(hash);
+	
 }
 
 
