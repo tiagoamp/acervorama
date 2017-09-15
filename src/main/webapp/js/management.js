@@ -86,8 +86,7 @@ function createNewRow(rownum, hash, fileName, filePath, fileType) {
 
 function showItemModal(hash) {
 	var divModal = $("#item-modal-view");
-	divModal.find("#item-hash").text(hash);
-	
+		
 }
 
 
