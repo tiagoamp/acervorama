@@ -42,7 +42,7 @@ function showSearchResultTable(data) {
 	var itemCount = data.length;
 	
 	for (i=0; i < itemCount; i++) {
-		var item =  JSON.parse(data[i]);
+		var item = JSON.parse(data[i]);
 		var newRow = createNewRow(i, item.hash, item.filename, item.filePath, item.type);
 		tbodyResult.append(newRow);
 	}

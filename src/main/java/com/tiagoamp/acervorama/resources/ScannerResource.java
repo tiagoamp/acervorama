@@ -20,11 +20,11 @@ import com.tiagoamp.acervorama.model.scanner.FileScanner;
 public class ScannerResource {
 	
 	private FileScanner scanner;
-	
 		
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String[] scan(@QueryParam(value = "type") String mediatype, @QueryParam(value = "dirPath") String directoryPath) {
+	public String[] scan( @QueryParam(value = "type") String mediatype, 
+						  @QueryParam(value = "dirPath") String directoryPath) {
 		
 		java.nio.file.Path origin = null;
 		if (!directoryPath.isEmpty()) origin = Paths.get(directoryPath);
@@ -48,7 +48,7 @@ public class ScannerResource {
 		for (int i = 0; i < list.size(); i++) {
 			result[i] = list.get(i).toString(); 
 		}
-				
+		
 		return result;
 	}
 		

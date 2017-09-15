@@ -17,9 +17,14 @@ $(document).ready(function () {
         scanFiles(from, mediatype);
 	});
 	
-	$("#button-save-selected").on('click', function (e) {
+	$("#btn-save-selected").on('click', function (e) {
         e.preventDefault();
         saveSelectedFiles();
+	});
+	
+	$("#btn-exclude-collection").on('click', function (e) {
+        e.preventDefault();
+        excludeExistingInCollection();
 	});
 	
 });
@@ -31,8 +36,11 @@ function scanFiles(from, mediatype) {
 		showScanResultTable(data);
 	})
 	.fail( function() { showErrorMessage("Fail to scan files with given parameters.") } )
-	.success( function() { showSuccessMessage("Scan performed.") } );
-		
+	.success( function() { 
+		showSuccessMessage("Scan performed.");
+		$("#button-scan").attr("disabled",true);
+		$("#dirpath").attr("disabled",true);
+	} );		
 }
 
 function showScanResultTable(data) {
@@ -42,14 +50,14 @@ function showScanResultTable(data) {
 	
 	for (i=0; i < itemCount; i++) {
 		var filename = data[i].split("/").pop();
-		var newRow = createNewRow(filename, data[i]);
+		var newRow = createNewRow(i ,filename, data[i]);
 		tbodyResult.append(newRow);
 	}
 		
 	tableResult.DataTable();		
 }
 
-function createNewRow(fileName, filePath) {
+function createNewRow(i, fileName, filePath) {
 	var rowTr = $("<tr>");
 	
 	if (i % 2 == 0 ) {
@@ -105,6 +113,42 @@ function saveSelectedFiles() {
     }
         
 }
+
+function excludeExistingInCollection() {
+	var filePaths = $('input[name="table_records"]');
+	
+	for (var i=0; i<filePaths.length; i++){
+		var fpath = filePaths[i].value;
+    	var input = { filepath: fpath };
+    	
+    	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
+    		if (data.length > 0) {
+    			var item = JSON.parse(data);
+    			
+    			for (var i=0; i<filePaths.length; i++){
+    				if (filePaths[i].value == item.filePath) {
+    					filePaths[i].closest("tr").remove();
+    				}
+    			}
+    		}
+    	})
+    	.fail( function() { showErrorMessage("Fail acessing database...") } );    	
+	}	
+}
+
+function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
+	var input = { type: typeParam, filepath: filepathParam, filename: filenameParam, classification: classificationParam, tags: tagsParam };
+	
+	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
+		if (data.length == 0) { 
+			showInfoMessage("Search returned no results.");
+		} else {
+			showSearchResultTable(data);
+		}
+	})
+	.fail( function() { showErrorMessage("Fail to search files with given parameters.") } )
+	.success( function() { showSuccessMessage("Search performed.") } );	
+};
 
 
 function showErrorMessage(msg) {
