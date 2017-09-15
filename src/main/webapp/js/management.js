@@ -16,6 +16,10 @@ $(document).ready(function () {
         var tagsParam = formMediaSearch.find('input[name="search-tags"]').val();
         var typeParam = $('input[name="mediatype"]:checked').val();
         
+        tableResult.find("tbody").find("tr").each(function() {
+        	$(this).remove();
+        });
+        
         searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam);        
 	});	
 					
@@ -49,12 +53,8 @@ function showSearchResultTable(data) {
 	
 	tableResult.find(".view-link").on('click', function (e) {
         e.preventDefault();
-        
         var itemhash = $(this).closest("tr").attr("scope");
-        console.log("link clicado = " + itemhash);
-        
-        showItemModal(itemhash);
-        
+        showItemModal(itemhash);        
 	});
 }
 
@@ -68,13 +68,9 @@ function createNewRow(rownum, hash, fileName, filePath, fileType) {
 	
 	var aViewEl = $("<a>").attr("href","#").addClass("view-link").attr("data-toggle","modal").attr("data-target",".item-view-modal").text(" View ");
 	
-	var aEditEl = $("<a>").attr("href","#").text(" Edit ");
-	var aDeleteEl = $("<a>").attr("href","#").text(" Delete ");
 	var actionTd = $("<td>").addClass(" last");
 	
 	actionTd.append(aViewEl);
-	actionTd.append(aEditEl);
-	actionTd.append(aDeleteEl);
 	rowTr.append(thNum);
 	rowTr.append(filenameTd);
 	rowTr.append(filepathTd);
@@ -92,11 +88,10 @@ function showItemModal(itemhash) {
 	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
 		var item = JSON.parse(data);
 		
-		$("#view-file-path").val(item.filePath);
-		$("#view-file-name").val(item.filename);
-		$("#view-reg-date").val(item.registerDate);
-		$("#view-media-type").val(item.type);
-		$("#view-classification").val(item.classification);
+		var dttm = item.registerDate;
+		var dt = dttm.date;
+		var tm = dttm.time;
+		$("#view-reg-date").val(dt.day + "/" + dt.month + "/" + dt.year + " " + tm.hour + ":" + tm.minute);
 		
 		if (item.type == "IMAGE") {
 			$("#view-title").hide();
@@ -109,29 +104,14 @@ function showItemModal(itemhash) {
 			$("#view-author").hide();
 		}
 		
+		$("#view-file-path").val(item.filePath);
+		$("#view-file-name").val(item.filename);
+		$("#view-media-type").val(item.type);
+		$("#view-classification").val(item.classification);
+		$("#view-media-description").val(item.description);
+		$("#view-media-comments").val(item.additionalInformation);
+		$("#tags_1").val(item.tags);
 		
-		/* 
-		 *                    <div class="form-group">
-		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-description">Description</label>
-		                        <div class="col-md-8 col-sm-8 col-xs-12">
-		                          <textarea class="form-control" rows="3" id="view-description" name="view-description"></textarea>		                          
-		                        </div>
-		                      </div>
-		                      <div class="form-group">
-		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-description">Comments</label>
-		                        <div class="col-md-8 col-sm-8 col-xs-12">
-		                          <textarea class="form-control" rows="3" id="view-comments" name="view-comments"></textarea>
-		                        </div>
-		                      </div>
-		                      <div class="control-group">
-		                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tags</label>
-		                        <div class="col-md-8 col-sm-8 col-xs-12">
-		                          <input id="tags_1" type="text" class="tags form-control" value="" />
-		                          <div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
-		                        </div>
-		                      </div>
-		 * 
-		 * */
 		
 	})
 	.fail( function() { showErrorMessage("Fail to connect to database...") } );
