@@ -55,8 +55,14 @@ function createNewRow(rownum, fileName, filePath, fileType) {
 	var filenameTd = $("<td>").text(fileName);
 	var filepathTd = $("<td>").text(filePath);
 	var filetypeTd = $("<td>").text(fileType);
-	var actionTd = $("<td>").text("View");
-		
+	var aViewEl = $("<a>").attr("href","#").text(" View ");
+	var aEditEl = $("<a>").attr("href","#").text(" Edit ");
+	var aDeleteEl = $("<a>").attr("href","#").text(" Delete ");
+	var actionTd = $("<td>").addClass(" last");
+	
+	actionTd.append(aViewEl);
+	actionTd.append(aEditEl);
+	actionTd.append(aDeleteEl);
 	rowTr.append(thNum);
 	rowTr.append(filenameTd);
 	rowTr.append(filepathTd);
