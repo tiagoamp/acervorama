@@ -36,15 +36,17 @@ public class MediaResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<MediaItem> getMediaItems(@QueryParam(value = "type") String mediatype, 
-										 @QueryParam(value = "filepath") String pathParam, 
+										 @QueryParam(value = "filepath") String pathParam,
 										 @QueryParam(value = "filename") String nameParam, 
 										 @QueryParam(value = "classification") String classificationParam, 
-										 @QueryParam(value = "tags") String tagsParam ) {
+										 @QueryParam(value = "tags") String tagsParam, 
+										 @QueryParam(value = "hash") String hashParam ) {
 		
 		if (pathParam != null && pathParam.isEmpty()) pathParam = null;
 		if (nameParam != null && nameParam.isEmpty()) nameParam = null;
 		if (classificationParam != null && classificationParam.isEmpty()) classificationParam = null;
 		if (tagsParam != null && tagsParam.isEmpty()) tagsParam = null;
+		if (hashParam != null && hashParam.isEmpty()) hashParam = null;
 		
 		List<MediaItem> list = new ArrayList<>();
 		
@@ -52,6 +54,9 @@ public class MediaResource {
 			
 			if (pathParam != null) {
 				MediaItem item = service.findByPath(Paths.get(pathParam));
+				if (item != null) list.add(item);
+			} else if (hashParam != null) {
+				MediaItem item = service.findByHash(hashParam);
 				if (item != null) list.add(item);
 			} else if (nameParam != null || classificationParam != null) {
 				list = service.findByFields(nameParam, classificationParam, null); 
