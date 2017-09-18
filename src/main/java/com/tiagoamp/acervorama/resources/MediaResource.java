@@ -106,7 +106,7 @@ public class MediaResource {
 	
 	@DELETE
 	@Path("{id}")
-	public Response delete(@PathParam("id") long id) {
+	public Response delete(@PathParam("id") Long id) {
 		try {
 			service.delete(id);
 		} catch (AcervoramaBusinessException e) {

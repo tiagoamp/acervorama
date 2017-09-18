@@ -25,9 +25,14 @@ $(document).ready(function () {
 	
 	
 	$("#btn-save").on('click', function (e) {
-        e.preventDefault();
-        
+        e.preventDefault();        
         saveChanges();
+	});
+	
+	
+	$("#btn-delete").on('click', function (e) {
+        e.preventDefault();        
+        deleteItem();
 	});
 					
 });
@@ -91,8 +96,7 @@ function showItemModal(itemId) {
 	var divModal = $("#item-modal-view");
 	
 	$.get("http://localhost:8080/acervorama/webapi/media/" + itemId, function( data ) {
-		//var item = JSON.parse(data);
-		var item = data;
+		var item = data;   //var item = JSON.parse(data);
 	
 		var dttm = item.registerDate;
 		var dt = dttm.date;
@@ -154,15 +158,41 @@ function saveChanges() {
 	      data: JSON.stringify(editedItem),
 	      dataType:"json",
 	      success: function (data){
-	    	  showSuccessMessage("File updated: " + data.filePath);
-	    	  
-	    	  $("#item-modal-view").modal('toggle');
-	    	  
+	    	  showSuccessMessage("File updated: " + data.filePath);	    	  
+	    	  $("#item-modal-view").modal('toggle');	    	  
 	      },
 	      error: function (data){
 	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
 	      }
 	    });
+}
+
+function deleteItem() {	
+	var itemId = $("#view-id").val();
+	var filename = $("#view-file-name").val();
+	
+	console.log("Deleting item id == " + itemId);
+	
+	if ( confirm("Are you sure to delete item '" + filename + "' ? ")) {
+		
+		$.ajax({
+		      url:"http://localhost:8080/acervorama/webapi/media/" + itemId,
+		      type:"DELETE",
+		      success: function (data){
+		    	  showSuccessMessage("File deleted: " + filename);	    	  
+		    	  $("#item-modal-view").modal('toggle'); // close modal
+		    	  tableResult.find("tbody").find("tr").each(function() {
+		  			  if ( $(this).attr("scope") == itemId ) {
+		  				$(this).remove(); // delete row from table
+					  }
+		  		  });
+		      },
+		      error: function (data){
+		    	  showErrorMessage("Fail to delete this file: " + filename) ;        
+		      }
+		});
+		
+	}	
 }
 
 
