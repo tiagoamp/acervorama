@@ -101,6 +101,21 @@ public class MediaItemService {
 	}
 	
 	/**
+	 * Search Media Item by 'hash'.
+	 * 
+	 * @param hash
+	 * @return MediaItem
+	 * @throws AcervoramaBusinessException
+	 */
+	public MediaItem findByHash(String hash) throws AcervoramaBusinessException {
+		try {
+			return dao.findByHash(hash);
+		} catch (SQLException e) {
+			throw new AcervoramaBusinessException("Database error!" , e);			
+		}
+	}
+	
+	/**
 	 * Search Media Item by 'file name-like'.
 	 * 
 	 * @param filename
@@ -120,14 +135,13 @@ public class MediaItemService {
 	 * 
 	 * @param filename
 	 * @param classification
-	 * @param subject
 	 * @param description
 	 * @return List<MediaItem>
 	 * @throws AcervoramaBusinessException
 	 */
-	public List<MediaItem> findByFields(String filename, String classification, String subject, String description) throws AcervoramaBusinessException {
+	public List<MediaItem> findByFields(String filename, String classification, String description) throws AcervoramaBusinessException {
 		try {
-			return dao.findByFields(filename, classification, subject, description);
+			return dao.findByFields(filename, classification, description);
 		} catch (SQLException e) {
 			throw new AcervoramaBusinessException("Database error!" , e);			
 		}
@@ -146,5 +160,5 @@ public class MediaItemService {
 			throw new AcervoramaBusinessException("Database error!" , e);			
 		}
 	}
-
+		
 }

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+	
+    <!-- bootstrap-progressbar -->
+    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+        
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        
+        <!-- page content -->
+        <div class="right_col" role="main" style="margin-left: 0px;">
+          <!-- top tiles -->
+          <div class="row tile_count">
+            <div class="col-md-3 col-sm-5 col-xs-6 tile_stats_count" id="pn-total-media">
+              <span class="count_top"><i class="fa fa-user"></i> Total Media</span>
+              <div class="count green">0</div>
+              <span class="count_bottom">Total of media files.</span>              
+            </div>
+            <div class="col-md-2 col-sm-5 col-xs-6 tile_stats_count" id="pn-total-audio">
+              <span class="count_top"><i class="fa fa-clock-o"></i> Total Audio</span>
+              <div class="count">0</div>
+              <span class="count_bottom">Total of audio files.</span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" id="pn-total-video">
+              <span class="count_top"><i class="fa fa-user"></i> Total Video</span>
+              <div class="count">0</div>
+              <span class="count_bottom">Total of video files.</span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" id="pn-total-image">
+              <span class="count_top"><i class="fa fa-user"></i> Total Images</span>
+              <div class="count">0</div>
+              <span class="count_bottom">Total of image files.</span>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" id="pn-total-text">
+              <span class="count_top"><i class="fa fa-user"></i> Total Texts</span>
+              <div class="count">0</div>
+              <span class="count_bottom">Total of text files.</span>
+            </div>            
+          </div>
+          <!-- /top tiles -->
+
+          <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel tile fixed_height_300">
+                <div class="x_title">
+                  <h2>Media Types</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <div class="widget_summary" id="progress-audio">
+                    <div class="w_left w_25">
+                      <span>Audio</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;" >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>0</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="widget_summary" id="progress-video">
+                    <div class="w_left w_25">
+                      <span>Video</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>0</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  
+                  <div class="widget_summary" id="progress-image">
+                    <div class="w_left w_25">
+                      <span>Image</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>0</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  
+                  <div class="widget_summary" id="progress-text">
+                    <div class="w_left w_25">
+                      <span>text</span>
+                    </div>
+                    <div class="w_center w_55">
+                      <div class="progress">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w_right w_20">
+                      <span>0</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Acervorama - Media Collection Management | by @tiagoamp
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="vendors/iCheck/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="vendors/skycons/skycons.js"></script>
+    <!-- Flot -->
+    <script src="vendors/Flot/jquery.flot.js"></script>
+    <script src="vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="vendors/Flot/jquery.flot.time.js"></script>
+    <script src="vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="vendors/Flot/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="vendors/flot.curvedlines/curvedLines.js"></script>
+    <!-- DateJS -->
+    <script src="vendors/DateJS/build/date.js"></script>
+    <!-- JQVMap -->
+    <script src="vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="vendors/moment/min/moment.min.js"></script>
+    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.min.js"></script>
+    
+    <!-- acervorama Scripts -->
+    <script src="js/dashboard.js"></script>
+	
+  </body>
+</html>

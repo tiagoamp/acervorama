@@ -19,10 +19,10 @@ import com.tiagoamp.acervorama.model.MediaItem;
 
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
-public class ListOfMediaItemMessageBodyWriter implements MessageBodyWriter<List<MediaItem>> {
+public class ListOfMediaItemMessageBodyWriter implements MessageBodyWriter<List<? extends MediaItem>> {
 
 	@Override
-	public long getSize(List<MediaItem> arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
+	public long getSize(List<? extends MediaItem> arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
 		return -1;
 	}
 	
@@ -32,12 +32,12 @@ public class ListOfMediaItemMessageBodyWriter implements MessageBodyWriter<List<
 	}
 
 	@Override
-	public void writeTo(List<MediaItem> listOfItems, Class<?> type, Type type1, Annotation[] antns, MediaType mt,
+	public void writeTo(List<? extends MediaItem> listOfItems, Class<?> type, Type type1, Annotation[] antns, MediaType mt,
 			MultivaluedMap<String, Object> mm, OutputStream out) throws IOException, WebApplicationException {
-	
+		
 		List<String> jsonList = listOfItems.stream().map(item -> item.toJson()).collect(Collectors.toList());
 		out.write(new Gson().toJson(jsonList).getBytes());
 		
 	}
-
+	
 }
