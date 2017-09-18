@@ -66,7 +66,7 @@ public class MediaItemFilterTest extends EasyMockSupport {
 		
 		MediaItem item2 = new VideoItem(testFilePath2);
 		item2.setClassification("Classification");
-		item2.setTags("Tag 03 ; Tag 04");
+		item2.setTags("Tag 03 , Tag 04");
 		item2.addTag("Added tag");
 		item2.setDescription("Description");
 		item2.setId(20L);
