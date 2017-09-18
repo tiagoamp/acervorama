@@ -80,7 +80,7 @@ public class MediaResource {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public MediaItem getMedia(@PathParam("id") long id) {
+	public MediaItem getMedia(@PathParam("id") Long id) {
 		MediaItem item = null;
 		try {
 			item = service.findById(id);
@@ -116,9 +116,10 @@ public class MediaResource {
 	}
 	
 	@PUT
+	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("id") long id, MediaItem item) {
+	public Response update(@PathParam("id") Long id, MediaItem item) {
 		item.setId(id);
 		try {
 			service.update(item);

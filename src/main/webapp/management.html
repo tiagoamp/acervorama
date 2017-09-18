@@ -160,6 +160,8 @@
                         <div class="modal-body">
                           
                           <form id="form-item-modal" class="form-horizontal form-label-left">
+                          	  <input type="hidden" name="view-id" id="view-id" />
+                          	  <input type="hidden" name="view-hash" id="view-hash" />
                           
                           	  <div class="form-group">
 		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-file-path">File Path</label>
@@ -204,15 +206,15 @@
 		                        </div>
 		                      </div>
 		                      <div class="form-group">
-		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-description">Description</label>
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-media-description">Description</label>
 		                        <div class="col-md-8 col-sm-8 col-xs-12">
-		                          <textarea class="form-control" rows="3" id="view-description" name="view-description"></textarea>		                          
+		                          <textarea class="form-control" rows="3" id="view-media-description" name="view-media-description"></textarea>		                          
 		                        </div>
 		                      </div>
 		                      <div class="form-group">
-		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-comments">Comments</label>
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-media-comments">Comments</label>
 		                        <div class="col-md-8 col-sm-8 col-xs-12">
-		                          <textarea class="form-control" rows="3" id="view-comments" name="view-comments"></textarea>
+		                          <textarea class="form-control" rows="3" id="view-media-comments" name="view-media-comments"></textarea>
 		                        </div>
 		                      </div>
 		                      <div class="control-group">
@@ -223,15 +225,14 @@
 		                        </div>
 		                      </div>
 
-							  <div class="clearfix"></div>		                      
-		
+							  <div class="clearfix"></div>
 		                    </form>
                           
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                           <button type="button" class="btn btn-danger">Delete</button>
-                          <button type="button" class="btn btn-primary">Save changes</button>                          
+                          <button type="button" class="btn btn-primary" id="btn-save">Save changes</button>                          
                         </div>
                       </div>
                     </div>

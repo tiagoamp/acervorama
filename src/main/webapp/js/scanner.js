@@ -101,13 +101,13 @@ function saveSelectedFiles() {
     	      headers: { 
     	        "Content-Type":"application/json"
     	      },
-    	      data: JSON.stringify (mediaitem),
+    	      data: JSON.stringify(mediaitem),
     	      dataType:"json",
     	      success: function (data){
     	    	  showSuccessMessage("File saved: " + data.filePath);
     	      },
     	      error: function (data){
-    	    	  showErrorMessage("Fail to save this file: " + mediaitem.filePath) ;        
+    	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
     	      }
     	    });
     }

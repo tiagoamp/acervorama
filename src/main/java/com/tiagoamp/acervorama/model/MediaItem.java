@@ -107,7 +107,7 @@ public abstract class MediaItem {
 	}
 	
 	public Boolean containsTag(String tag) {
-		String[] tagsArr = tags.split(" ; ");
+		String[] tagsArr = tags.split(" , ");
 		for (int i = 0; i < tagsArr.length; i++) {
 			if( tag.equalsIgnoreCase(tagsArr[i].trim()) ) return true;
 		}
@@ -115,7 +115,7 @@ public abstract class MediaItem {
 	}
 	
 	public void addTag(String tag) {
-		this.tags += " ; " + tag;
+		this.tags += " , " + tag;
 	}
 	
 	

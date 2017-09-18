@@ -21,7 +21,14 @@ $(document).ready(function () {
         });
         
         searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam);        
-	});	
+	});
+	
+	
+	$("#btn-save").on('click', function (e) {
+        e.preventDefault();
+        
+        saveChanges();
+	});
 					
 });
 
@@ -47,19 +54,19 @@ function showSearchResultTable(data) {
 	
 	for (i=0; i < itemCount; i++) {
 		var item = JSON.parse(data[i]);
-		var newRow = createNewRow(i, item.hash, item.filename, item.filePath, item.type);
+		var newRow = createNewRow(i, item.id, item.filename, item.filePath, item.type);
 		tbodyResult.append(newRow);
 	}
 	
 	tableResult.find(".view-link").on('click', function (e) {
         e.preventDefault();
-        var itemhash = $(this).closest("tr").attr("scope");
-        showItemModal(itemhash);        
+        var itemId = $(this).closest("tr").attr("scope");
+        showItemModal(itemId);        
 	});
 }
 
-function createNewRow(rownum, hash, fileName, filePath, fileType) {
-	var rowTr = $("<tr>").attr("scope",hash);
+function createNewRow(rownum, id, fileName, filePath, fileType) {
+	var rowTr = $("<tr>").attr("scope",id);
 	
 	var thNum = $("<th>").attr("scope","row").text(rownum+1);
 	var filenameTd = $("<td>").text(fileName);
@@ -80,14 +87,13 @@ function createNewRow(rownum, hash, fileName, filePath, fileType) {
 	return rowTr;	
 }
 
-function showItemModal(itemhash) {
+function showItemModal(itemId) {
 	var divModal = $("#item-modal-view");
 	
-	var input = { hash: itemhash };
+	$.get("http://localhost:8080/acervorama/webapi/media/" + itemId, function( data ) {
+		//var item = JSON.parse(data);
+		var item = data;
 	
-	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
-		var item = JSON.parse(data);
-		
 		var dttm = item.registerDate;
 		var dt = dttm.date;
 		var tm = dttm.time;
@@ -104,18 +110,59 @@ function showItemModal(itemhash) {
 			$("#view-author").hide();
 		}
 		
+		$("#view-id").val(item.id);
+		$("#view-hash").val(item.hash);
 		$("#view-file-path").val(item.filePath);
 		$("#view-file-name").val(item.filename);
 		$("#view-media-type").val(item.type);
 		$("#view-classification").val(item.classification);
 		$("#view-media-description").val(item.description);
 		$("#view-media-comments").val(item.additionalInformation);
-		$("#tags_1").val(item.tags);
-		
-		
+		$("#tags_1").val(item.tags);		
 	})
 	.fail( function() { showErrorMessage("Fail to connect to database...") } );
 		
+}
+
+
+function saveChanges() {
+	var editedItem = {
+			id: $("#view-id").val(),
+			hash: $("#view-hash").val(),
+			filePath: $("#view-file-path").val(),
+			filename: $("#view-file-name").val(),
+			type: $("#view-media-type").val(),
+			classification: $("#view-classification").val(),
+			description: $("#view-media-description").val(),
+			additionalInformation: $("#view-media-comments").val(),
+			tags: $("#tags_1").val()
+	};
+	
+	if (editedItem.type == "AUDIO" || editedItem.type == "TEXT" || editedItem.type == "VIDEO") {
+		editedItem.title = $("#view-title").val();		
+	}
+	if (editedItem.type == "AUDIO" || editedItem.type == "TEXT") {
+		editedItem.author = $("#view-author").val();
+	}
+	
+	$.ajax({
+	      url:"http://localhost:8080/acervorama/webapi/media/" + $("#view-id").val(),
+	      type:"PUT",
+	      headers: { 
+	        "Content-Type":"application/json"
+	      },
+	      data: JSON.stringify(editedItem),
+	      dataType:"json",
+	      success: function (data){
+	    	  showSuccessMessage("File updated: " + data.filePath);
+	    	  
+	    	  $("#item-modal-view").modal('toggle');
+	    	  
+	      },
+	      error: function (data){
+	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
+	      }
+	    });
 }
 
 
