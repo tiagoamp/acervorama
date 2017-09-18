@@ -1,36 +1,54 @@
 package com.tiagoamp.acervorama.resources;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.scanner.FileScanner;
 
 @Path("scanner")
 public class ScannerResource {
 	
 	private FileScanner scanner;
-	
 		
 	@GET
-	@Path("scan")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<java.nio.file.Path> scan(String content) {
-		//TODO Converts json content message body to Scanner object...
-		List<java.nio.file.Path> result = new ArrayList<>();
-		try {
-			result = scanner.perform();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public String[] scan( @QueryParam(value = "type") String mediatype, 
+						  @QueryParam(value = "dirPath") String directoryPath) {
+		
+		java.nio.file.Path origin = null;
+		if (!directoryPath.isEmpty()) origin = Paths.get(directoryPath);
+		
+		String[] fileExtensions = null;
+		if (!mediatype.isEmpty()) {
+			com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(mediatype.toUpperCase());
+			fileExtensions = mediaType.getFileExtensions();
 		}
+		
+		scanner = new FileScanner(origin, fileExtensions);
+		
+		List<java.nio.file.Path> list = new ArrayList<>();
+		try {
+			list = scanner.perform();
+		} catch (IOException e) {
+			throw new ResponseProcessingException(Response.serverError().build(), new AcervoramaBusinessException("IO error!", e));
+		}
+		
+		String[] result = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			result[i] = list.get(i).toString(); 
+		}
+		
 		return result;
 	}
 		

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	  
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- starrr -->
+    <link href="vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <!-- PNotify -->
+    <link href="vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+       
+        <!-- page content -->
+        <div class="right_col" role="main" style="margin-left: 0px;">
+        
+          <div class="">
+          
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Media Collection Management</h3>
+              </div>             
+            </div>
+            
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Media Collection Search Params</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>                      
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <br />
+                    <form id="form-media-search" class="form-horizontal form-label-left">
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="search-file-path">File Path</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="search-file-path" name="search-file-path" class="form-control col-md-7 col-xs-12" placeholder="Search input...">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="search-file-name">File Name</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="search-file-name" name="search-file-name" class="form-control col-md-7 col-xs-12" placeholder="Search input...">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="search-classification">Classification</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="search-classification" name="search-classification" class="form-control col-md-7 col-xs-12" placeholder="Search input...">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Containing Tags</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input id="tags_2" name="search-tags" type="text" class="form-control" value="" placeholder="Separatei input values with comma" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+	                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Media Type</label>
+	                      <div class="col-md-6 col-sm-6 col-xs-12">
+		                      <p>
+		                      	Audio: <input type="radio" class="flat" name="mediatype" id="typeAudio" value="AUDIO" /> &nbsp;&nbsp;&nbsp;
+		                        Image: <input type="radio" class="flat" name="mediatype" id="typeImage" value="IMAGE" /> &nbsp;&nbsp;&nbsp;
+		                        Text:  <input type="radio" class="flat" name="mediatype" id="typeText" value="TEXT" /> &nbsp;&nbsp;&nbsp;
+		                        Video: <input type="radio" class="flat" name="mediatype" id="typeVideo" value="VIDEO" /> &nbsp;&nbsp;&nbsp;
+		                      </p>
+		                  </div>
+                      </div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-xs-12" align="center">
+                          <button class="btn btn-primary" type="reset">Reset</button>
+                          <button type="submit" class="btn btn-success" id="btn-search">Search</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="clearfix"></div>
+            <div class="row">
+            	
+            	<div class="col-sm-12 col-xs-12">
+                <div class="x_panel" id="div-search-result">
+                  <div class="x_title">
+                    <h2>Search results</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <table class="table table-hover" id="table-search-result">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>File Name</th>
+                          <th>File Path</th>
+                          <th>Type</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                      </tbody>
+                    </table>
+
+                  </div>
+                  
+                  <!-- MODAL -->
+                  <div class="modal fade item-view-modal" tabindex="-1" role="dialog" aria-hidden="true" id="item-modal-view">
+                  	<div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel">Media Item</h4>
+                        </div>
+                        <div class="modal-body">
+                          
+                          <form id="form-item-modal" class="form-horizontal form-label-left">
+                          	  <input type="hidden" name="view-id" id="view-id" />
+                          	  <input type="hidden" name="view-hash" id="view-hash" />
+                          
+                          	  <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-file-path">File Path</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-file-path" name="view-file-path" class="form-control col-md-7 col-xs-12" readonly="readonly">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-file-name">File Name</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-file-name" name="view-file-name" class="form-control col-md-7 col-xs-12" readonly="readonly">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-reg-date">Registration date</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-reg-date" name="view-reg-date" class="form-control col-md-7 col-xs-12" readonly="readonly">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-media-type">Media Type</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-media-type" name="view-media-type" class="form-control col-md-7 col-xs-12" readonly="readonly">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-classification">Classification</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-classification" name="view-classification" class="form-control col-md-7 col-xs-12">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-title">Title</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-title" name="view-title" class="form-control col-md-7 col-xs-12">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-author">Author</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input type="text" id="view-author" name="view-author" class="form-control col-md-7 col-xs-12">
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-media-description">Description</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <textarea class="form-control" rows="3" id="view-media-description" name="view-media-description"></textarea>		                          
+		                        </div>
+		                      </div>
+		                      <div class="form-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="view-media-comments">Comments</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <textarea class="form-control" rows="3" id="view-media-comments" name="view-media-comments"></textarea>
+		                        </div>
+		                      </div>
+		                      <div class="control-group">
+		                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tags</label>
+		                        <div class="col-md-8 col-sm-8 col-xs-12">
+		                          <input id="tags_1" type="text" class="tags form-control" value="" />
+		                          <div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+		                        </div>
+		                      </div>
+
+							  <div class="clearfix"></div>
+		                    </form>
+                          
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" id="btn-delete">Delete</button>
+                          <button type="button" class="btn btn-primary" id="btn-save">Save changes</button>                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>            
+            
+            </div>
+
+          </div>
+          
+        </div>
+        <!-- /page content -->
+
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Acervorama - Media Collection Management | by @tiagoamp
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="vendors/moment/min/moment.min.js"></script>
+    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.js"></script>
+    <!-- PNotify -->
+    <script src="vendors/pnotify/dist/pnotify.js"></script>
+    <script src="vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="vendors/pnotify/dist/pnotify.nonblock.js"></script>
+    
+    <!-- Acervorama -->
+    <script src="js/management.js"></script>
+	
+  </body>
+</html>

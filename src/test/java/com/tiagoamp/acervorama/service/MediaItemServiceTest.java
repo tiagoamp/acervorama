@@ -20,7 +20,6 @@ import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.service.MediaItemService;
 
 
 public class MediaItemServiceTest extends EasyMockSupport {
@@ -160,6 +159,26 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		service.findByPath(filePath);
 		verifyAll();
 	}
+	
+	@Test
+	public void testFindByHash() throws Exception {
+		String hash = item.getHash();
+		EasyMock.expect(daoMock.findByHash(hash)).andReturn(item);
+		replayAll();
+		
+		service.findByHash(hash);
+		verifyAll();
+	}
+	
+	@Test(expected=AcervoramaBusinessException.class)
+	public void testFindByHash_shouldThrowException() throws Exception {
+		String hash = item.getHash();
+		EasyMock.expect(daoMock.findByHash(hash)).andThrow(new SQLException());
+		replayAll();
+		
+		service.findByHash(hash);
+		verifyAll();
+	}
 
 	@Test
 	public void testFindByFileNameLike() throws Exception {
@@ -183,19 +202,19 @@ public class MediaItemServiceTest extends EasyMockSupport {
 
 	@Test
 	public void testFindByFields() throws Exception {
-		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn(new ArrayList<>());
+		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn(new ArrayList<>());
 		replayAll();
 		
-		service.findByFields("filename", "classification", "subject", "description");
+		service.findByFields("filename", "classification", "description");
 		verifyAll();
 	}
 	
 	@Test(expected=AcervoramaBusinessException.class)
 	public void testFindByFields_shouldThrowException() throws Exception {
-		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andThrow(new SQLException());
+		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(),  EasyMock.anyString(), EasyMock.anyString())).andThrow(new SQLException());
 		replayAll();
 		
-		service.findByFields("filename", "classification", "subject", "description");
+		service.findByFields("filename", "classification", "description");
 		verifyAll();
 	}
 
@@ -223,10 +242,10 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		Path testFilePath = Paths.get("fake", "test", "file.txt");
 		MediaItem item = new AudioItem(testFilePath);
 		item.setClassification("Classification");
-		item.setSubject("Subject");
+		item.setTags("Tag 01 ; Tag 02");
 		item.setDescription("Description");
 		item.setId(20L);
 		return item;
 	}
-
+	
 }
