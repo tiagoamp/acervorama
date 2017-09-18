@@ -1,24 +1,41 @@
 package com.tiagoamp.acervorama.model;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class MediaItemFactory {
 	
-	public static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {
-		return new Gson().fromJson(jsonString, itemClass);
+	@SuppressWarnings("unchecked")
+	public static <T extends MediaItem> T fromJson(String jsonString) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode jsonNode = null;
+		try {
+			jsonNode = objectMapper.readTree(jsonString);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String mediaTypeStr = jsonNode.get("type").asText();
+		MediaType itemMediaType = MediaType.valueOf(mediaTypeStr);
+		
+		T item = (T) fromJson(jsonString, getItemSubclass(itemMediaType));
+		if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
+		if (item.getFilename() == null) item.setFilename(item.getFilePath().getFileName().toString());
+		if (item.getHash() == null) item.fillHash();
+		return item;
 	}
 	
-	public static List<? extends MediaItem> fromPathList(List<Path> list, MediaType type) {		
-		Function<Path, ? extends MediaItem> function = p -> getItemSubclassInstance(p, type);
-		return list.stream().map(function).collect(Collectors.toList());
+	private static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {
+		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
+		return gson.fromJson(jsonString, itemClass);
 	}
 	
-	public static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
+	private static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
 		Class<? extends MediaItem> clazz;
 		
 		switch (type) {
@@ -41,30 +58,5 @@ public class MediaItemFactory {
 		
 		return clazz;		
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T extends MediaItem> T getItemSubclassInstance(Path path, MediaType type) {
-		T item;
-		
-		switch (type) {
-		case AUDIO:
-			item = (T) new AudioItem(path);
-			break;
-		case IMAGE:
-			item = (T) new ImageItem(path);
-			break;
-		case TEXT:
-			item = (T) new TextItem(path);
-			break;
-		case VIDEO:
-			item = (T) new VideoItem(path);
-			break;
-		default:
-			item = null;
-			break;
-		}	
-		
-		return item;
-	}
-	
+				
 }
