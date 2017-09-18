@@ -171,8 +171,6 @@ function deleteItem() {
 	var itemId = $("#view-id").val();
 	var filename = $("#view-file-name").val();
 	
-	console.log("Deleting item id == " + itemId);
-	
 	if ( confirm("Are you sure to delete item '" + filename + "' ? ")) {
 		
 		$.ajax({
