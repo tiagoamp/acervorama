@@ -22,6 +22,11 @@ $(document).ready(function () {
         saveSelectedFiles();
 	});
 	
+	$("#btn-turn-datatable").on('click', function (e) {
+        e.preventDefault();
+        tableResult.DataTable();
+	});
+	
 	$("#btn-exclude-collection").on('click', function (e) {
         e.preventDefault();
         excludeExistingInCollection();
@@ -52,9 +57,7 @@ function showScanResultTable(data) {
 		var filename = data[i].split("/").pop();
 		var newRow = createNewRow(i ,filename, data[i]);
 		tbodyResult.append(newRow);
-	}
-		
-	tableResult.DataTable();		
+	}				
 }
 
 function createNewRow(i, fileName, filePath) {
@@ -117,23 +120,22 @@ function saveSelectedFiles() {
 function excludeExistingInCollection() {
 	var filePaths = $('input[name="table_records"]');
 	
-	for (var i=0; i<filePaths.length; i++){
-		var fpath = filePaths[i].value;
-    	var input = { filepath: fpath };
-    	
-    	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
-    		if (data.length > 0) {
-    			var item = JSON.parse(data);
-    			
-    			for (var i=0; i<filePaths.length; i++){
-    				if (filePaths[i].value == item.filePath) {
-    					filePaths[i].closest("tr").remove();
-    				}
-    			}
-    		}
-    	})
-    	.fail( function() { showErrorMessage("Fail acessing database...") } );    	
-	}	
+	$.get("http://localhost:8080/acervorama/webapi/media", function( data ) {
+		if (data.length > 0) {
+			items = data;
+	
+			for (var i=0; i<filePaths.length; i++){ 
+				var fpath = filePaths[i].value;
+				for (var j=0; j<data.length; j++){   
+					var item = JSON.parse(data[j]);					
+					if (fpath == item.filePath) {
+						filePaths[i].closest("tr").remove();						
+    				}					
+				}				
+			}			
+		}
+	})
+	.fail( function() { showErrorMessage("Fail acessing database...") } );		   	   	
 }
 
 function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
