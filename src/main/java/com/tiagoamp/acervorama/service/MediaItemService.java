@@ -15,7 +15,6 @@ import com.tiagoamp.acervorama.model.MediaItem;
 
 public class MediaItemService {
 	
-	
 	public MediaItemService() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("PU_ACERVO");
 		EntityManager em = emf.createEntityManager();
@@ -36,7 +35,7 @@ public class MediaItemService {
 		try {
 			MediaItem dbItem = dao.findByPath(item.getFilePath());
 			if (dbItem != null) throw new AcervoramaBusinessException("File path already exists!");
-			dao.create(item);
+			dao.create(item);			
 		} catch (SQLException e) {
 			throw new AcervoramaBusinessException("Database error!" , e);			
 		}

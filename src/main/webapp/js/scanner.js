@@ -57,7 +57,7 @@ function showScanResultTable(data) {
 		var filename = data[i].split("/").pop();
 		var newRow = createNewRow(i ,filename, data[i]);
 		tbodyResult.append(newRow);
-	}				
+	}
 }
 
 function createNewRow(i, fileName, filePath) {

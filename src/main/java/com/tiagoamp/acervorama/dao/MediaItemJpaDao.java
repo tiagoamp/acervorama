@@ -36,7 +36,6 @@ public class MediaItemJpaDao implements MediaItemDao {
 		em.getTransaction().begin();
 		em.persist(item);
 		em.getTransaction().commit();
-
 	}
 
 	@Override
