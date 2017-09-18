@@ -54,7 +54,7 @@ function showScanResultTable(data) {
 		tbodyResult.append(newRow);
 	}
 		
-	tableResult.DataTable();		
+	//tableResult.DataTable();		
 }
 
 function createNewRow(i, fileName, filePath) {
@@ -117,23 +117,29 @@ function saveSelectedFiles() {
 function excludeExistingInCollection() {
 	var filePaths = $('input[name="table_records"]');
 	
-	for (var i=0; i<filePaths.length; i++){
-		var fpath = filePaths[i].value;
-    	var input = { filepath: fpath };
-    	
-    	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
-    		if (data.length > 0) {
-    			var item = JSON.parse(data);
-    			
-    			for (var i=0; i<filePaths.length; i++){
-    				if (filePaths[i].value == item.filePath) {
-    					filePaths[i].closest("tr").remove();
+	$.get("http://localhost:8080/acervorama/webapi/media", function( data ) {
+		if (data.length > 0) {
+			items = data;
+			
+			console.log(data);
+			
+			for (var i=0; i<filePaths.length; i++){  // file paths
+				var fpath = filePaths[i].value;
+				
+				for (var j=0; j<data.length; j++){  // 
+					var item = JSON.parse(data[j]);
+					
+					if (fpath == item.filePath) {
+						filePaths[i].closest("tr").remove();
+						console.log("Removido ==> " + fpath);
     				}
-    			}
-    		}
-    	})
-    	.fail( function() { showErrorMessage("Fail acessing database...") } );    	
-	}	
+					
+				}				
+			}			
+		}
+	})
+	.fail( function() { showErrorMessage("Fail acessing database...") } );
+		   	   	
 }
 
 function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
