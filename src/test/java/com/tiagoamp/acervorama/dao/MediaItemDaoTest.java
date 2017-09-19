@@ -8,13 +8,9 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,10 +30,7 @@ public class MediaItemDaoTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("PU_ACERVO");
-		EntityManager em = emf.createEntityManager();
-		dao = new MediaItemJpaDao(em);
-		
+		dao = new MediaItemJpaDao();		
 		cleanDatabaseDataForTests();
 	}
 
@@ -53,11 +46,11 @@ public class MediaItemDaoTest {
 		item.setType(MediaType.AUDIO);
 		dao.create(item);
 		
-		LocalDateTime registerDate = item.getRegisterDate();
+		LocalDate registerDate = item.getRegisterDate().toLocalDate();
 		Path filePath = item.getFilePath();
 		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
 		assertEquals("Must retrieve inserted entity.", item, itemRetrieved);
-		assertEquals("LocalDateTime should be correctly persisted (converter should work!).", registerDate, itemRetrieved.getRegisterDate());
+		assertEquals("LocalDateTime should be correctly persisted (converter should work!).", registerDate, itemRetrieved.getRegisterDate().toLocalDate());
 		assertEquals("Path should be correctly persisted (converter should work!).", filePath, itemRetrieved.getFilePath());
 	}
 	
