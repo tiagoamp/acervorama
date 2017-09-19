@@ -17,6 +17,11 @@ $(document).ready(function () {
         scanFiles(from, mediatype);
 	});
 	
+	$("#btn-save-all").on('click', function (e) {
+        e.preventDefault();
+        saveAllFiles();
+	});
+	
 	$("#btn-save-selected").on('click', function (e) {
         e.preventDefault();
         saveSelectedFiles();
@@ -92,6 +97,40 @@ function saveSelectedFiles() {
     
     for (var i=0; i<checkeds.length; i++){
     	var fpath = checkeds[i].value;
+    	
+    	mediaitem = {
+   			 "filePath":fpath,
+   			 "type":mediatype
+   			};
+    	
+    	$.ajax({
+    	      url:"http://localhost:8080/acervorama/webapi/media",
+    	      type:"POST",
+    	      headers: { 
+    	        "Content-Type":"application/json"
+    	      },
+    	      data: JSON.stringify(mediaitem),
+    	      dataType:"json",
+    	      success: function (data){
+    	    	  showSuccessMessage("File saved: " + data.filePath);
+    	      },
+    	      error: function (data){
+    	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
+    	      }
+    	    });
+    }        
+}
+
+function saveAllFiles() {
+	var mediatype = $('input[name="mediatype"]:checked').val();
+	var inputs = $('input[name="table_records"]');
+    
+    if (inputs.length == 0) {
+    	return showErrorMessage("No items displayed.");
+    }
+    
+    for (var i=0; i<inputs.length; i++){
+    	var fpath = inputs[i].value;
     	
     	mediaitem = {
    			 "filePath":fpath,
