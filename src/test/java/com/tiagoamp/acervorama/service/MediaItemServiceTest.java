@@ -52,7 +52,7 @@ public class MediaItemServiceTest extends EasyMockSupport {
 	public void testInsert() throws SQLException, AcervoramaBusinessException {
 		daoMock.create(item);
 		replayAll();
-		
+				
 		service.insert(item);
 		verifyAll();
 	}
