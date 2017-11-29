@@ -35,7 +35,7 @@ import com.tiagoamp.acervorama.dao.PathConverter;
  * @author tiagoamp
  */
 @Entity
-@Table(name="MEDIA_ITEM")
+@Table(name="MEDIA_ITEMS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE )
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 @XmlRootElement

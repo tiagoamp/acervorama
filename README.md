@@ -1,4 +1,4 @@
 # acervorama
-Dashboard and control panel for media and books collection.
+Dashboard and control panel for personal media collection stored in hard drive.
 
 Work in progress...
