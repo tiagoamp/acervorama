@@ -1,6 +1,7 @@
 var formMediaSearch = $('#form-media-search');
 var divSearchResult = $("#div-search-result");
 var tableResult = $("#table-search-result");
+var service = new ManagementService();
 
 $(document).ready(function () {
 	
@@ -10,11 +11,11 @@ $(document).ready(function () {
 	$("#btn-search").on('click', function (e) {
         e.preventDefault();
         
-        var filepathParam = formMediaSearch.find('input[name="search-file-path"]').val();
-        var filenameParam = formMediaSearch.find('input[name="search-file-name"]').val();
-        var classificationParam = formMediaSearch.find('input[name="search-classification"]').val();
-        var tagsParam = formMediaSearch.find('input[name="search-tags"]').val();
-        var typeParam = $('input[name="mediatype"]:checked').val();
+        let filepathParam = formMediaSearch.find('input[name="search-file-path"]').val();
+        let filenameParam = formMediaSearch.find('input[name="search-file-name"]').val();
+        let classificationParam = formMediaSearch.find('input[name="search-classification"]').val();
+        let tagsParam = formMediaSearch.find('input[name="search-tags"]').val();
+        let typeParam = $('input[name="mediatype"]:checked').val();
         
         tableResult.find("tbody").find("tr").each(function() {
         	$(this).remove();
@@ -38,24 +39,26 @@ $(document).ready(function () {
 });
 
 function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
-	var input = { type: typeParam, filepath: filepathParam, filename: filenameParam, classification: classificationParam, tags: tagsParam };
-	
-	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
-		if (data.length == 0) { 
-			showInfoMessage("Search returned no results.");
-		} else {
-			showSearchResultTable(data);
-		}
-	})
-	.fail( function() { showErrorMessage("Fail to search files with given parameters.") } )
-	.success( function() { showSuccessMessage("Search performed.") } );
-	
+	let promise = service.searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam);
+	promise
+		.then( (data) => {
+			if (data.length == 0) { 
+					showInfoMessage("Search returned no results.");
+				} else {
+					showSearchResultTable(data);
+				}			
+			} 
+		)
+		.catch( (error) => { 			
+			showErrorMessage("Fail to search files with given parameters.")
+			}
+		);
 };
 
 function showSearchResultTable(data) {
 	divSearchResult.show();	
-	var tbodyResult = tableResult.find("tbody");		
-	var itemCount = data.length;
+	let tbodyResult = tableResult.find("tbody");		
+	let itemCount = data.length;
 	
 	for (i=0; i < itemCount; i++) {
 		var item = JSON.parse(data[i]);
@@ -71,16 +74,16 @@ function showSearchResultTable(data) {
 }
 
 function createNewRow(rownum, id, fileName, filePath, fileType) {
-	var rowTr = $("<tr>").attr("scope",id);
+	let rowTr = $("<tr>").attr("scope",id);
 	
-	var thNum = $("<th>").attr("scope","row").text(rownum+1);
-	var filenameTd = $("<td>").text(fileName);
-	var filepathTd = $("<td>").text(filePath);
-	var filetypeTd = $("<td>").text(fileType);
+	let thNum = $("<th>").attr("scope","row").text(rownum+1);
+	let filenameTd = $("<td>").text(fileName);
+	let filepathTd = $("<td>").text(filePath);
+	let filetypeTd = $("<td>").text(fileType);
 	
-	var aViewEl = $("<a>").attr("href","#").addClass("view-link").attr("data-toggle","modal").attr("data-target",".item-view-modal").text(" View ");
+	let aViewEl = $("<a>").attr("href","#").addClass("view-link").attr("data-toggle","modal").attr("data-target",".item-view-modal").text(" View ");
 	
-	var actionTd = $("<td>").addClass(" last");
+	let actionTd = $("<td>").addClass(" last");
 	
 	actionTd.append(aViewEl);
 	rowTr.append(thNum);
@@ -93,44 +96,48 @@ function createNewRow(rownum, id, fileName, filePath, fileType) {
 }
 
 function showItemModal(itemId) {
-	var divModal = $("#item-modal-view");
-	
-	$.get("http://localhost:8080/acervorama/webapi/media/" + itemId, function( data ) {
-		var item = data;   //var item = JSON.parse(data);
-	
-		var dttm = item.registerDate;
-		var dt = dttm.date;
-		var tm = dttm.time;
-		$("#view-reg-date").val(dt.day + "/" + dt.month + "/" + dt.year + " " + tm.hour + ":" + tm.minute);
-		
-		if (item.type == "IMAGE") {
-			$("#view-title").hide();
-			$("#view-author").hide();
-		} else if (item.type == "AUDIO" || item.type == "TEXT") {
-			$("#view-title").val(item.title);
-			$("#view-author").val(item.author);
-		} else if (item.type == "VIDEO") {
-			$("#view-title").val(item.title);
-			$("#view-author").hide();
-		}
-		
-		$("#view-id").val(item.id);
-		$("#view-hash").val(item.hash);
-		$("#view-file-path").val(item.filePath);
-		$("#view-file-name").val(item.filename);
-		$("#view-media-type").val(item.type);
-		$("#view-classification").val(item.classification);
-		$("#view-media-description").val(item.description);
-		$("#view-media-comments").val(item.additionalInformation);
-		$("#tags_1").val(item.tags);		
-	})
-	.fail( function() { showErrorMessage("Fail to connect to database...") } );
-		
+	let divModal = $("#item-modal-view");
+
+	let promise = service.getMediaItem(itemId);
+	promise
+		.then( (data) => {
+			var item = data;   //var item = JSON.parse(data);
+			
+			var dttm = item.registerDate;
+			var dt = dttm.date;
+			var tm = dttm.time;
+			$("#view-reg-date").val(dt.day + "/" + dt.month + "/" + dt.year + " " + tm.hour + ":" + tm.minute);
+				
+			if (item.type == "IMAGE") {
+				$("#view-title").hide();
+				$("#view-author").hide();
+			} else if (item.type == "AUDIO" || item.type == "TEXT") {
+				$("#view-title").val(item.title);
+				$("#view-author").val(item.author);
+			} else if (item.type == "VIDEO") {
+				$("#view-title").val(item.title);
+				$("#view-author").hide();
+			}
+				
+			$("#view-id").val(item.id);
+			$("#view-hash").val(item.hash);
+			$("#view-file-path").val(item.filePath);
+			$("#view-file-name").val(item.filename);
+			$("#view-media-type").val(item.type);
+			$("#view-classification").val(item.classification);
+			$("#view-media-description").val(item.description);
+			$("#view-media-comments").val(item.additionalInformation);
+			$("#tags_1").val(item.tags);			
+		})
+		.catch( (error) => { 			
+			showErrorMessage("Fail to connect to database...");
+			}
+		);	
 }
 
 
 function saveChanges() {
-	var editedItem = {
+	let editedItem = {
 			id: $("#view-id").val(),
 			hash: $("#view-hash").val(),
 			filePath: $("#view-file-path").val(),
@@ -148,75 +155,40 @@ function saveChanges() {
 	if (editedItem.type == "AUDIO" || editedItem.type == "TEXT") {
 		editedItem.author = $("#view-author").val();
 	}
-	
-	$.ajax({
-	      url:"http://localhost:8080/acervorama/webapi/media/" + $("#view-id").val(),
-	      type:"PUT",
-	      headers: { 
-	        "Content-Type":"application/json"
-	      },
-	      data: JSON.stringify(editedItem),
-	      dataType:"json",
-	      success: function (data){
-	    	  showSuccessMessage("File updated: " + data.filePath);	    	  
-	    	  $("#item-modal-view").modal('toggle');	    	  
-	      },
-	      error: function (data){
-	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
-	      }
-	    });
+
+	let promise = service.updateMediaItem(editedItem);
+	promise
+		.then( (data) => {
+			showSuccessMessage("File updated: " + data.filePath);	    	  
+			$("#item-modal-view").modal('toggle');			
+			} 
+		)
+		.catch( (error) => { 			
+			showErrorMessage("Fail to save this file: " + error);
+			}
+		);	
 }
 
 function deleteItem() {	
-	var itemId = $("#view-id").val();
-	var filename = $("#view-file-name").val();
+	let itemId = $("#view-id").val();
+	let filename = $("#view-file-name").val();
 	
 	if ( confirm("Are you sure to delete item '" + filename + "' ? ")) {
-		
-		$.ajax({
-		      url:"http://localhost:8080/acervorama/webapi/media/" + itemId,
-		      type:"DELETE",
-		      success: function (data){
-		    	  showSuccessMessage("File deleted: " + filename);	    	  
-		    	  $("#item-modal-view").modal('toggle'); // close modal
-		    	  tableResult.find("tbody").find("tr").each(function() {
-		  			  if ( $(this).attr("scope") == itemId ) {
-		  				$(this).remove(); // delete row from table
-					  }
-		  		  });
-		      },
-		      error: function (data){
-		    	  showErrorMessage("Fail to delete this file: " + filename) ;        
-		      }
-		});
-		
+		let promise = service.deleteMediaItem(itemId);
+		promise
+			.then( (data) => {
+				showSuccessMessage("File deleted: " + filename);	    	  
+				$("#item-modal-view").modal('toggle'); // close modal
+				tableResult.find("tbody").find("tr").each(function() {
+					if ( $(this).attr("scope") == itemId ) {
+						$(this).remove(); // delete row from table
+					}
+				});			
+			})
+			.catch( (error) => { 			
+				showErrorMessage("Fail to delete this file: " + filename);
+				}
+			);			
 	}	
+	
 }
-
-
-function showErrorMessage(msg) {
-	return new PNotify({
-        title: 'Error!',
-        text: msg,
-        type: 'error',
-        styling: 'bootstrap3'
-    });
-};
-
-function showSuccessMessage(msg) {
-	return new PNotify({
-        title: 'Success!',
-        text: msg,
-        type: 'success',
-        styling: 'bootstrap3'
-    });
-};
-
-function showInfoMessage(msg) {
-	return new PNotify({
-		title: 'Info',
-        text: msg,
-        type: 'info',
-        styling: 'bootstrap3'
-    });
-};

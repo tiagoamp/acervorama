@@ -16,3 +16,12 @@ function showSuccessMessage(msg) {
         styling: 'bootstrap3'
     });
 }
+
+function showInfoMessage(msg) {
+	return new PNotify({
+		title: 'Info',
+        text: msg,
+        type: 'info',
+        styling: 'bootstrap3'
+    });
+};

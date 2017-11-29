@@ -41,7 +41,7 @@ class ScannerService {
         } );
     }
 
-    findAll() {
+    findAll () {
         return new Promise( (resolve, reject) => { 
             $.get("http://localhost:8080/acervorama/webapi/media", 
                     function(data) {
