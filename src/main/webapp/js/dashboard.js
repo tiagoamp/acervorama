@@ -3,6 +3,7 @@ var audioArr = [];
 var videoArr = [];
 var imageArr = [];
 var textArr = [];
+var service = new DashboardService();
 
 $(document).ready(function () {
 	
@@ -12,19 +13,24 @@ $(document).ready(function () {
 
 
 function loadCharts() {	
-	$.get("http://localhost:8080/acervorama/webapi/media", function( data ) {
-		if (data.length > 0) {
-			setMediaArrayValues(data);
-			setMediaTypesTotal(data);
-			setBarChartValues(data.length);
-		} 
-	})
-	.fail( function() { alert("Fail to access files.") } );	
+	let promise = service.getMediaItems();
+	promise
+		.then( (data) => {
+			if (data.length > 0) {
+				setMediaArrayValues(data);
+				setMediaTypesTotal(data);
+				setBarChartValues(data.length);
+			}
+		})
+		.catch( (error) => { 			
+			alert("Fail to access files.");
+			}
+		);
 };
 
 function setMediaArrayValues(data) {
-	for (i=0; i < data.length; i++) {
-		var item = JSON.parse(data[i]);
+	for (let i=0; i < data.length; i++) {
+		let item = JSON.parse(data[i]);
 		if (item.type == "AUDIO") {
 			audioArr.push(item);
 		} else if (item.type == "VIDEO") {
@@ -46,16 +52,16 @@ function setMediaTypesTotal( data ) {
 };
 
 function setBarChartValues( total ) {	
-	var audioPerc = Math.round( (audioArr.length * 100) / total ) ;
+	let audioPerc = Math.round( (audioArr.length * 100) / total ) ;
 	$("#progress-audio").find(".progress-bar").css("width", audioPerc + "%" );
 	$("#progress-audio").find(".w_20").find("span").text( audioArr.length + " (" + audioPerc + "%)" );
-	var videoPerc = Math.round( (videoArr.length * 100) / total ) ;
+	let videoPerc = Math.round( (videoArr.length * 100) / total ) ;
 	$("#progress-video").find(".progress-bar").css("width", videoPerc + "%" );
 	$("#progress-video").find(".w_20").find("span").text( videoArr.length + " (" + videoPerc + "%)" );
-	var imagePerc = Math.round( (imageArr.length * 100) / total ) ;
+	let imagePerc = Math.round( (imageArr.length * 100) / total ) ;
 	$("#progress-image").find(".progress-bar").css("width", imagePerc + "%" );
 	$("#progress-image").find(".w_20").find("span").text( imageArr.length + " (" + imagePerc + "%)" );
-	var textPerc = Math.round( (textArr.length * 100) / total ) ;
+	let textPerc = Math.round( (textArr.length * 100) / total ) ;
 	$("#progress-text").find(".progress-bar").css("width", textPerc + "%" );
 	$("#progress-text").find(".w_20").find("span").text( textArr.length + " (" + textPerc + "%)" );
 };

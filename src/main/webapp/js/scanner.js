@@ -1,5 +1,6 @@
 var divScanResult = $("#div-scan-result");
 var tableResult = $("#table-scan-result")
+var service = new ScannerService();
 
 $(document).ready(function () {
 
@@ -40,23 +41,25 @@ $(document).ready(function () {
 });
 
 function scanFiles(from, mediatype) {
-	var input = { type: mediatype, dirPath: from };
-	
-	$.get("http://localhost:8080/acervorama/webapi/scanner", input, function( data ) {
-		showScanResultTable(data);
-	})
-	.fail( function() { showErrorMessage("Fail to scan files with given parameters.") } )
-	.success( function() { 
-		showSuccessMessage("Scan performed.");
-		$("#button-scan").attr("disabled",true);
-		$("#dirpath").attr("disabled",true);
-	} );		
+	let promise = service.scanForMedia(from, mediatype);
+	promise
+		.then( (data) => {
+			showSuccessMessage("Scan performed.");
+			$("#button-scan").attr("disabled",true);
+			$("#dirpath").attr("disabled",true);
+			showScanResultTable(data);
+			} 
+		)
+		.catch( (error) => { 			
+			showErrorMessage("Fail to scan files with given parameters.")
+			}
+		);
 }
 
 function showScanResultTable(data) {
 	divScanResult.show();	
-	var tbodyResult = tableResult.find("tbody");		
-	var itemCount = data.length;
+	let tbodyResult = tableResult.find("tbody");		
+	let itemCount = data.length;
 	
 	for (i=0; i < itemCount; i++) {
 		var filename = data[i].split("/").pop();
@@ -66,7 +69,7 @@ function showScanResultTable(data) {
 }
 
 function createNewRow(i, fileName, filePath) {
-	var rowTr = $("<tr>");
+	let rowTr = $("<tr>");
 	
 	if (i % 2 == 0 ) {
 		rowTr.addClass("even pointer");
@@ -74,11 +77,11 @@ function createNewRow(i, fileName, filePath) {
 		rowTr.addClass("odd pointer");
 	}
 	
-	var columnCheckboxTd = $("<td>").addClass("a-center");
-	var checkboxInput = $("<input>").attr("type","checkbox").attr("name","table_records").attr("value",filePath).addClass("flat");
+	let columnCheckboxTd = $("<td>").addClass("a-center");
+	let checkboxInput = $("<input>").attr("type","checkbox").attr("name","table_records").attr("value",filePath).addClass("flat");
 	columnCheckboxTd.append(checkboxInput);
-	var filenameTd = $("<td>").text(fileName);
-	var filepathTd = $("<td>").text(filePath);
+	let filenameTd = $("<td>").text(fileName);
+	let filepathTd = $("<td>").text(filePath);
 	
 	rowTr.append(columnCheckboxTd);
 	rowTr.append(filenameTd);
@@ -88,124 +91,90 @@ function createNewRow(i, fileName, filePath) {
 }
 
 function saveSelectedFiles() {
-	var mediatype = $('input[name="mediatype"]:checked').val();
-	var checkeds = $('input[name="table_records"]:checked');
+	let mediatype = $('input[name="mediatype"]:checked').val();
+	let checkeds = $('input[name="table_records"]:checked');
     
     if (checkeds.length == 0) {
     	return showErrorMessage("No items selected.");
     }
-    
+	
     for (var i=0; i<checkeds.length; i++){
-    	var fpath = checkeds[i].value;
-    	
-    	mediaitem = {
-   			 "filePath":fpath,
-   			 "type":mediatype
-   			};
-    	
-    	$.ajax({
-    	      url:"http://localhost:8080/acervorama/webapi/media",
-    	      type:"POST",
-    	      headers: { 
-    	        "Content-Type":"application/json"
-    	      },
-    	      data: JSON.stringify(mediaitem),
-    	      dataType:"json",
-    	      success: function (data){
-    	    	  showSuccessMessage("File saved: " + data.filePath);
-    	      },
-    	      error: function (data){
-    	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
-    	      }
-    	    });
+		var fpath = checkeds[i].value;
+		
+		let promise = service.saveMediaFile(fpath, mediatype);
+		promise
+			.then( (data) => {
+				showSuccessMessage("File saved: " + data.filePath);
+				} 
+			)
+			.catch( (error) => { 			
+				showErrorMessage("Fail to save this file: " + fpath) ;
+				}
+			);		
     }        
 }
 
 function saveAllFiles() {
-	var mediatype = $('input[name="mediatype"]:checked').val();
-	var inputs = $('input[name="table_records"]');
+	let mediatype = $('input[name="mediatype"]:checked').val();
+	let inputs = $('input[name="table_records"]');
     
     if (inputs.length == 0) {
     	return showErrorMessage("No items displayed.");
     }
     
     for (var i=0; i<inputs.length; i++){
-    	var fpath = inputs[i].value;
-    	
-    	mediaitem = {
-   			 "filePath":fpath,
-   			 "type":mediatype
-   			};
-    	
-    	$.ajax({
-    	      url:"http://localhost:8080/acervorama/webapi/media",
-    	      type:"POST",
-    	      headers: { 
-    	        "Content-Type":"application/json"
-    	      },
-    	      data: JSON.stringify(mediaitem),
-    	      dataType:"json",
-    	      success: function (data){
-    	    	  showSuccessMessage("File saved: " + data.filePath);
-    	      },
-    	      error: function (data){
-    	    	  showErrorMessage("Fail to save this file: " + data.filePath) ;        
-    	      }
-    	    });
+		let fpath = inputs[i].value;
+		
+		let promise = service.saveMediaFile(fpath, mediatype);
+		promise
+			.then( (data) => {
+				showSuccessMessage("File saved: " + data.filePath);
+				} 
+			)
+			.catch( (error) => { 			
+				showErrorMessage("Fail to save this file: " + fpath) ;
+				}
+			);	
     }
         
 }
 
 function excludeExistingInCollection() {
-	var filePaths = $('input[name="table_records"]');
-	
-	$.get("http://localhost:8080/acervorama/webapi/media", function( data ) {
-		if (data.length > 0) {
-			items = data;
-	
-			for (var i=0; i<filePaths.length; i++){ 
-				var fpath = filePaths[i].value;
-				for (var j=0; j<data.length; j++){   
-					var item = JSON.parse(data[j]);					
-					if (fpath == item.filePath) {
-						filePaths[i].closest("tr").remove();						
-    				}					
-				}				
-			}			
-		}
-	})
-	.fail( function() { showErrorMessage("Fail acessing database...") } );		   	   	
+	let filePaths = $('input[name="table_records"]');
+
+	let promise = service.findAll();
+	promise
+		.then( (data) => {
+			if (data.length > 0) {
+				items = data;				
+				for (var i=0; i<filePaths.length; i++){ 
+					let fpath = filePaths[i].value;
+					for (var j=0; j<data.length; j++){   
+						let item = JSON.parse(data[j]);					
+						if (fpath == item.filePath) {
+							filePaths[i].closest("tr").remove();						
+						}					
+					}				
+				}			
+			}
+		} 
+		)
+		.catch( (error) => { 			
+			showErrorMessage("Fail acessing database...") ;
+			}
+		);			   	   	
 }
 
-function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
-	var input = { type: typeParam, filepath: filepathParam, filename: filenameParam, classification: classificationParam, tags: tagsParam };
+// function searchByParams(filepathParam, filenameParam, classificationParam, tagsParam, typeParam) {
+// 	let input = { type: typeParam, filepath: filepathParam, filename: filenameParam, classification: classificationParam, tags: tagsParam };
 	
-	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
-		if (data.length == 0) { 
-			showInfoMessage("Search returned no results.");
-		} else {
-			showSearchResultTable(data);
-		}
-	})
-	.fail( function() { showErrorMessage("Fail to search files with given parameters.") } )
-	.success( function() { showSuccessMessage("Search performed.") } );	
-};
-
-
-function showErrorMessage(msg) {
-	return new PNotify({
-        title: 'Error!',
-        text: msg,
-        type: 'error',
-        styling: 'bootstrap3'
-    });
-}
-
-function showSuccessMessage(msg) {
-	return new PNotify({
-        title: 'Success!',
-        text: msg,
-        type: 'success',
-        styling: 'bootstrap3'
-    });
-}
+// 	$.get("http://localhost:8080/acervorama/webapi/media", input, function( data ) {
+// 		if (data.length == 0) { 
+// 			showInfoMessage("Search returned no results.");
+// 		} else {
+// 			showSearchResultTable(data);
+// 		}
+// 	})
+// 	.fail( function() { showErrorMessage("Fail to search files with given parameters.") } )
+// 	.success( function() { showSuccessMessage("Search performed.") } );	
+// };
