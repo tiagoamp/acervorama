@@ -95,8 +95,7 @@ public class FileScanner {
 			return result;
 		};		
 
-		return Files.walk(origin).filter(predicate).collect(Collectors.toList());
-				
+		return Files.walk(origin).filter(predicate).collect(Collectors.toList());				
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,15 +25,9 @@ public class ScannerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String[] scan( @QueryParam(value = "type") String mediatype, 
 						  @QueryParam(value = "dirPath") String directoryPath) {
-		
-		java.nio.file.Path origin = null;
-		if (!directoryPath.isEmpty()) origin = Paths.get(directoryPath);
-		
-		String[] fileExtensions = null;
-		if (!mediatype.isEmpty()) {
-			com.tiagoamp.acervorama.model.MediaType mediaType = com.tiagoamp.acervorama.model.MediaType.valueOf(mediatype.toUpperCase());
-			fileExtensions = mediaType.getFileExtensions();
-		}
+	
+		java.nio.file.Path origin = getOriginFromParam(directoryPath);
+		String[] fileExtensions = getMediaFileExtensionsFromParam(mediatype);
 		
 		scanner = new FileScanner(origin, fileExtensions);
 		
@@ -46,6 +39,15 @@ public class ScannerResource {
 		}
 		
 		return (String[]) list.stream().map(p->toString()).toArray();
+	}
+	
+	
+	private java.nio.file.Path getOriginFromParam(String directory) {
+		return directory.isEmpty() ? null : Paths.get(directory);
+	}
+	
+	private String[] getMediaFileExtensionsFromParam(String mediaType) {
+		return mediaType.isEmpty() ? null : com.tiagoamp.acervorama.model.MediaType.valueOf(mediaType.toUpperCase()).getFileExtensions();
 	}
 		
 }
