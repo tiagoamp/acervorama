@@ -1,5 +1,6 @@
 package com.tiagoamp.acervorama.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -15,13 +16,7 @@ public class MediaItemFilter {
 	 * @return List<MediaItem>
 	 */
 	public List<MediaItem> filterByTags(List<MediaItem> list, String[] tags) {
-		
-		Predicate<MediaItem> predicate = m -> {
-			for (int i = 0; i < tags.length; i++) {
-				if ( m.containsTag(tags[i]) ) return true;
-			}
-			return false;
-		};		
+		Predicate<MediaItem> predicate = m -> Arrays.asList(tags).stream().anyMatch(tag -> m.containsTag(tag));		
 		return list.stream().filter(predicate).collect(Collectors.toList());
 	}
 	

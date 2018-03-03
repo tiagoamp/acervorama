@@ -13,6 +13,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class MyPathConverter implements JsonDeserializer<Path>, JsonSerializer<Path> {
+	
     @Override
     public Path deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         return Paths.get(jsonElement.getAsString());
@@ -22,4 +23,5 @@ public class MyPathConverter implements JsonDeserializer<Path>, JsonSerializer<P
     public JsonElement serialize(Path path, Type type, JsonSerializationContext jsonSerializationContext) {
         return new JsonPrimitive(path.toString());
     }
+    
 }

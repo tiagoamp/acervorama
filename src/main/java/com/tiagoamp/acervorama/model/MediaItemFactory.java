@@ -58,5 +58,5 @@ public class MediaItemFactory {
 		
 		return clazz;		
 	}
-				
+		
 }

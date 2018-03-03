@@ -29,7 +29,6 @@ import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
 import com.tiagoamp.acervorama.dao.PathConverter;
 
 /**
- * 
  * Represents a generic media item/file.
  * 
  * @author tiagoamp
