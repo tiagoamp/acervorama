@@ -40,6 +40,7 @@ public class MediaItemDaoTest {
 		dao = null;		
 	}
 	
+	
 	@Test
 	public void testCreate_shouldInsertEntity() throws SQLException {
 		AudioItem item = this.getItemForTests();

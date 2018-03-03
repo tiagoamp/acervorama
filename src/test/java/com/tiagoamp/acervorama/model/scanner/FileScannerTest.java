@@ -11,6 +11,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tiagoamp.acervorama.model.MediaType;
+
 public class FileScannerTest {
 
 	private FileScanner scanner;
@@ -39,28 +41,28 @@ public class FileScannerTest {
 	
 	@Test
 	public void testScan_searchForAudioMediaTypes_shouldFindValidOutput() throws IOException {
-		scanner = new FileScanner(baseTestFilesDirectory, new String[]{"mp3","wav"});
+		scanner = new FileScanner(baseTestFilesDirectory, MediaType.AUDIO.getFileExtensions());
 		List<Path> result = scanner.perform();		
 		assertEquals("Should find audio media types.", 4, result.size());
 	}
 	
 	@Test
 	public void testScan_searchForImageMediaTypes_shouldFindValidOutput() throws IOException {
-		scanner = new FileScanner(baseTestFilesDirectory, new String[]{"png","jpg","gif","bmp"});
+		scanner = new FileScanner(baseTestFilesDirectory, MediaType.IMAGE.getFileExtensions());
 		List<Path> result = scanner.perform();		
 		assertEquals("Should find image media types.", 5, result.size());
 	}
 	
 	@Test
 	public void testScan_searchForTextMediaTypes_shouldFindValidOutput() throws IOException {
-		scanner = new FileScanner(baseTestFilesDirectory, new String[]{"doc","docx","odt","pdf","rtf","txt","epub","mobi"});
+		scanner = new FileScanner(baseTestFilesDirectory, MediaType.TEXT.getFileExtensions());
 		List<Path> result = scanner.perform();		
 		assertEquals("Should find text media types.", 7, result.size());
 	}
 	
 	@Test
 	public void testScan_searchForVideoMediaTypes_shouldFindValidOutput() throws IOException {
-		scanner = new FileScanner(baseTestFilesDirectory, new String[]{"3gp","avi","flv","m4v","mp4","mpeg","mpg","wmv"});
+		scanner = new FileScanner(baseTestFilesDirectory, MediaType.VIDEO.getFileExtensions());
 		List<Path> result = scanner.perform();		
 		assertEquals("Should find video media types.", 9, result.size());
 	}
