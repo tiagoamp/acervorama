@@ -33,6 +33,14 @@ public interface MediaItemDao {
 	void delete(long id) throws SQLException;
 	
 	/**
+	 * Retrieve all entities from the database.
+	 * 
+	 * @return List<MediaItem> List of entity
+	 * @throws SQLException
+	 */
+	List<MediaItem> findAll() throws SQLException;
+	
+	/**
 	 * Search the entity by 'id' in the database.
 	 * 
 	 * @param id Entity id.
@@ -71,20 +79,12 @@ public interface MediaItemDao {
 	/**
 	 * Search the entity by given parameters in the database.
 	 * 
-	 * @param filename
-	 * @param classification
-	 * @param description
-	 * @return List<MediaItem>
+	 * @param filename file name like search
+	 * @param classification 
+	 * @param description description like search
+	 * @return List<MediaItem> 
 	 * @throws SQLException
 	 */
 	List<MediaItem> findByFields(String filename, String classification, String description) throws SQLException;
-	
-	/**
-	 * Retrieve all entities from the database.
-	 * 
-	 * @return List<MediaItem> List of entity
-	 * @throws SQLException
-	 */
-	List<MediaItem> findAll() throws SQLException;
-	
+		
 }

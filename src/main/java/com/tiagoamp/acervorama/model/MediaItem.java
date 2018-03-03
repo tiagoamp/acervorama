@@ -118,15 +118,16 @@ public abstract class MediaItem {
 		this.tags += " , " + tag;
 	}
 	
-	
+	/**
+	 * Generates MD-5 hash with file path info. 
+	 * @return String hash
+	 */
 	private String generateHash() {
 		String hexHash = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(filePath.toString().getBytes("UTF-8"));
-			
+			md.update(filePath.toString().getBytes("UTF-8"));			
 			byte[] byteData = md.digest();
-
 	        //convert the byte to hex format
 	        StringBuffer sb = new StringBuffer();
 	        for (int i = 0; i < byteData.length; i++) {

@@ -69,6 +69,14 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
+	public List<MediaItem> findAll() throws SQLException {
+		createEntityManager();
+		List<MediaItem> list = em.createQuery("from MediaItem", MediaItem.class).getResultList();
+		closeEntityManager();
+		return list;
+	}
+	
+	@Override
 	public MediaItem findById(long id) throws SQLException {
 		createEntityManager();
 		MediaItem item = em.find(MediaItem.class, id);
@@ -151,14 +159,6 @@ public class MediaItemJpaDao implements MediaItemDao {
 		
 		TypedQuery<MediaItem> typedQuery = em.createQuery(query);				
 		List<MediaItem> list = typedQuery.getResultList();
-		closeEntityManager();
-		return list;
-	}
-
-	@Override
-	public List<MediaItem> findAll() throws SQLException {
-		createEntityManager();
-		List<MediaItem> list = em.createQuery("from MediaItem", MediaItem.class).getResultList();
 		closeEntityManager();
 		return list;
 	}
