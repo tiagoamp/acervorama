@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -44,12 +45,7 @@ public class ScannerResource {
 			throw new ResponseProcessingException(Response.serverError().build(), new AcervoramaBusinessException("IO error!", e));
 		}
 		
-		String[] result = new String[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			result[i] = list.get(i).toString(); 
-		}
-		
-		return result;
+		return (String[]) list.stream().map(p->toString()).toArray();
 	}
 		
 }
