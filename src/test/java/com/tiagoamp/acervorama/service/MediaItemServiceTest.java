@@ -24,7 +24,6 @@ import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 
 public class MediaItemServiceTest extends EasyMockSupport {
-
 	
 	@Rule
 	public EasyMockRule rule = new EasyMockRule(this);

@@ -1,6 +1,7 @@
 package com.tiagoamp.acervorama.dao;
 
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.tiagoamp.acervorama.model.MediaItem;

@@ -20,7 +20,6 @@ import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 public class MediaItemJpaDao implements MediaItemDao {
 	
-	
 	private EntityManagerFactory emf;
 	private EntityManager em;
 	
