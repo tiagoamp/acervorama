@@ -171,15 +171,11 @@ public class MediaItemDaoTest {
 	
 	// helper private methods
 	private void cleanDatabaseDataForTests() {
-		try {
-			List<MediaItem> list = dao.findAll();
-			for (Iterator<MediaItem> iterator = list.iterator(); iterator.hasNext();) {
-				MediaItem item = (MediaItem) iterator.next();
-				dao.delete(item.getId());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		List<MediaItem> list = dao.findAll();
+		for (Iterator<MediaItem> iterator = list.iterator(); iterator.hasNext();) {
+			MediaItem item = (MediaItem) iterator.next();
+			dao.delete(item.getId());
+		}		
 	}
 	
 	private AudioItem getItemForTests() {
