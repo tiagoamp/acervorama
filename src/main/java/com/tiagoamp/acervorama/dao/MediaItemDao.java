@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 public interface MediaItemDao {
 
@@ -84,6 +85,6 @@ public interface MediaItemDao {
 	 * @return List<MediaItem> 
 	 * @throws SQLException
 	 */
-	List<MediaItem> findByFields(String filename, String classification, String description);
+	List<MediaItem> findByFields(String filename, String classification, MediaTypeAcervo mediatype);
 		
 }

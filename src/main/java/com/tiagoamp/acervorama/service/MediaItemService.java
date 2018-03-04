@@ -7,6 +7,7 @@ import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 public class MediaItemService {
 	
@@ -104,8 +105,8 @@ public class MediaItemService {
 	 * @return List<MediaItem>
 	 * @
 	 */
-	public List<MediaItem> findByFields(String filename, String classification, String description) {		
-		return dao.findByFields(filename, classification, description);		
+	public List<MediaItem> findByFields(String filename, String classification, MediaTypeAcervo mediaType) {		
+		return dao.findByFields(filename, classification, mediaType);		
 	}
 	
 	/**

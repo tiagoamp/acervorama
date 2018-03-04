@@ -1,9 +1,11 @@
 package com.tiagoamp.acervorama.resources;
 
 import java.net.URI;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,54 +25,49 @@ import javax.ws.rs.core.UriInfo;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
-import com.tiagoamp.acervorama.service.MediaItemFilter;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
 @Path("media")
 public class MediaResource {
 	
-	
 	private MediaItemService service = new MediaItemService();
-	private MediaItemFilter filter = new MediaItemFilter();
 	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<MediaItem> getMediaItems(@QueryParam(value = "type") String mediatype, 
-										 @QueryParam(value = "filepath") String pathParam,
-										 @QueryParam(value = "filename") String nameParam, 
-										 @QueryParam(value = "classification") String classificationParam, 
-										 @QueryParam(value = "tags") String tagsParam, 
-										 @QueryParam(value = "hash") String hashParam ) {
+	public List<MediaItem> getMediaItems(@QueryParam(value = "filename") String nameParam, 
+										 @QueryParam(value = "classification") String classificationParam,
+										 @QueryParam(value = "type") String mediatypeParam,
+										 @QueryParam(value = "tags") String tagsParam ) {
 		
-		if (pathParam != null && pathParam.isEmpty()) pathParam = null;
 		if (nameParam != null && nameParam.isEmpty()) nameParam = null;
 		if (classificationParam != null && classificationParam.isEmpty()) classificationParam = null;
+		if (mediatypeParam != null && mediatypeParam.isEmpty()) mediatypeParam = null;
 		if (tagsParam != null && tagsParam.isEmpty()) tagsParam = null;
-		if (hashParam != null && hashParam.isEmpty()) hashParam = null;
-		
+				
 		List<MediaItem> list = new ArrayList<>();
 		
-		if (pathParam != null) {
-			MediaItem item = service.findByPath(Paths.get(pathParam));
-			if (item != null) list.add(item);
-		} else if (hashParam != null) {
-			MediaItem item = service.findByHash(hashParam);
-			if (item != null) list.add(item);
-		} else if (nameParam != null || classificationParam != null) {
-			list = service.findByFields(nameParam, classificationParam, null); 
+		if (nameParam != null || classificationParam != null || mediatypeParam != null) {
+			MediaTypeAcervo mediaType = mediatypeParam != null ? MediaTypeAcervo.valueOf(mediatypeParam.toUpperCase()) : null; 
+			list = service.findByFields(nameParam, classificationParam, mediaType); 
 		} else {
 			list = service.getAll();
 		}		
 		
-		if (mediatype != null) {
-			list = filter.filterByMediaType(list, MediaTypeAcervo.valueOf(mediatype));
-		}
 		if (tagsParam != null) {
-			list = filter.filterByTags(list, tagsParam.split(","));
+			List<String> tagsList = Arrays.asList(tagsParam.split(","));
+			Predicate<MediaItem> predicate = m -> tagsList.stream().anyMatch(tag -> m.containsTag(tag));
+			return list.stream().filter(predicate).collect(Collectors.toList());			
 		}			
 		
 		return list;
+	}
+	
+	@GET
+	@Path("hash/{hash}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MediaItem getMedia(@PathParam("hash") String hash) {
+		return service.findByHash(hash);
 	}
 	
 	@GET
@@ -79,7 +76,7 @@ public class MediaResource {
 	public MediaItem getMedia(@PathParam("id") Long id) {
 		return service.findById(id);
 	}
-
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +41,7 @@ public class MediaItemDaoTest {
 	
 	
 	@Test
-	public void testCreate_shouldInsertEntity() throws SQLException {
+	public void testCreate_shouldInsertEntity()  {
 		AudioItem item = this.getItemForTests();
 		item.setType(MediaTypeAcervo.AUDIO);
 		dao.create(item);
@@ -56,7 +55,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testUpdate_shouldUpdateEntity() throws SQLException {
+	public void testUpdate_shouldUpdateEntity()  {
 		MediaItem itemRetrieved = insertItemInDatabaseForTests();  // transient --> managed --> detached
 		String newFilename = "New File Name";
 		itemRetrieved.setFilename(newFilename);
@@ -68,7 +67,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testDelete_shouldDeleteEntity() throws SQLException {
+	public void testDelete_shouldDeleteEntity()  {
 		MediaItem itemRetrieved = insertItemInDatabaseForTests();  // transient --> managed --> detached
 		long id = itemRetrieved.getId();
 		dao.delete(id);
@@ -78,7 +77,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindById_shouldReturnValidOutput() throws SQLException {
+	public void testFindById_shouldReturnValidOutput()  {
 		AudioItem itemInserted = (AudioItem) insertItemInDatabaseForTests();
 		
 		MediaItem itemRetrievedById = dao.findById(itemInserted.getId());
@@ -87,13 +86,13 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindAll_emptyDataBase_shouldReturnEmptyList() throws SQLException {
+	public void testFindAll_emptyDataBase_shouldReturnEmptyList()  {
 		List<MediaItem> list = dao.findAll();
 		assertTrue("Must not retrieve entities.", list.isEmpty());
 	}
 	
 	@Test
-	public void testFindAll_shouldReturnValidOutput() throws SQLException {
+	public void testFindAll_shouldReturnValidOutput()  {
 		insertItemsInDatabaseForTests();
 		
 		List<MediaItem> list = dao.findAll();
@@ -102,7 +101,7 @@ public class MediaItemDaoTest {
 	}
 		
 	@Test
-	public void testFindByPath_shouldReturnValidOutput() throws SQLException {
+	public void testFindByPath_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
 		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
@@ -110,7 +109,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindByHash_shouldReturnValidOutput() throws SQLException {
+	public void testFindByHash_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
 		MediaItem itemRetrieved = dao.findByHash(item.getHash());
@@ -118,7 +117,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindByFileNameLike_shouldReturnValidOutput() throws SQLException {
+	public void testFindByFileNameLike_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		String partialFileName = item.getFilename().substring(0,3);
 		
@@ -128,17 +127,17 @@ public class MediaItemDaoTest {
 	}
 
 	@Test
-	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput() throws SQLException {
+	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
-		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), item.getDescription().substring(0,3));
+		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), MediaTypeAcervo.AUDIO);
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
 	}
 	
 	@Test
-	public void testFindByFields_byFileName_shouldReturnValidOutput() throws SQLException {
+	public void testFindByFields_byFileName_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
 		List<MediaItem> list = dao.findByFields(item.getFilename(), null, null);
@@ -148,7 +147,7 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindByFields_byClassification_shouldReturnValidOutput() throws SQLException {
+	public void testFindByFields_byClassification_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
 		List<MediaItem> list = dao.findByFields(null, item.getClassification(), null);
@@ -158,11 +157,10 @@ public class MediaItemDaoTest {
 	}
 	
 	@Test
-	public void testFindByFields_byDescription_shouldReturnValidOutput() throws SQLException {
+	public void testFindByFields_byMediaType_shouldReturnValidOutput()  {
 		MediaItem item = insertItemInDatabaseForTests();
 		
-		String partialDescription = item.getDescription().substring(0,3);
-		List<MediaItem> list = dao.findByFields(null, null, partialDescription);
+		List<MediaItem> list = dao.findByFields(null, null, MediaTypeAcervo.AUDIO);
 		assertTrue(!list.isEmpty());
 		assertTrue(list.size() == 1);
 		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
@@ -189,13 +187,13 @@ public class MediaItemDaoTest {
 		return item;
 	}
 	
-	private MediaItem insertItemInDatabaseForTests() throws SQLException {
+	private MediaItem insertItemInDatabaseForTests() {
 		AudioItem item = this.getItemForTests();
 		dao.create(item);
 		return dao.findByPath(item.getFilePath());
 	}
 	
-	private List<MediaItem> insertItemsInDatabaseForTests() throws SQLException {
+	private List<MediaItem> insertItemsInDatabaseForTests() {
 		Path testFilePath1 = Paths.get("fake","test","file1.txt");
 		Path testFilePath2 = Paths.get("fake","test","file2.txt");
 		Path testFilePath3 = Paths.get("fake","test","file3.txt");

@@ -20,6 +20,7 @@ import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 
 public class MediaItemServiceTest extends EasyMockSupport {
@@ -68,17 +69,6 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();		
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testInsert_shouldThrowException() throws Exception {
-		daoMock.create(item);
-		EasyMock.expectLastCall().andThrow(new SQLException());
-		replayAll();
-		
-		service.insert(item);
-		verifyAll();
-		
-	}
-
 	@Test
 	public void testUpdate() throws Exception {
 		daoMock.update(item);
@@ -88,16 +78,6 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testUpdate_shouldThrowException() throws Exception {
-		daoMock.update(item);
-		EasyMock.expectLastCall().andThrow(new SQLException());
-		replayAll();
-		
-		service.update(item);
-		verifyAll();		
-	}
-
 	@Test
 	public void testDelete() throws Exception {
 		Long id = item.getId();
@@ -108,18 +88,6 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testDelete_shouldThrowException() throws Exception {
-		Long id = item.getId();
-		daoMock.delete(id);
-		EasyMock.expectLastCall().andThrow(new SQLException());
-		replayAll();
-		
-		service.delete(id);
-		verifyAll();
-		
-	}
-
 	@Test
 	public void testFindById() throws Exception {
 		Long id = item.getId();
@@ -130,30 +98,10 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testFindById_shouldThrowException() throws Exception {
-		Long id = item.getId();
-		EasyMock.expect(daoMock.findById(id)).andThrow(new SQLException());
-		replayAll();
-		
-		service.findById(id);
-		verifyAll();		
-	}
-
 	@Test
 	public void testFindByPath() throws Exception {
 		Path filePath = item.getFilePath();
 		EasyMock.expect(daoMock.findByPath(filePath)).andReturn(item);
-		replayAll();
-		
-		service.findByPath(filePath);
-		verifyAll();
-	}
-	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testFindByPath_shouldThrowException() throws Exception {
-		Path filePath = item.getFilePath();
-		EasyMock.expect(daoMock.findByPath(filePath)).andThrow(new SQLException());
 		replayAll();
 		
 		service.findByPath(filePath);
@@ -170,16 +118,6 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testFindByHash_shouldThrowException() throws Exception {
-		String hash = item.getHash();
-		EasyMock.expect(daoMock.findByHash(hash)).andThrow(new SQLException());
-		replayAll();
-		
-		service.findByHash(hash);
-		verifyAll();
-	}
-
 	@Test
 	public void testFindByFileNameLike() throws Exception {
 		String filename = item.getFilename();
@@ -190,34 +128,15 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testFindByFileNameLike_shouldThrowException() throws Exception {
-		String filename = item.getFilename();
-		EasyMock.expect(daoMock.findByFileNameLike(filename)).andThrow(new SQLException());
-		replayAll();
-		
-		service.findByFileNameLike(filename);
-		verifyAll();
-	}
-
 	@Test
 	public void testFindByFields() throws Exception {
-		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn(new ArrayList<>());
+		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), (MediaTypeAcervo)EasyMock.anyObject())).andReturn(new ArrayList<>());
 		replayAll();
 		
-		service.findByFields("filename", "classification", "description");
+		service.findByFields("filename", "classification", MediaTypeAcervo.AUDIO);
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testFindByFields_shouldThrowException() throws Exception {
-		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(),  EasyMock.anyString(), EasyMock.anyString())).andThrow(new SQLException());
-		replayAll();
-		
-		service.findByFields("filename", "classification", "description");
-		verifyAll();
-	}
-
 	@Test
 	public void testGetAll() throws Exception {
 		EasyMock.expect(daoMock.findAll()).andReturn(new ArrayList<>());
@@ -227,15 +146,7 @@ public class MediaItemServiceTest extends EasyMockSupport {
 		verifyAll();
 	}
 	
-	@Test(expected=AcervoramaBusinessException.class)
-	public void testGetAll_shouldThrowException() throws Exception {
-		EasyMock.expect(daoMock.findAll()).andThrow(new SQLException());
-		replayAll();
-		
-		service.getAll();
-		verifyAll();
-	}
-	
+
 	
 	// helper private methods
 	private MediaItem getItemForTests() {

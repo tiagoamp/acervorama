@@ -16,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 public class MediaItemJpaDao implements MediaItemDao {
 	
@@ -131,7 +132,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public List<MediaItem> findByFields(String filename, String classification, String description) {
+	public List<MediaItem> findByFields(String filename, String classification, MediaTypeAcervo mediatype) {
 		createEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);
@@ -139,7 +140,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 		Root<MediaItem> root = query.from(MediaItem.class);
 		javax.persistence.criteria.Path<String> filenamePath = root.<String>get("filename");
 		javax.persistence.criteria.Path<String> classificationPath = root.<String>get("classification");
-		javax.persistence.criteria.Path<String> descriptionPath = root.<String>get("description");
+		javax.persistence.criteria.Path<MediaTypeAcervo> mediatypePath = root.<MediaTypeAcervo>get("type");
 		
 		List<Predicate> predicates = new ArrayList<>();		
 		if (filename != null && !filename.isEmpty()) {
@@ -150,9 +151,9 @@ public class MediaItemJpaDao implements MediaItemDao {
 			Predicate classificationEqual = criteriaBuilder.equal(classificationPath, classification);
 			predicates.add(classificationEqual);
 		}
-		if (description != null && !description.isEmpty()) {
-			Predicate descriptionLike = criteriaBuilder.like(descriptionPath, "%" + description + "%");
-			predicates.add(descriptionLike);
+		if (mediatype != null) {
+			Predicate mediatypeEqual = criteriaBuilder.equal(mediatypePath, mediatype);
+			predicates.add(mediatypeEqual);
 		}
 		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
 		
