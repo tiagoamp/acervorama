@@ -13,7 +13,7 @@ public class ImageItem extends MediaItem {
 	
 	public ImageItem(Path path) {
 		super(path);
-		this.setType(MediaType.IMAGE);
+		this.setType(MediaTypeAcervo.IMAGE);
 	}
 	
 }

@@ -1,7 +1,6 @@
 package com.tiagoamp.acervorama.dao;
 
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	
 		
 	@Override
-	public void create(MediaItem item) throws SQLException {
+	public void create(MediaItem item) {
 		createEntityManager();
 		em.getTransaction().begin();
 		em.persist(item);
@@ -50,7 +49,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public void update(MediaItem item) throws SQLException {
+	public void update(MediaItem item) {
 		createEntityManager();
 		em.getTransaction().begin();
 		em.merge(item);
@@ -59,7 +58,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public void delete(long id) throws SQLException {
+	public void delete(long id) {
 		createEntityManager();
 		em.getTransaction().begin();
 		MediaItem item = em.find(MediaItem.class, id);
@@ -69,7 +68,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public List<MediaItem> findAll() throws SQLException {
+	public List<MediaItem> findAll() {
 		createEntityManager();
 		List<MediaItem> list = em.createQuery("from MediaItem", MediaItem.class).getResultList();
 		closeEntityManager();
@@ -77,7 +76,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 	
 	@Override
-	public MediaItem findById(long id) throws SQLException {
+	public MediaItem findById(long id) {
 		createEntityManager();
 		MediaItem item = em.find(MediaItem.class, id);
 		closeEntityManager();
@@ -85,7 +84,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public MediaItem findByPath(Path path) throws SQLException {
+	public MediaItem findByPath(Path path) {
 		createEntityManager();
 		Query query = em.createQuery("SELECT m from MediaItem m WHERE m.filePath = :pPath");
 		query.setParameter("pPath", path);
@@ -100,7 +99,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 	
 	@Override
-	public MediaItem findByHash(String hash) throws SQLException {
+	public MediaItem findByHash(String hash) {
 		createEntityManager();
 		Query query = em.createQuery("SELECT m from MediaItem m WHERE m.hash = :pHash");
 		query.setParameter("pHash", hash);
@@ -115,7 +114,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public List<MediaItem> findByFileNameLike(String filename) throws SQLException {
+	public List<MediaItem> findByFileNameLike(String filename) {
 		createEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);
@@ -132,7 +131,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 	}
 
 	@Override
-	public List<MediaItem> findByFields(String filename, String classification, String description) throws SQLException {
+	public List<MediaItem> findByFields(String filename, String classification, String description) {
 		createEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);

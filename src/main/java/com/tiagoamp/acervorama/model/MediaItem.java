@@ -59,7 +59,7 @@ public abstract class MediaItem {
 	
 	@Column(name="TYPE")
 	@Enumerated(EnumType.STRING)
-	private MediaType type;
+	private MediaTypeAcervo type;
 	
 	@Column(name="HASH")
 	private String hash;
@@ -182,10 +182,10 @@ public abstract class MediaItem {
 	public void setAdditionalInformation(String additionalInformation) {
 		this.additionalInformation = additionalInformation;
 	}
-	public MediaType getType() {
+	public MediaTypeAcervo getType() {
 		return type;
 	}
-	public void setType(MediaType type) {
+	public void setType(MediaTypeAcervo type) {
 		this.type = type;
 	}
 	public String getHash() {

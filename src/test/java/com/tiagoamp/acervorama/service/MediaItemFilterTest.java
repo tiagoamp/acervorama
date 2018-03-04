@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.MediaType;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.VideoItem;
 
 
@@ -45,7 +45,7 @@ public class MediaItemFilterTest extends EasyMockSupport {
 	@Test
 	public void testFilterByMediaType() throws Exception {
 		List<MediaItem> originList = getItemsForTests();
-		List<MediaItem> result = filter.filterByMediaType(originList, MediaType.AUDIO);
+		List<MediaItem> result = filter.filterByMediaType(originList, MediaTypeAcervo.AUDIO);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(originList.get(0), result.get(0));

@@ -18,7 +18,7 @@ public class VideoItem extends MediaItem {
 		
 	public VideoItem(Path path) {
 		super(path);
-		this.setType(MediaType.VIDEO);
+		this.setType(MediaTypeAcervo.VIDEO);
 	}
 	
 	

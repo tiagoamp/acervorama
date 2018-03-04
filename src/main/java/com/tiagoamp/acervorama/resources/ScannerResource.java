@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.scanner.FileScanner;
 
 @Path("scanner")
@@ -47,7 +48,7 @@ public class ScannerResource {
 	}
 	
 	private String[] getMediaFileExtensionsFromParam(String mediaType) {
-		return mediaType.isEmpty() ? null : com.tiagoamp.acervorama.model.MediaType.valueOf(mediaType.toUpperCase()).getFileExtensions();
+		return mediaType.isEmpty() ? null : MediaTypeAcervo.valueOf(mediaType.toUpperCase()).getFileExtensions();
 	}
 		
 }

@@ -21,7 +21,7 @@ public class TextItem extends MediaItem {
 	
 	public TextItem(Path path) {
 		super(path);
-		this.setType(MediaType.TEXT);
+		this.setType(MediaTypeAcervo.TEXT);
 	}
 	
 	

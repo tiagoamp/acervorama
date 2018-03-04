@@ -21,7 +21,7 @@ public class AudioItem extends MediaItem {
 	
 	public AudioItem(Path path) {
 		super(path);
-		this.setType(MediaType.AUDIO);
+		this.setType(MediaTypeAcervo.AUDIO);
 	}
 	
 	

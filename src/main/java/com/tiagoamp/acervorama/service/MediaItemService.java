@@ -1,7 +1,6 @@
 package com.tiagoamp.acervorama.service;
 
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.List;
 
 import com.tiagoamp.acervorama.dao.MediaItemDao;
@@ -11,58 +10,45 @@ import com.tiagoamp.acervorama.model.MediaItem;
 
 public class MediaItemService {
 	
+	private MediaItemDao dao;
+	
 	
 	public MediaItemService() {
 		this.dao = new MediaItemJpaDao();
 	}
 	
 	
-	private MediaItemDao dao;
-	
-	
 	/**
 	 * Inserts a new Media Item.
 	 * 
 	 * @param item
-	 * @throws AcervoramaBusinessException
+	 * @throws AcervoramaBusinessException 
+	 * @
 	 */
-	public void insert(MediaItem item) throws AcervoramaBusinessException {		 
-		try {
-			MediaItem dbItem = dao.findByPath(item.getFilePath());
-			if (dbItem != null) throw new AcervoramaBusinessException("File path already exists!");
-			dao.create(item);			
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		} 
+	public void insert(MediaItem item) throws AcervoramaBusinessException  {		 
+		MediaItem dbItem = dao.findByPath(item.getFilePath());
+		if (dbItem != null) throw new AcervoramaBusinessException("File path already exists!");
+		dao.create(item);		 
 	}
 	
 	/**
 	 * Updates a Media Item.
 	 * 
 	 * @param item
-	 * @throws AcervoramaBusinessException 
+	 * @ 
 	 */
-	public void update(MediaItem item) throws AcervoramaBusinessException {		
-		try {
-			dao.update(item);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		} 
+	public void update(MediaItem item)  {		
+		dao.update(item);		 
 	}
 	
 	/**
 	 * Deletes a Media Item.
 	 * 
 	 * @param id 
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public void delete(long id) throws AcervoramaBusinessException {
-		
-		try {
-			dao.delete(id);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		}
+	public void delete(long id)  {		
+		dao.delete(id);
 	}
 	
 	/**
@@ -70,14 +56,10 @@ public class MediaItemService {
 	 * 
 	 * @param id Entity id.
 	 * @return MediaItem 
-	 * @throws AcervoramaBusinessException 
+	 * @ 
 	 */
-	public MediaItem findById(long id) throws AcervoramaBusinessException {		
-		try {
-			return dao.findById(id);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		}
+	public MediaItem findById(long id)  {		
+		return dao.findById(id);		
 	}
 	
 	/**
@@ -85,14 +67,10 @@ public class MediaItemService {
 	 * 
 	 * @param path
 	 * @return MediaItem
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public MediaItem findByPath(Path path) throws AcervoramaBusinessException {		
-		try {
-			return dao.findByPath(path);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		} 
+	public MediaItem findByPath(Path path)  {		
+		return dao.findByPath(path);		 
 	}
 	
 	/**
@@ -100,14 +78,10 @@ public class MediaItemService {
 	 * 
 	 * @param hash
 	 * @return MediaItem
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public MediaItem findByHash(String hash) throws AcervoramaBusinessException {		
-		try {
-			return dao.findByHash(hash);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		} 
+	public MediaItem findByHash(String hash)  {		
+		return dao.findByHash(hash);		 
 	}
 	
 	/**
@@ -115,14 +89,10 @@ public class MediaItemService {
 	 * 
 	 * @param filename
 	 * @return List<MediaItem> 
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public List<MediaItem> findByFileNameLike(String filename) throws AcervoramaBusinessException {		
-		try {
-			return dao.findByFileNameLike(filename);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		} 
+	public List<MediaItem> findByFileNameLike(String filename)  {		
+		return dao.findByFileNameLike(filename);		 
 	}
 	
 	/**
@@ -132,28 +102,20 @@ public class MediaItemService {
 	 * @param classification
 	 * @param description
 	 * @return List<MediaItem>
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public List<MediaItem> findByFields(String filename, String classification, String description) throws AcervoramaBusinessException {		
-		try {
-			return dao.findByFields(filename, classification, description);
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		}
+	public List<MediaItem> findByFields(String filename, String classification, String description) {		
+		return dao.findByFields(filename, classification, description);		
 	}
 	
 	/**
 	 * Retrieve all Media Items.
 	 * 
 	 * @return List<MediaItem>
-	 * @throws AcervoramaBusinessException
+	 * @
 	 */
-	public List<MediaItem> getAll() throws AcervoramaBusinessException {		
-		try {
-			return dao.findAll();
-		} catch (SQLException e) {
-			throw new AcervoramaBusinessException("Database error!" , e);			
-		}
+	public List<MediaItem> getAll() {		
+		return dao.findAll();		
 	}
 	
 }

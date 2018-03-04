@@ -1,6 +1,6 @@
 package com.tiagoamp.acervorama.model;
 
-public enum MediaType {
+public enum MediaTypeAcervo {
 	
 	
 	AUDIO, IMAGE, TEXT, VIDEO;

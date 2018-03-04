@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.tiagoamp.acervorama.model.MediaItem;
-import com.tiagoamp.acervorama.model.MediaType;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 public class MediaItemFilter {
 
@@ -25,7 +25,7 @@ public class MediaItemFilter {
 	 * 
 	 * @return List<MediaItem>
 	 */
-	public List<MediaItem> filterByMediaType(List<MediaItem> list, MediaType mediaType) {
+	public List<MediaItem> filterByMediaType(List<MediaItem> list, MediaTypeAcervo mediaType) {
 		return list.stream().filter(m -> m.getType() == mediaType).collect(Collectors.toList());
 	}
 	

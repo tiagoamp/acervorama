@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.service.MediaItemFilter;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
@@ -50,30 +51,25 @@ public class MediaResource {
 		
 		List<MediaItem> list = new ArrayList<>();
 		
-		try {
-			
-			if (pathParam != null) {
-				MediaItem item = service.findByPath(Paths.get(pathParam));
-				if (item != null) list.add(item);
-			} else if (hashParam != null) {
-				MediaItem item = service.findByHash(hashParam);
-				if (item != null) list.add(item);
-			} else if (nameParam != null || classificationParam != null) {
-				list = service.findByFields(nameParam, classificationParam, null); 
-			} else {
-				list = service.getAll();
-			}		
-			
-			if (mediatype != null) {
-				list = filter.filterByMediaType(list, com.tiagoamp.acervorama.model.MediaType.valueOf(mediatype));
-			}
-			if (tagsParam != null) {
-				list = filter.filterByTags(list, tagsParam.split(","));
-			}			
-			
-		} catch (AcervoramaBusinessException e) {			
-			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
+		if (pathParam != null) {
+			MediaItem item = service.findByPath(Paths.get(pathParam));
+			if (item != null) list.add(item);
+		} else if (hashParam != null) {
+			MediaItem item = service.findByHash(hashParam);
+			if (item != null) list.add(item);
+		} else if (nameParam != null || classificationParam != null) {
+			list = service.findByFields(nameParam, classificationParam, null); 
+		} else {
+			list = service.getAll();
+		}		
+		
+		if (mediatype != null) {
+			list = filter.filterByMediaType(list, MediaTypeAcervo.valueOf(mediatype));
 		}
+		if (tagsParam != null) {
+			list = filter.filterByTags(list, tagsParam.split(","));
+		}			
+		
 		return list;
 	}
 	
@@ -81,13 +77,7 @@ public class MediaResource {
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public MediaItem getMedia(@PathParam("id") Long id) {
-		MediaItem item = null;
-		try {
-			item = service.findById(id);
-		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
-		}
-		return item;
+		return service.findById(id);
 	}
 
 	@POST
@@ -107,12 +97,8 @@ public class MediaResource {
 	@DELETE
 	@Path("{id}")
 	public Response delete(@PathParam("id") Long id) {
-		try {
-			service.delete(id);
-		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
-		}
-		return Response.ok().build();
+		service.delete(id);
+		return Response.noContent().build();
 	}
 	
 	@PUT
@@ -121,11 +107,7 @@ public class MediaResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("id") Long id, MediaItem item) {
 		item.setId(id);
-		try {
-			service.update(item);
-		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
-		}
+		service.update(item);
 		return Response.ok().entity(item).build();
 	}
 	

@@ -21,7 +21,7 @@ public class MediaItemFactory {
 			e.printStackTrace();
 		}
 		String mediaTypeStr = jsonNode.get("type").asText();
-		MediaType itemMediaType = MediaType.valueOf(mediaTypeStr);
+		MediaTypeAcervo itemMediaType = MediaTypeAcervo.valueOf(mediaTypeStr);
 		
 		T item = (T) fromJson(jsonString, getItemSubclass(itemMediaType));
 		if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
@@ -35,7 +35,7 @@ public class MediaItemFactory {
 		return gson.fromJson(jsonString, itemClass);
 	}
 	
-	private static Class<? extends MediaItem> getItemSubclass(MediaType type) {		
+	private static Class<? extends MediaItem> getItemSubclass(MediaTypeAcervo type) {		
 		Class<? extends MediaItem> clazz;
 		
 		switch (type) {
