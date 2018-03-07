@@ -22,19 +22,30 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
-@Path("media")
+@CrossOrigin
+@RestController
+@RequestMapping("/media")
+//@Path("media")
 public class MediaResource {
 	
-	private MediaItemService service = new MediaItemService();
+	@Autowired
+	private MediaItemService service;// = new MediaItemService();
 	
 	
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	//@GET
+	//@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET)
 	public List<MediaItem> getMediaItems(@QueryParam(value = "filename") String nameParam, 
 										 @QueryParam(value = "classification") String classificationParam,
 										 @QueryParam(value = "type") String mediatypeParam,

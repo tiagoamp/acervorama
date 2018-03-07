@@ -3,19 +3,25 @@ package com.tiagoamp.acervorama.service;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.tiagoamp.acervorama.dao.MediaItemDao;
-import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
+@Service
 public class MediaItemService {
 	
+	@Autowired
+	@Qualifier("jpa")
 	private MediaItemDao dao;
 	
 	
 	public MediaItemService() {
-		this.dao = new MediaItemJpaDao();
+		//this.dao = new MediaItemJpaDao();
 	}
 	
 	

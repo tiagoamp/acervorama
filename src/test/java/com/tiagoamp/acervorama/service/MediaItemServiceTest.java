@@ -15,13 +15,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import com.tiagoamp.acervorama.AcervoramaApplication;
 import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
-
 
 public class MediaItemServiceTest extends EasyMockSupport {
 	
@@ -32,7 +42,8 @@ public class MediaItemServiceTest extends EasyMockSupport {
 	private MediaItemDao daoMock;
 	
 	@TestSubject
-	private MediaItemService service = new MediaItemService();
+	@Autowired
+	private MediaItemService service;// = new MediaItemService();
 	
 	private MediaItem item;
 		
