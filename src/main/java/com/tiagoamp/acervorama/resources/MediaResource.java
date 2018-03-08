@@ -56,7 +56,7 @@ public class MediaResource {
 		if (mediatypeParam != null && mediatypeParam.isEmpty()) mediatypeParam = null;
 		if (tagsParam != null && tagsParam.isEmpty()) tagsParam = null;
 				
-		List<MediaItem> list = new ArrayList<>();
+		List<MediaItem> list;// = new ArrayList<>();
 		
 		if (nameParam != null || classificationParam != null || mediatypeParam != null) {
 			MediaTypeAcervo mediaType = mediatypeParam != null ? MediaTypeAcervo.valueOf(mediatypeParam.toUpperCase()) : null; 
@@ -67,8 +67,8 @@ public class MediaResource {
 		
 		if (tagsParam != null) {
 			List<String> tagsList = Arrays.asList(tagsParam.split(","));
-			Predicate<MediaItem> predicate = m -> tagsList.stream().anyMatch(tag -> m.containsTag(tag));
-			return list.stream().filter(predicate).collect(Collectors.toList());			
+			Predicate<MediaItem> notContainsTags = m -> tagsList.stream().anyMatch(tag -> !m.containsTag(tag));
+			list.removeIf(notContainsTags);			
 		}			
 		
 		return list;

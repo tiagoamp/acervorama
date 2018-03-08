@@ -92,7 +92,7 @@ public abstract class MediaItem {
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MediaItem)) return false;
-		return this.filename.equals( ((MediaItem)obj).filename );
+		return this.hash.equals( ((MediaItem)obj).hash );
 	}
 	
 	

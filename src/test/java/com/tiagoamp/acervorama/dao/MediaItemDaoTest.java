@@ -1,19 +1,23 @@
 package com.tiagoamp.acervorama.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.ImageItem;
@@ -22,158 +26,191 @@ import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.TextItem;
 import com.tiagoamp.acervorama.model.VideoItem;
 
+@RunWith(SpringRunner.class)
+@DataJpaTest
 public class MediaItemDaoTest {
 	
-	private MediaItemDao dao;
+	@TestConfiguration
+	static class MediaItemDaoTestContextConfiguration {
+		
+		@Bean(value="jpa")
+		public MediaItemDao mediaItemDao() {
+			return new MediaItemJpaDao();
+		}
+						
+	}
+	
+	@Autowired
+	private MediaItemDao mediaItemDao;
 
+	@Autowired
+	private TestEntityManager entityManager;  // uses h2 embedded database
+	
 	
 	@Before
 	public void setUp() throws Exception {
-		dao = new MediaItemJpaDao();		
 		cleanDatabaseDataForTests();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		cleanDatabaseDataForTests();
-		dao = null;		
+		cleanDatabaseDataForTests();				
 	}
 	
 	
 	@Test
 	public void testCreate_shouldInsertEntity()  {
-		AudioItem item = this.getItemForTests();
-		item.setType(MediaTypeAcervo.AUDIO);
-		dao.create(item);
-		
-		LocalDate registerDate = item.getRegisterDate().toLocalDate();
-		Path filePath = item.getFilePath();
-		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
-		assertEquals("Must retrieve inserted entity.", item, itemRetrieved);
-		assertEquals("LocalDateTime should be correctly persisted (converter should work!).", registerDate, itemRetrieved.getRegisterDate().toLocalDate());
-		assertEquals("Path should be correctly persisted (converter should work!).", filePath, itemRetrieved.getFilePath());
+		// given
+		AudioItem itemBeforeInsert = this.getItemForTests();
+		LocalDate registerDate = itemBeforeInsert.getRegisterDate().toLocalDate();
+		Path filePath = itemBeforeInsert.getFilePath();
+		insertItemInDatabaseForTests();		
+		// when
+		MediaItem itemRetrieved = mediaItemDao.findByHash(itemBeforeInsert.getHash());		
+		// then
+		assertThat(itemBeforeInsert).isEqualTo(itemRetrieved);
+		assertThat(registerDate).isEqualTo(itemRetrieved.getRegisterDate().toLocalDate()); // testing classes convertion
+		assertThat(filePath).isEqualTo(itemRetrieved.getFilePath()); // testing classes convertion
 	}
 	
 	@Test
 	public void testUpdate_shouldUpdateEntity()  {
-		MediaItem itemRetrieved = insertItemInDatabaseForTests();  // transient --> managed --> detached
-		String newFilename = "New File Name";
-		itemRetrieved.setFilename(newFilename);
-		
-		dao.update(itemRetrieved);
-		MediaItem itemAfterUpdate = dao.findById(itemRetrieved.getId());
-		assertNotNull(itemAfterUpdate);
-		assertEquals("'Name' should be updated.", newFilename, itemAfterUpdate.getFilename());
+		// given
+		MediaItem itemBeforeUpdate = insertItemInDatabaseForTests();  // transient --> managed --> detached
+		itemBeforeUpdate.setFilename("New File Name");		
+		// when
+		mediaItemDao.update(itemBeforeUpdate);
+		// then
+		MediaItem itemAfterUpdate = mediaItemDao.findById(itemBeforeUpdate.getId());
+		assertThat(itemBeforeUpdate.getFilename()).isEqualTo(itemAfterUpdate.getFilename());
 	}
 	
 	@Test
-	public void testDelete_shouldDeleteEntity()  {
+	public void testDelete_shouldDeleteEntity() {
+		// given
 		MediaItem itemRetrieved = insertItemInDatabaseForTests();  // transient --> managed --> detached
-		long id = itemRetrieved.getId();
-		dao.delete(id);
-		
-		itemRetrieved = dao.findById(id);
-		assertNull("Entity must be deleted.", itemRetrieved);
+		// when
+		mediaItemDao.delete(itemRetrieved.getId());
+		// then
+		itemRetrieved = mediaItemDao.findById(itemRetrieved.getId());
+		assertThat(itemRetrieved).isNull();
 	}
 	
 	@Test
 	public void testFindById_shouldReturnValidOutput()  {
+		// given
 		AudioItem itemInserted = (AudioItem) insertItemInDatabaseForTests();
-		
-		MediaItem itemRetrievedById = dao.findById(itemInserted.getId());
-		assertNotNull("Must retrieve the entity by Id.", itemRetrievedById);
-		assertEquals("Must retrieve the entity with same 'Id'.", itemInserted.getId(), itemRetrievedById.getId());		
+		// when
+		MediaItem itemRetrievedById = mediaItemDao.findById(itemInserted.getId());
+		// then
+		assertThat(itemInserted.getId()).isEqualTo(itemRetrievedById.getId());		
 	}
 	
 	@Test
-	public void testFindAll_emptyDataBase_shouldReturnEmptyList()  {
-		List<MediaItem> list = dao.findAll();
-		assertTrue("Must not retrieve entities.", list.isEmpty());
+	public void testFindAll_emptyDataBase_shouldReturnEmptyList() {
+		List<MediaItem> list = mediaItemDao.findAll();
+		assertThat(list).isEmpty();
 	}
 	
 	@Test
-	public void testFindAll_shouldReturnValidOutput()  {
-		insertItemsInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findAll();
-		assertNotNull("Must return entities previously inserted.", list);
-		assertEquals("Should return 4 entities.", 4, list.size());
+	public void testFindAll_shouldReturnValidOutput() {
+		// given
+		int count = insertItemsInDatabaseForTests().size();
+		// when
+		List<MediaItem> list = mediaItemDao.findAll();
+		// then
+		assertThat(list.size()).isEqualTo(count);
 	}
 		
 	@Test
-	public void testFindByPath_shouldReturnValidOutput()  {
-		MediaItem item = insertItemInDatabaseForTests();
-		
-		MediaItem itemRetrieved = dao.findByPath(item.getFilePath());
-		assertNotNull(itemRetrieved);
-	}
-	
-	@Test
-	public void testFindByHash_shouldReturnValidOutput()  {
-		MediaItem item = insertItemInDatabaseForTests();
-		
-		MediaItem itemRetrieved = dao.findByHash(item.getHash());
-		assertNotNull(itemRetrieved);
+	public void testFindByPath_shouldReturnValidOutput() {
+		// given
+		Path path = insertItemInDatabaseForTests().getFilePath();
+		// when
+		MediaItem itemRetrieved = mediaItemDao.findByPath(path);
+		// then
+		assertThat(itemRetrieved).isNotNull().hasFieldOrPropertyWithValue("filePath", path);
 	}
 	
 	@Test
-	public void testFindByFileNameLike_shouldReturnValidOutput()  {
+	public void testFindByHash_shouldReturnValidOutput() {
+		// given
+		String hash = insertItemInDatabaseForTests().getHash();
+		// when 
+		MediaItem itemRetrieved = mediaItemDao.findByHash(hash);
+		assertThat(itemRetrieved).isNotNull().hasFieldOrPropertyWithValue("hash", hash);
+	}
+	
+	@Test
+	public void testFindByFileNameLike_shouldReturnValidOutput() {
+		// given
 		MediaItem item = insertItemInDatabaseForTests();
 		String partialFileName = item.getFilename().substring(0,3);
-		
-		List<MediaItem> list = dao.findByFileNameLike(partialFileName);
-		assertNotNull("Must return entity by partial 'file name'." , list);
-		assertTrue("Must contain entity by partial 'file name'." ,list.contains(item));
+		// when
+		List<MediaItem> list = mediaItemDao.findByFileNameLike(partialFileName);
+		// then
+		assertThat(list).contains(item);
 	}
 
 	@Test
-	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput()  {
-		MediaItem item = insertItemInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findByFields(item.getFilename(), item.getClassification(), MediaTypeAcervo.AUDIO);
-		assertTrue(!list.isEmpty());
-		assertTrue(list.size() == 1);
-		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+	public void testFindByFields_noneFieldsMatches_shouldReturnEmptyList() {
+		// given
+		insertItemsInDatabaseForTests();
+		// when
+		List<MediaItem> list = mediaItemDao.findByFields("nothing", "nothing", null);
+		// then
+		assertThat(list).isEmpty();
 	}
 	
 	@Test
-	public void testFindByFields_byFileName_shouldReturnValidOutput()  {
+	public void testFindByFields_allFieldsMatches_shouldReturnValidOutput() {
+		// given
 		MediaItem item = insertItemInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findByFields(item.getFilename(), null, null);
-		assertTrue(!list.isEmpty());
-		assertTrue(list.size() == 1);
-		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+		// when
+		List<MediaItem> list = mediaItemDao.findByFields(item.getFilename(), item.getClassification(), MediaTypeAcervo.AUDIO);
+		// then
+		assertThat(list).containsOnly(item);		
 	}
 	
 	@Test
-	public void testFindByFields_byClassification_shouldReturnValidOutput()  {
+	public void testFindByFields_byFileName_shouldReturnValidOutput() {
+		// given
 		MediaItem item = insertItemInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findByFields(null, item.getClassification(), null);
-		assertTrue(!list.isEmpty());
-		assertTrue(list.size() == 1);
-		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+		// when 
+		List<MediaItem> list = mediaItemDao.findByFields(item.getFilename(), null, null);
+		// then 
+		assertThat(list).containsExactly(item);
+	}
+	
+	@Test
+	public void testFindByFields_byClassification_shouldReturnValidOutput() {
+		// given
+		MediaItem item = insertItemInDatabaseForTests();
+		// when
+		List<MediaItem> list = mediaItemDao.findByFields(null, item.getClassification(), null);
+		// then
+		assertThat(list).containsExactly(item);
 	}
 	
 	@Test
 	public void testFindByFields_byMediaType_shouldReturnValidOutput()  {
+		// given
 		MediaItem item = insertItemInDatabaseForTests();
-		
-		List<MediaItem> list = dao.findByFields(null, null, MediaTypeAcervo.AUDIO);
-		assertTrue(!list.isEmpty());
-		assertTrue(list.size() == 1);
-		assertEquals("Should retrieve previously inserted item.", item, list.get(0));
+		// when
+		List<MediaItem> list = mediaItemDao.findByFields(null, null, MediaTypeAcervo.AUDIO);
+		// then
+		assertThat(list).containsExactly(item);
 	}
 
 	
-	// helper private methods
+	// helper private methods ***
+	
 	private void cleanDatabaseDataForTests() {
-		List<MediaItem> list = dao.findAll();
-		for (Iterator<MediaItem> iterator = list.iterator(); iterator.hasNext();) {
-			MediaItem item = (MediaItem) iterator.next();
-			dao.delete(item.getId());
-		}		
+		List<MediaItem> list = mediaItemDao.findAll();
+		list.forEach((item) -> {
+			entityManager.remove(item);
+			entityManager.flush();
+		} );				
 	}
 	
 	private AudioItem getItemForTests() {
@@ -189,8 +226,9 @@ public class MediaItemDaoTest {
 	
 	private MediaItem insertItemInDatabaseForTests() {
 		AudioItem item = this.getItemForTests();
-		dao.create(item);
-		return dao.findByPath(item.getFilePath());
+		entityManager.persist(item);
+		entityManager.flush();
+		return mediaItemDao.findByHash(item.getHash());
 	}
 	
 	private List<MediaItem> insertItemsInDatabaseForTests() {
@@ -205,11 +243,14 @@ public class MediaItemDaoTest {
 		
 		((AudioItem)item1).setTitle("New Title");
 		
-		dao.create(item1);
-		dao.create(item2);
-		dao.create(item3);
-		dao.create(item4);
-		return dao.findAll();
+		List<MediaItem> list = Arrays.asList(item1, item2, item3, item4);
+		
+		list.forEach((item) -> { 
+			entityManager.persist(item);
+			entityManager.flush();
+		});
+		
+		return mediaItemDao.findAll();
 	}
 
 }

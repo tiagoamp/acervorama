@@ -25,6 +25,7 @@
 	</properties>
 
 	<dependencies>
+	
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -56,6 +57,12 @@
 			<artifactId>easymock</artifactId>
 			<version>3.4</version>
 			<scope>test</scope>
+		</dependency>		
+		<dependency>  <!--  for unit tests -->			 
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		    <version>1.4.194</version>
 		</dependency>
 		
 		<!-- Json / Gson -->
