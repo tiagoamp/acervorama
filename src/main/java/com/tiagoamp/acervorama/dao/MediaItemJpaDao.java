@@ -95,8 +95,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 		query.where(filenameLike);
 		
 		TypedQuery<MediaItem> typedQuery = em.createQuery(query);				
-		List<MediaItem> list = typedQuery.getResultList();
-		return list;
+		return typedQuery.getResultList();
 	}
 
 	@Override
@@ -125,8 +124,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
 		
 		TypedQuery<MediaItem> typedQuery = em.createQuery(query);				
-		List<MediaItem> list = typedQuery.getResultList();
-		return list;
+		return typedQuery.getResultList();
 	}
 
 }
