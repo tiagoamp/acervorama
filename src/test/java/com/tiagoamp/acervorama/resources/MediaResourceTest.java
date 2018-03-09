@@ -1,7 +1,9 @@
 package com.tiagoamp.acervorama.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setRemoveAssertJRelatedElementsFromStackTrace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.hibernate.type.descriptor.java.UUIDTypeDescriptor.ToBytesTransformer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +30,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaItemFactory;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
@@ -82,6 +86,48 @@ public class MediaResourceTest {
 		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());
 	}
 	
+	@Test
+	public void testGetMedia_byId_shouldReturnValidOutput() throws Exception {
+		long id = getItemForTests().getId();
+		Mockito.when(mediaItemService.findById(id)).thenReturn(getItemForTests());
+		
+		MvcResult result = mvc.perform(get("/media/{id}",id).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
+		
+		assertThat(result.getResponse().getContentAsString()).isNotNull();
+	}
+	
+	@Test
+	public void testGetMediaByHash_shouldReturnValidOutput() throws Exception {
+		String hash = getItemForTests().getHash();
+		Mockito.when(mediaItemService.findByHash(hash)).thenReturn(getItemForTests());
+		
+		MvcResult result = mvc.perform(get("/media/hash/{hash}",hash).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
+		
+		assertThat(result.getResponse().getContentAsString()).isNotNull();
+	}
+	
+	@Test
+	public void testAdd_shouldReturnValidOutput() throws Exception {
+		MediaItem item = getItemForTests();
+		Mockito.when(mediaItemService.insert(item)).thenReturn(item);
+		
+		MvcResult result = mvc.perform(post("/media")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(item.toJson())
+						)
+						
+				.andExpect(status().isCreated())
+				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
+		
+		assertThat(result.getResponse().getContentAsString()).isNotNull();
+	}
 	
 	// Helper methods ***
 	
