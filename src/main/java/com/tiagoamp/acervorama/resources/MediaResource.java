@@ -1,22 +1,18 @@
 package com.tiagoamp.acervorama.resources;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.assertj.core.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
-import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.service.MediaItemService;
@@ -68,18 +63,18 @@ public class MediaResource {
 		return list;
 	}
 	
-	@RequestMapping(value="hash/{hashParam}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	@RequestMapping(value="hash/{hashParam}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
 	public MediaItem getMediaByHash(@PathVariable("hashParam") String hash) {
 		return service.findByHash(hash);
 	}
 	
-	@RequestMapping(value="{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	@RequestMapping(value="{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
 	public MediaItem getMedia(@PathVariable("id") Long id) {
 		return service.findById(id);
 	}
 	
 	//@RequestMapping(method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	@RequestMapping( method = RequestMethod.POST )
+	@RequestMapping( method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON )
 	@ResponseStatus( value=HttpStatus.CREATED )
 	@ResponseBody
 	public MediaItem add(@RequestBody MediaItem item) {

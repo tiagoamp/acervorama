@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
@@ -39,6 +42,13 @@ import com.tiagoamp.acervorama.dao.PathConverter;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AudioItem.class, name = "AUDIO"),
+    @JsonSubTypes.Type(value = ImageItem.class, name = "IMAGE"),
+    @JsonSubTypes.Type(value = TextItem.class, name = "TEXT"),
+    @JsonSubTypes.Type(value = VideoItem.class, name = "VIDEO")
+})
 public abstract class MediaItem {
 	
 	@Id
