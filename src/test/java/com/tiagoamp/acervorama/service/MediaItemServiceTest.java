@@ -3,7 +3,6 @@ package com.tiagoamp.acervorama.service;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.easymock.EasyMockSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,7 @@ import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 @RunWith(SpringRunner.class)
-public class MediaItemServiceTest extends EasyMockSupport {
+public class MediaItemServiceTest {
 	
 	@TestConfiguration
 	static class MediaItemServiceTestContextConfiguration {

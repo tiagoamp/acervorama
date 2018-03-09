@@ -1,10 +1,46 @@
 package com.tiagoamp.acervorama.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.ws.rs.core.MediaType;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-public class MediaResourceTest extends MediaResource {
+import com.google.gson.Gson;
+import com.tiagoamp.acervorama.model.AudioItem;
+import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaTypeAcervo;
+import com.tiagoamp.acervorama.service.MediaItemService;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(MediaResource.class)
+public class MediaResourceTest {
+
+	@Autowired
+	private MockMvc mvc;
+	
+	@MockBean
+	private MediaItemService mediaItemService;
+	
+	
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -13,14 +49,68 @@ public class MediaResourceTest extends MediaResource {
 	public void tearDown() throws Exception {
 	}
 
-	// Integration tests later... To DO !
 	
-	/*@Test
-	public void testGetMedia_shouldReturnValidOutput() {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080/acervorama");
-		String content = target.path("/webapi/media").request().get(String.class);
-		assertNotNull(content);
-	}*/
+	@Test
+	public void testGetMedia_noQueryParams_shouldReturnValidOutput() throws Exception {
+		Mockito.when(mediaItemService.getAll()).thenReturn(getItemsListForTests());
+		
+		MvcResult result = mvc.perform(get("/media").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
+		
+		@SuppressWarnings("unchecked")
+		List<MediaItem> resultList = new Gson().fromJson(result.getResponse().getContentAsString(), List.class);		
+		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());
+	}
+	
+	@Test
+	public void testGetMedia_withQueryParams_shouldReturnValidOutput() throws Exception {
+		Mockito.when(mediaItemService.findByFields("filename", "classification", MediaTypeAcervo.AUDIO)).thenReturn(getItemsListForTests());
+		
+		MvcResult result = mvc.perform(get("/media").contentType(MediaType.APPLICATION_JSON)
+					.param("filename", "filename")
+					.param("classification", "classification")
+					.param("type", "AUDIO")
+					)
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andReturn();
+		
+		@SuppressWarnings("unchecked")
+		List<MediaItem> resultList = new Gson().fromJson(result.getResponse().getContentAsString(), List.class);
+		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());
+	}
+	
+	
+	// Helper methods ***
+	
+	private MediaItem getItemForTests() {
+		Path testFilePath = Paths.get("fake", "test", "file.txt");
+		MediaItem item = new AudioItem(testFilePath);
+		item.setClassification("Classification");
+		item.setTags("Tag 01 ; Tag 02");
+		item.setDescription("Description");
+		item.setId(20L);
+		return item;
+	}
+	
+	private List<MediaItem> getItemsListForTests() {
+		Path testFilePath = Paths.get("fake", "test", "file1.txt");
+		MediaItem item1 = new AudioItem(testFilePath);
+		item1.setClassification("Classification");
+		item1.setTags("Tag 01 ; Tag 02");
+		item1.setDescription("Description One");
+		item1.setId(20L);
+		
+		testFilePath = Paths.get("fake", "test", "file2.txt");
+		MediaItem item2 = new AudioItem(testFilePath);
+		item2.setClassification("Classification");
+		item2.setTags("Tag 03 ; Tag 04");
+		item2.setDescription("Description Two");
+		item2.setId(30L);
+		
+		return Arrays.asList(item1, item2);		
+	}
 
 }

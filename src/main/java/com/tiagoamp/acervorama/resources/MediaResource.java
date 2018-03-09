@@ -1,11 +1,9 @@
 package com.tiagoamp.acervorama.resources;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
@@ -36,31 +34,22 @@ import com.tiagoamp.acervorama.service.MediaItemService;
 @CrossOrigin
 @RestController
 @RequestMapping("/media")
-//@Path("media")
 public class MediaResource {
 	
 	@Autowired
-	private MediaItemService service;// = new MediaItemService();
+	private MediaItemService service;
 	
 	
-	//@GET
-	//@Produces(MediaType.APPLICATION_JSON)
-	@RequestMapping(method = RequestMethod.GET)
-	public List<MediaItem> getMediaItems(@QueryParam(value = "filename") String nameParam, 
-										 @QueryParam(value = "classification") String classificationParam,
-										 @QueryParam(value = "type") String mediatypeParam,
-										 @QueryParam(value = "tags") String tagsParam ) {
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	public List<MediaItem> getMediaItems(@RequestParam(value = "filename", required=false) String nameParam, 
+										 @RequestParam(value = "classification", required=false) String classificationParam,
+										 @RequestParam(value = "type", required=false) MediaTypeAcervo mediatypeParam,
+										 @RequestParam(value = "tags", required=false) String tagsParam ) {
 		
-		if (nameParam != null && nameParam.isEmpty()) nameParam = null;
-		if (classificationParam != null && classificationParam.isEmpty()) classificationParam = null;
-		if (mediatypeParam != null && mediatypeParam.isEmpty()) mediatypeParam = null;
-		if (tagsParam != null && tagsParam.isEmpty()) tagsParam = null;
-				
-		List<MediaItem> list;// = new ArrayList<>();
+		List<MediaItem> list;
 		
 		if (nameParam != null || classificationParam != null || mediatypeParam != null) {
-			MediaTypeAcervo mediaType = mediatypeParam != null ? MediaTypeAcervo.valueOf(mediatypeParam.toUpperCase()) : null; 
-			list = service.findByFields(nameParam, classificationParam, mediaType); 
+			list = service.findByFields(nameParam, classificationParam, mediatypeParam); 
 		} else {
 			list = service.getAll();
 		}		
