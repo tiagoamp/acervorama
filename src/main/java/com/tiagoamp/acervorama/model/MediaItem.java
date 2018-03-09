@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
@@ -64,6 +65,8 @@ public abstract class MediaItem {
 	private String filename;
 	
 	@Convert(converter = LocalDateTimeConverter.class)
+	//@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+	//@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
     @Column(name="REGISTRATION_DATE")
 	private LocalDateTime registerDate;	
 	

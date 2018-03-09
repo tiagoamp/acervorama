@@ -74,7 +74,7 @@ public class MediaResource {
 	}
 	
 	//@RequestMapping(method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	@RequestMapping( method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON )
+	@RequestMapping( method = RequestMethod.POST, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE )
 	@ResponseStatus( value=HttpStatus.CREATED )
 	@ResponseBody
 	public MediaItem add(@RequestBody MediaItem item) {
