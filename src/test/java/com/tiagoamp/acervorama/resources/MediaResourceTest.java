@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,12 +21,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
@@ -117,30 +114,15 @@ public class MediaResourceTest {
 		MediaItem item = getItemForTests();
 		Mockito.when(mediaItemService.insert(item)).thenReturn(item);
 		
-		System.out.println(item.toJson());
-		
 		MvcResult result = mvc.perform(post("/media")
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(item.toJson()) // PROVAVELMENTE ESTE TOJSON TA MANDANDO ZUADO
-						)
-						
+						.content(item.toJson())
+						)						
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
 				.andReturn();
 		
-		assertThat(result.getResponse().getContentAsString()).isNotNull();
-		
-		// TRETA TÁ AQUI ==>   AudioItem["registerDate"])
-		
-		
-		// https://stackoverflow.com/questions/27170298/spring-reponsebody-requestbody-with-abstract-class
-		
-		/*
-* 2018-03-09 19:03:25.295  WARN 3643 --- [           main] .w.s.m.s.DefaultHandlerExceptionResolver : Failed to read HTTP message: org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected token (START_OBJECT), expected VALUE_STRING: Expected array or string.; nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Unexpected token (START_OBJECT), expected VALUE_STRING: Expected array or string.
- at [Source: (PushbackInputStream); line: 1, column: 185] (through reference chain: com.tiagoamp.acervorama.model.AudioItem["registerDate"])
-
-		 * *
-		 */
+		assertThat(result.getResponse().getContentAsString()).isNotNull();		
 	}
 	
 	// Helper methods ***

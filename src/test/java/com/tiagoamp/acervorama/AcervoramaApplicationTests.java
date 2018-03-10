@@ -1,4 +1,4 @@
-package com.tiagoamp.acervorama;
+/*package com.tiagoamp.acervorama;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,3 +14,4 @@ public class AcervoramaApplicationTests {
 	}
 
 }
+*/

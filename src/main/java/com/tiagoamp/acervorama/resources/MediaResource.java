@@ -73,7 +73,6 @@ public class MediaResource {
 		return service.findById(id);
 	}
 	
-	//@RequestMapping(method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	@RequestMapping( method = RequestMethod.POST, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE )
 	@ResponseStatus( value=HttpStatus.CREATED )
 	@ResponseBody
@@ -91,7 +90,9 @@ public class MediaResource {
 	
 	@DELETE
 	@Path("{id}")
-	public Response delete(@PathParam("id") Long id) {
+	@RequestMapping( method = RequestMethod.DELETE, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE )
+	@ResponseStatus( value=HttpStatus.NO_CONTENT )
+	public Response delete(@PathVariable("id") Long id) {
 		service.delete(id);
 		return Response.noContent().build();
 	}

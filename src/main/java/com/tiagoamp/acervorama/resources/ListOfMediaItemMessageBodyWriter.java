@@ -14,6 +14,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.tiagoamp.acervorama.model.MediaItem;
 
@@ -35,7 +36,13 @@ public class ListOfMediaItemMessageBodyWriter implements MessageBodyWriter<List<
 	public void writeTo(List<? extends MediaItem> listOfItems, Class<?> type, Type type1, Annotation[] antns, MediaType mt,
 			MultivaluedMap<String, Object> mm, OutputStream out) throws IOException, WebApplicationException {
 		
-		List<String> jsonList = listOfItems.stream().map(item -> item.toJson()).collect(Collectors.toList());
+		List<String> jsonList = listOfItems.stream().map(item -> {
+			try {
+				return item.toJson();
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("Json parsing exception.");
+			}
+		}).collect(Collectors.toList());
 		out.write(new Gson().toJson(jsonList).getBytes());
 		
 	}

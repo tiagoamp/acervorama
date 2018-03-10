@@ -23,12 +23,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
 import com.tiagoamp.acervorama.dao.PathConverter;
 
@@ -65,9 +64,7 @@ public abstract class MediaItem {
 	private String filename;
 	
 	@Convert(converter = LocalDateTimeConverter.class)
-	//@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-	//@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss")
-    @Column(name="REGISTRATION_DATE")
+	@Column(name="REGISTRATION_DATE")
 	private LocalDateTime registerDate;	
 	
 	@Column(name="TYPE")
@@ -109,9 +106,12 @@ public abstract class MediaItem {
 	}
 	
 	
-	public String toJson() {
-		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.toJson(this);
+	public String toJson() throws JsonProcessingException {
+		/*Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
+		return gson.toJson(this);*/
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+		return mapper.writeValueAsString(this);
 	}
 		
 	public void fillHash() {
