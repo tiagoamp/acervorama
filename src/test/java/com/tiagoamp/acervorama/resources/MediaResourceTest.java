@@ -1,8 +1,11 @@
 package com.tiagoamp.acervorama.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -125,6 +128,25 @@ public class MediaResourceTest {
 		assertThat(result.getResponse().getContentAsString()).isNotNull();		
 	}
 	
+	@Test
+	public void testDelete_shouldReturnValidOutput() throws Exception {
+		Long id = getItemForTests().getId();
+		doNothing().when(mediaItemService).delete(id);
+		mvc.perform(delete("/media/{id}",id)).andExpect(status().isNoContent());
+	}
+	
+	@Test
+	public void testUpdate_shouldReturnValidOutput() throws Exception {
+		MediaItem item = getItemForTests();
+		doNothing().when(mediaItemService).update(item);
+		mvc.perform(put("/media/{id}",item.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(item.toJson())
+				)
+			.andExpect(status().isOk());
+	}
+	
+	
 	// Helper methods ***
 	
 	private MediaItem getItemForTests() {
@@ -154,5 +176,5 @@ public class MediaResourceTest {
 		
 		return Arrays.asList(item1, item2);		
 	}
-
+	
 }

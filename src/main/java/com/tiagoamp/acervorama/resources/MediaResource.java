@@ -4,12 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -88,23 +82,19 @@ public class MediaResource {
 		return item;
 	}
 	
-	@DELETE
-	@Path("{id}")
-	@RequestMapping( method = RequestMethod.DELETE, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE )
+	@RequestMapping(value="{id}", method = RequestMethod.DELETE)
 	@ResponseStatus( value=HttpStatus.NO_CONTENT )
 	public Response delete(@PathVariable("id") Long id) {
 		service.delete(id);
 		return Response.noContent().build();
 	}
 	
-	@PUT
-	@Path("{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("id") Long id, MediaItem item) {
+	@RequestMapping(value="{id}", method = RequestMethod.PUT, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Response update(@PathVariable("id") Long id, @RequestBody MediaItem item) {
 		item.setId(id);
 		service.update(item);
-		return Response.ok().entity(item).build();
+		return Response.ok().build();
 	}
 	
 }
