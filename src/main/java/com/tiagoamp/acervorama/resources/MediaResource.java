@@ -8,7 +8,6 @@ import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.assertj.core.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +35,7 @@ public class MediaResource {
 	
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	@ResponseBody
 	public List<MediaItem> getMediaItems(@RequestParam(value = "filename", required=false) String nameParam, 
 										 @RequestParam(value = "classification", required=false) String classificationParam,
 										 @RequestParam(value = "type", required=false) MediaTypeAcervo mediatypeParam,
@@ -58,11 +58,13 @@ public class MediaResource {
 	}
 	
 	@RequestMapping(value="hash/{hashParam}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
+	@ResponseBody
 	public MediaItem getMediaByHash(@PathVariable("hashParam") String hash) {
 		return service.findByHash(hash);
 	}
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
+	@ResponseBody
 	public MediaItem getMedia(@PathVariable("id") Long id) {
 		return service.findById(id);
 	}
@@ -71,7 +73,6 @@ public class MediaResource {
 	@ResponseStatus( value=HttpStatus.CREATED )
 	@ResponseBody
 	public MediaItem add(@RequestBody MediaItem item) {
-		Preconditions.checkNotNull( item );
 		try {
 			item = service.insert(item);			
 		} catch (AcervoramaBusinessException e) {
@@ -84,17 +85,17 @@ public class MediaResource {
 	
 	@RequestMapping(value="{id}", method = RequestMethod.DELETE)
 	@ResponseStatus( value=HttpStatus.NO_CONTENT )
-	public Response delete(@PathVariable("id") Long id) {
+	public void delete(@PathVariable("id") Long id) {
 		service.delete(id);
-		return Response.noContent().build();
+		//return Response.noContent().build();
 	}
 	
 	@RequestMapping(value="{id}", method = RequestMethod.PUT, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public Response update(@PathVariable("id") Long id, @RequestBody MediaItem item) {
+	public void update(@PathVariable("id") Long id, @RequestBody MediaItem item) {
 		item.setId(id);
 		service.update(item);
-		return Response.ok().build();
+		//return Response.ok().build();
 	}
 	
 }
