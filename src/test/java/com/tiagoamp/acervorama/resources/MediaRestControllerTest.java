@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,16 +29,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.service.MediaItemService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(MediaResource.class)
-public class MediaResourceTest {
+@WebMvcTest(MediaRestController.class)
+public class MediaRestControllerTest {
 
+	private ObjectMapper jsonMapper;
+	
 	@Autowired
 	private MockMvc mvc;
 	
@@ -47,6 +51,9 @@ public class MediaResourceTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		jsonMapper = new ObjectMapper();
+		jsonMapper.findAndRegisterModules();
+		jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
 	@After
@@ -61,11 +68,12 @@ public class MediaResourceTest {
 		MvcResult result = mvc.perform(get("/media").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andDo(print())
 				.andReturn();
 		
 		@SuppressWarnings("unchecked")
-		List<MediaItem> resultList = new Gson().fromJson(result.getResponse().getContentAsString(), List.class);		
-		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());
+		List<MediaItemResource> resultList = jsonMapper.readValue(result.getResponse().getContentAsString(), List.class); 
+		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());		
 	}
 	
 	@Test
@@ -79,10 +87,12 @@ public class MediaResourceTest {
 					)
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andDo(print())
 				.andReturn();
 		
+		String jsonResource = result.getResponse().getContentAsString();
 		@SuppressWarnings("unchecked")
-		List<MediaItem> resultList = new Gson().fromJson(result.getResponse().getContentAsString(), List.class);
+		List<MediaItemResource> resultList = jsonMapper.readValue(jsonResource, List.class);
 		assertThat(resultList.size()).isEqualTo(getItemsListForTests().size());
 	}
 	
@@ -94,9 +104,12 @@ public class MediaResourceTest {
 		MvcResult result = mvc.perform(get("/media/{id}",id).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andDo(print())
 				.andReturn();
 		
-		assertThat(result.getResponse().getContentAsString()).isNotNull();
+		String jsonResource = result.getResponse().getContentAsString();
+		MediaItemResource resource = jsonMapper.readValue(jsonResource, MediaItemResource.class);		
+		assertThat(resource.getResource().getId()).isEqualTo(id);
 	}
 	
 	@Test
@@ -107,9 +120,12 @@ public class MediaResourceTest {
 		MvcResult result = mvc.perform(get("/media/hash/{hash}",hash).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andDo(print())
 				.andReturn();
 		
-		assertThat(result.getResponse().getContentAsString()).isNotNull();
+		String jsonResource = result.getResponse().getContentAsString();
+		MediaItemResource resource = jsonMapper.readValue(jsonResource, MediaItemResource.class);
+		assertThat(resource.getResource().getHash()).isEqualTo(hash);
 	}
 	
 	@Test
@@ -123,9 +139,12 @@ public class MediaResourceTest {
 						)						
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON_UTF8))
+				.andDo(print())
 				.andReturn();
 		
-		assertThat(result.getResponse().getContentAsString()).isNotNull();		
+		String jsonResource = result.getResponse().getContentAsString();
+		MediaItemResource resource = jsonMapper.readValue(jsonResource, MediaItemResource.class);		
+		assertThat(resource.getResource()).isEqualTo(item);		
 	}
 	
 	@Test

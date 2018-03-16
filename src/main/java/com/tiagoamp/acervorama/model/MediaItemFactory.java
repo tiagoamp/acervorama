@@ -1,25 +1,20 @@
 package com.tiagoamp.acervorama.model;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class MediaItemFactory {
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends MediaItem> T fromJson(String jsonString) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode jsonNode = null;
-		try {
-			jsonNode = objectMapper.readTree(jsonString);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public static <T extends MediaItem> T fromJson(String jsonString) throws JsonParseException, JsonMappingException, IOException {
+		JsonNode jsonNode = getJsonMapper().readTree(jsonString);
+		
 		String mediaTypeStr = jsonNode.get("type").asText();
 		MediaTypeAcervo itemMediaType = MediaTypeAcervo.valueOf(mediaTypeStr);
 		
@@ -30,9 +25,8 @@ public class MediaItemFactory {
 		return item;
 	}
 	
-	private static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) {
-		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.fromJson(jsonString, itemClass);
+	private static <T extends MediaItem> T fromJson(String jsonString, Class<T> itemClass) throws JsonParseException, JsonMappingException, IOException {
+		return getJsonMapper().readValue(jsonString, itemClass);
 	}
 	
 	private static Class<? extends MediaItem> getItemSubclass(MediaTypeAcervo type) {		
@@ -57,6 +51,13 @@ public class MediaItemFactory {
 		}
 		
 		return clazz;		
+	}
+	
+	private static ObjectMapper getJsonMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.findAndRegisterModules();
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		return objectMapper;
 	}
 		
 }

@@ -1,7 +1,9 @@
 package com.tiagoamp.acervorama.resources;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.ws.rs.client.ResponseProcessingException;
@@ -28,7 +30,7 @@ import com.tiagoamp.acervorama.service.MediaItemService;
 @CrossOrigin
 @RestController
 @RequestMapping("/media")
-public class MediaResource {
+public class MediaRestController {
 	
 	@Autowired
 	private MediaItemService service;
@@ -36,58 +38,60 @@ public class MediaResource {
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
 	@ResponseBody
-	public List<MediaItem> getMediaItems(@RequestParam(value = "filename", required=false) String nameParam, 
-										 @RequestParam(value = "classification", required=false) String classificationParam,
-										 @RequestParam(value = "type", required=false) MediaTypeAcervo mediatypeParam,
-										 @RequestParam(value = "tags", required=false) String tagsParam ) {
-		List<MediaItem> list;
+	public List<MediaItemResource> getMediaItems(@RequestParam(value = "filename", required=false) String nameParam, 
+										 		 @RequestParam(value = "classification", required=false) String classificationParam,
+										 		 @RequestParam(value = "type", required=false) MediaTypeAcervo mediatypeParam,
+										 		 @RequestParam(value = "tags", required=false) String tagsParam ) {
+		List<MediaItem> itemsList;
 		
 		if (nameParam != null || classificationParam != null || mediatypeParam != null) {
-			list = service.findByFields(nameParam, classificationParam, mediatypeParam); 
+			itemsList = service.findByFields(nameParam, classificationParam, mediatypeParam); 
 		} else {
-			list = service.getAll();
+			itemsList = service.getAll();
 		}		
 		
 		if (tagsParam != null) {
 			List<String> tagsList = Arrays.asList(tagsParam.split(","));
 			Predicate<MediaItem> notContainsTags = m -> tagsList.stream().anyMatch(tag -> !m.containsTag(tag));
-			list.removeIf(notContainsTags);			
+			itemsList.removeIf(notContainsTags);			
 		}			
 		
-		return list;
+		List<MediaItemResource> resourceList = new ArrayList<>();
+		itemsList.forEach(item -> resourceList.add(new MediaItemResource(item)));		
+		
+		return resourceList;
 	}
 	
 	@RequestMapping(value="hash/{hashParam}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
 	@ResponseBody
-	public MediaItem getMediaByHash(@PathVariable("hashParam") String hash) {
-		return service.findByHash(hash);
+	public MediaItemResource getMediaByHash(@PathVariable("hashParam") String hash) {
+		Optional<MediaItem> item = Optional.ofNullable(service.findByHash(hash));
+		return item.isPresent() ? new MediaItemResource(item.get()) : null;				
 	}
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON)
 	@ResponseBody
-	public MediaItem getMedia(@PathVariable("id") Long id) {
-		return service.findById(id);
+	public MediaItemResource getMedia(@PathVariable("id") Long id) {
+		Optional<MediaItem> item = Optional.ofNullable(service.findById(id));
+		return item.isPresent() ? new MediaItemResource(item.get()) : null;
 	}
 	
-	@RequestMapping( method = RequestMethod.POST, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE )
+	@RequestMapping( method = RequestMethod.POST, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE , produces=MediaType.APPLICATION_JSON )
 	@ResponseStatus( value=HttpStatus.CREATED )
 	@ResponseBody
-	public MediaItem add(@RequestBody MediaItem item) {
+	public MediaItemResource add(@RequestBody MediaItem item) {
 		try {
-			item = service.insert(item);			
+			item = service.insert(item);
 		} catch (AcervoramaBusinessException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
 		}	
-		//URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(item.getId())).build();
-		//return Response.created(uri).entity(item).build();
-		return item;
+		return new MediaItemResource(item);
 	}
 	
 	@RequestMapping(value="{id}", method = RequestMethod.DELETE)
 	@ResponseStatus( value=HttpStatus.NO_CONTENT )
 	public void delete(@PathVariable("id") Long id) {
-		service.delete(id);
-		//return Response.noContent().build();
+		service.delete(id);		
 	}
 	
 	@RequestMapping(value="{id}", method = RequestMethod.PUT, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
@@ -95,7 +99,6 @@ public class MediaResource {
 	public void update(@PathVariable("id") Long id, @RequestBody MediaItem item) {
 		item.setId(id);
 		service.update(item);
-		//return Response.ok().build();
 	}
 	
 }
