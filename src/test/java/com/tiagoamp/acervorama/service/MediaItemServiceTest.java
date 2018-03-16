@@ -2,37 +2,48 @@ package com.tiagoamp.acervorama.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
-import org.easymock.EasyMock;
-import org.easymock.EasyMockRule;
-import org.easymock.EasyMockSupport;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.tiagoamp.acervorama.dao.MediaItemDao;
+import com.tiagoamp.acervorama.dao.MediaItemJpaDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.AudioItem;
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
-
-public class MediaItemServiceTest extends EasyMockSupport {
+@RunWith(SpringRunner.class)
+public class MediaItemServiceTest {
 	
-	@Rule
-	public EasyMockRule rule = new EasyMockRule(this);
+	@TestConfiguration
+	static class MediaItemServiceTestContextConfiguration {
+		
+		@Bean
+		public MediaItemService mediaItemService() {
+			return new MediaItemService();
+		}
+		
+		@Bean(value="jpa")
+		public MediaItemDao mediaItemDao() {
+			return new MediaItemJpaDao();
+		}
+						
+	}
 	
-	@Mock(type = MockType.NICE)
+	@Autowired
+	private MediaItemService mediaItemService;
+	
+	@MockBean
 	private MediaItemDao daoMock;
-	
-	@TestSubject
-	private MediaItemService service = new MediaItemService();
 	
 	private MediaItem item;
 		
@@ -49,103 +60,57 @@ public class MediaItemServiceTest extends EasyMockSupport {
 
 	
 	@Test
-	public void testInsert() throws SQLException, AcervoramaBusinessException {
-		daoMock.create(item);
-		replayAll();
-				
-		service.insert(item);
-		verifyAll();
+	public void testInsert() throws AcervoramaBusinessException {
+		Mockito.when(daoMock.findByHash(item.getHash())).thenReturn(null);
+		mediaItemService.insert(item);		
 	}
 	
 	@Test(expected=AcervoramaBusinessException.class)
 	public void testInsert_sameFilePath_shouldThrowException() throws Exception {
-		daoMock.create(item);
-		EasyMock.expect(daoMock.findByPath(item.getFilePath())).andReturn(item);
-		replayAll();
-		
-		service.insert(item);
-		service.insert(item);
-		verifyAll();		
+		Mockito.when(daoMock.findByHash(item.getHash())).thenReturn(item);		
+		mediaItemService.insert(item);				
 	}
 	
 	@Test
-	public void testUpdate() throws Exception {
-		daoMock.update(item);
-		replayAll();
-		
-		service.update(item);
-		verifyAll();
+	public void testUpdate() {
+		mediaItemService.update(item);		
 	}
 	
 	@Test
-	public void testDelete() throws Exception {
-		Long id = item.getId();
-		daoMock.delete(id);
-		replayAll();
-		
-		service.delete(id);
-		verifyAll();
+	public void testDelete() {
+		mediaItemService.delete(item.getId());		
 	}
 	
 	@Test
-	public void testFindById() throws Exception {
-		Long id = item.getId();
-		EasyMock.expect(daoMock.findById(id)).andReturn(item);
-		replayAll();
-		
-		service.findById(id);
-		verifyAll();
+	public void testFindById() {
+		mediaItemService.findById(item.getId());		
 	}
 	
 	@Test
-	public void testFindByPath() throws Exception {
-		Path filePath = item.getFilePath();
-		EasyMock.expect(daoMock.findByPath(filePath)).andReturn(item);
-		replayAll();
-		
-		service.findByPath(filePath);
-		verifyAll();
+	public void testFindByPath() {
+		mediaItemService.findByPath(item.getFilePath());		
 	}
 	
 	@Test
 	public void testFindByHash() throws Exception {
-		String hash = item.getHash();
-		EasyMock.expect(daoMock.findByHash(hash)).andReturn(item);
-		replayAll();
-		
-		service.findByHash(hash);
-		verifyAll();
+		mediaItemService.findByHash(item.getHash());
 	}
 	
 	@Test
-	public void testFindByFileNameLike() throws Exception {
-		String filename = item.getFilename();
-		EasyMock.expect(daoMock.findByFileNameLike(filename)).andReturn(new ArrayList<>());
-		replayAll();
-		
-		service.findByFileNameLike(filename);
-		verifyAll();
+	public void testFindByFileNameLike() {
+		mediaItemService.findByFileNameLike(item.getFilename());		
 	}
 	
 	@Test
-	public void testFindByFields() throws Exception {
-		EasyMock.expect(daoMock.findByFields(EasyMock.anyString(), EasyMock.anyString(), (MediaTypeAcervo)EasyMock.anyObject())).andReturn(new ArrayList<>());
-		replayAll();
-		
-		service.findByFields("filename", "classification", MediaTypeAcervo.AUDIO);
-		verifyAll();
+	public void testFindByFields() {
+		mediaItemService.findByFields("filename", "classification", MediaTypeAcervo.AUDIO);		
 	}
 	
 	@Test
-	public void testGetAll() throws Exception {
-		EasyMock.expect(daoMock.findAll()).andReturn(new ArrayList<>());
-		replayAll();
-		
-		service.getAll();
-		verifyAll();
+	public void testGetAll() {
+		mediaItemService.getAll();		
 	}
 	
-
 	
 	// helper private methods
 	private MediaItem getItemForTests() {

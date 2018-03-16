@@ -1,7 +1,6 @@
 package com.tiagoamp.acervorama.model.scanner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,38 +32,41 @@ public class FileScannerTest {
 	@Test
 	public void testScan_searchForAllFiles_shouldFindThemAll() throws IOException {
 		scanner = new FileScanner(Paths.get("testFiles", "basedir"));
-		List<Path> result = scanner.perform();
-		
-		assertNotNull("Should return not null instance.", result);
-		assertEquals("Should find all the media types.", 28, result.size());		
+		int totalExpected = 28;
+		List<Path> result = scanner.perform();		
+		assertThat(result.size()).isEqualTo(totalExpected);		
 	}
 	
 	@Test
 	public void testScan_searchForAudioMediaTypes_shouldFindValidOutput() throws IOException {
 		scanner = new FileScanner(baseTestFilesDirectory, MediaTypeAcervo.AUDIO.getFileExtensions());
+		int totalExpected = 4;
 		List<Path> result = scanner.perform();		
-		assertEquals("Should find audio media types.", 4, result.size());
+		assertThat(result.size()).isEqualTo(totalExpected);
 	}
 	
 	@Test
 	public void testScan_searchForImageMediaTypes_shouldFindValidOutput() throws IOException {
 		scanner = new FileScanner(baseTestFilesDirectory, MediaTypeAcervo.IMAGE.getFileExtensions());
+		int totalExpected = 5;
 		List<Path> result = scanner.perform();		
-		assertEquals("Should find image media types.", 5, result.size());
+		assertThat(result.size()).isEqualTo(totalExpected);
 	}
 	
 	@Test
 	public void testScan_searchForTextMediaTypes_shouldFindValidOutput() throws IOException {
 		scanner = new FileScanner(baseTestFilesDirectory, MediaTypeAcervo.TEXT.getFileExtensions());
+		int totalExpected = 7;
 		List<Path> result = scanner.perform();		
-		assertEquals("Should find text media types.", 7, result.size());
+		assertThat(result.size()).isEqualTo(totalExpected);
 	}
 	
 	@Test
 	public void testScan_searchForVideoMediaTypes_shouldFindValidOutput() throws IOException {
 		scanner = new FileScanner(baseTestFilesDirectory, MediaTypeAcervo.VIDEO.getFileExtensions());
+		int totalExpected = 9;
 		List<Path> result = scanner.perform();		
-		assertEquals("Should find video media types.", 9, result.size());
+		assertThat(result.size()).isEqualTo(totalExpected);
 	}
 
 }

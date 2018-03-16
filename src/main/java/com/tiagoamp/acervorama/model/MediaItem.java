@@ -23,8 +23,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tiagoamp.acervorama.dao.LocalDateTimeConverter;
 import com.tiagoamp.acervorama.dao.PathConverter;
 
@@ -39,6 +42,13 @@ import com.tiagoamp.acervorama.dao.PathConverter;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AudioItem.class, name = "AUDIO"),
+    @JsonSubTypes.Type(value = ImageItem.class, name = "IMAGE"),
+    @JsonSubTypes.Type(value = TextItem.class, name = "TEXT"),
+    @JsonSubTypes.Type(value = VideoItem.class, name = "VIDEO")
+})
 public abstract class MediaItem {
 	
 	@Id
@@ -54,7 +64,7 @@ public abstract class MediaItem {
 	private String filename;
 	
 	@Convert(converter = LocalDateTimeConverter.class)
-    @Column(name="REGISTRATION_DATE")
+	@Column(name="REGISTRATION_DATE")
 	private LocalDateTime registerDate;	
 	
 	@Column(name="TYPE")
@@ -92,13 +102,16 @@ public abstract class MediaItem {
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MediaItem)) return false;
-		return this.filename.equals( ((MediaItem)obj).filename );
+		return this.hash.equals( ((MediaItem)obj).hash );
 	}
 	
 	
-	public String toJson() {
-		Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.toJson(this);
+	public String toJson() throws JsonProcessingException {
+		/*Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
+		return gson.toJson(this);*/
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+		return mapper.writeValueAsString(this);
 	}
 		
 	public void fillHash() {

@@ -5,87 +5,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Repository;
 
 import com.tiagoamp.acervorama.model.MediaItem;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
+@Repository(value="jpa")
+@Transactional
 public class MediaItemJpaDao implements MediaItemDao {
 	
-	private EntityManagerFactory emf;
+	@PersistenceContext
 	private EntityManager em;
 	
 		
 	public MediaItemJpaDao() {		
 	}
 	
-	
-	private void createEntityManager() {
-		emf = Persistence.createEntityManagerFactory("PU_ACERVO");
-		em = emf.createEntityManager();		
-	}
-	
-	private void closeEntityManager() {
-		em.close();
-		emf.close();
-	}
-	
-		
+			
 	@Override
 	public void create(MediaItem item) {
-		createEntityManager();
-		em.getTransaction().begin();
 		em.persist(item);
-		em.getTransaction().commit();
-		closeEntityManager();
 	}
 
 	@Override
 	public void update(MediaItem item) {
-		createEntityManager();
-		em.getTransaction().begin();
-		em.merge(item);
-		em.getTransaction().commit();
-		closeEntityManager();
+		em.merge(item);		
 	}
 
 	@Override
 	public void delete(long id) {
-		createEntityManager();
-		em.getTransaction().begin();
 		MediaItem item = em.find(MediaItem.class, id);
-		em.remove(item);
-		em.getTransaction().commit();
-		closeEntityManager();
+		em.remove(item);				    
 	}
 
 	@Override
 	public List<MediaItem> findAll() {
-		createEntityManager();
-		List<MediaItem> list = em.createQuery("from MediaItem", MediaItem.class).getResultList();
-		closeEntityManager();
-		return list;
+		return em.createQuery("from MediaItem", MediaItem.class).getResultList();
 	}
 	
 	@Override
 	public MediaItem findById(long id) {
-		createEntityManager();
-		MediaItem item = em.find(MediaItem.class, id);
-		closeEntityManager();
-		return item;
+		return em.find(MediaItem.class, id);
 	}
 
 	@Override
 	public MediaItem findByPath(Path path) {
-		createEntityManager();
 		Query query = em.createQuery("SELECT m from MediaItem m WHERE m.filePath = :pPath");
 		query.setParameter("pPath", path);
 		MediaItem item;
@@ -94,13 +68,11 @@ public class MediaItemJpaDao implements MediaItemDao {
 		} catch (NoResultException nre) {
 			item = null;
 		}		
-		closeEntityManager();
 		return item;
 	}
 	
 	@Override
 	public MediaItem findByHash(String hash) {
-		createEntityManager();
 		Query query = em.createQuery("SELECT m from MediaItem m WHERE m.hash = :pHash");
 		query.setParameter("pHash", hash);
 		MediaItem item;
@@ -109,13 +81,11 @@ public class MediaItemJpaDao implements MediaItemDao {
 		} catch (NoResultException nre) {
 			item = null;
 		}
-		closeEntityManager();
 		return item;
 	}
 
 	@Override
 	public List<MediaItem> findByFileNameLike(String filename) {
-		createEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);
 		
@@ -125,14 +95,11 @@ public class MediaItemJpaDao implements MediaItemDao {
 		query.where(filenameLike);
 		
 		TypedQuery<MediaItem> typedQuery = em.createQuery(query);				
-		List<MediaItem> list = typedQuery.getResultList();
-		closeEntityManager();
-		return list;
+		return typedQuery.getResultList();
 	}
 
 	@Override
 	public List<MediaItem> findByFields(String filename, String classification, MediaTypeAcervo mediatype) {
-		createEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<MediaItem> query = criteriaBuilder.createQuery(MediaItem.class);
 		
@@ -157,9 +124,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 		query.where((Predicate[]) predicates.toArray(new Predicate[0]));
 		
 		TypedQuery<MediaItem> typedQuery = em.createQuery(query);				
-		List<MediaItem> list = typedQuery.getResultList();
-		closeEntityManager();
-		return list;
+		return typedQuery.getResultList();
 	}
 
 }
