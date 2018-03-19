@@ -5,27 +5,30 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.scanner.FileScanner;
 
-@Path("scanner")
+@RestController
+@RequestMapping("/scanner")
 public class ScannerResource {
 	
 	private FileScanner scanner;
 		
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String[] scan( @QueryParam(value = "type") String mediatype, 
-						  @QueryParam(value = "dirPath") String directoryPath) {
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON)
+	@ResponseBody
+	public String[] scan( @RequestParam(value = "type", required=false) String mediatype,
+			              @RequestParam(value = "dirPath", required=false) String directoryPath ) {
 	
 		java.nio.file.Path origin = getOriginFromParam(directoryPath);
 		String[] fileExtensions = getMediaFileExtensionsFromParam(mediatype);
