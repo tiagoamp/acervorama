@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+
+import SideMenu from './SideMenu';
+import { DashboardBox } from './dashboard/Dashboard';
+
 import './css/bootstrap.min.css';
 import './css/dashboard.css';
-import SideMenu from './SideMenu';
-import {Dashboard} from './dashboard/Dashboard';
+import './css/pnotify.custom.min.css';
+
 
 class App extends Component {
 
@@ -32,7 +36,7 @@ class App extends Component {
             
             <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
-              <Dashboard />
+              <DashboardBox />
 
             </main>
 

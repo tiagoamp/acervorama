@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import PubSub from 'pubsub-js';
+
 import MediaCharts from './MediaCharts';
 import MediaTables from './MediaTables';
+import UIMessageDispatcher from '../UIMessageDispatcher';
 
-export class Dashboard extends Component {
+
+
+export class DashboardBox extends Component {
 
     constructor() {
         super();  
-        this.state = { totalAudio: 0, totalVideo: 0, totalImage: 0, totalText: 0};  
+        this.state = { totalAudio: 0, totalVideo: 0, totalImage: 0, totalText: 0 };  
     }
 
     componentWillMount() {
@@ -27,18 +32,29 @@ export class Dashboard extends Component {
                 totTxt++;
               }          
             });
-            this.setState({ totalAudio: totAud, totalVideo: totVid, totalImage: totImg, totalText: totTxt});        
+            this.setState({ totalAudio: totAud, totalVideo: totVid, totalImage: totImg, totalText: totTxt});
+            PubSub.publish('info-topic','Media Items data loaded at ' + new Date());
           }.bind(this),
           error: function(response) {
-            console.log('Error: ' + response);
+            PubSub.publish('error-topic','Error to access api service!');
           }
+        });
+    }
+
+    componentDidMount() {
+        PubSub.subscribe('error-topic', function(topico, content) {
+            UIMessageDispatcher.showErrorMessage(content);                        
+        });
+        PubSub.subscribe('info-topic', function(topico, content) {
+            UIMessageDispatcher.showInfoMessage(content);                        
         });
     }
 
     render() {
         return(
             <div>
-                 <MediaCharts />
+
+                <MediaCharts />
 
                 <canvas className="my-4" id="myChart" width="900" height="380"></canvas>
 
