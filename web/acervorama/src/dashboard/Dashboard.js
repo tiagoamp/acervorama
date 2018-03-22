@@ -7,7 +7,6 @@ import MediaTables from './MediaTables';
 import UIMessageDispatcher from '../UIMessageDispatcher';
 
 
-
 export class DashboardBox extends Component {
 
     constructor() {
@@ -33,7 +32,7 @@ export class DashboardBox extends Component {
               }          
             });
             this.setState({ totalAudio: totAud, totalVideo: totVid, totalImage: totImg, totalText: totTxt});
-            PubSub.publish('info-topic','Media Items data loaded at ' + new Date());
+            PubSub.publish('info-topic','Media Items data loaded \nat ' + new Date());
           }.bind(this),
           error: function(response) {
             PubSub.publish('error-topic','Error to access api service!');
