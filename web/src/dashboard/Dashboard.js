@@ -51,6 +51,7 @@ export class DashboardBox extends Component {
 
     render() {
         return(
+            
             <div>
 
                 <MediaCharts />
