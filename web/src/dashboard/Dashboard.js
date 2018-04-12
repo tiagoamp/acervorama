@@ -54,9 +54,7 @@ export class DashboardBox extends Component {
             
             <div>
 
-                <MediaCharts />
-
-                <canvas className="my-4" id="myChart" width="900" height="380"></canvas>
+                <MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
 
                 <MediaTables totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
 
