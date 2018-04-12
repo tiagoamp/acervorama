@@ -15,6 +15,7 @@ export class DashboardBox extends Component {
     }
 
     componentWillMount() {
+
         $.ajax({
           url:"http://localhost:8080/media",
           dataType: 'json',
@@ -32,12 +33,13 @@ export class DashboardBox extends Component {
               }          
             });
             this.setState({ totalAudio: totAud, totalVideo: totVid, totalImage: totImg, totalText: totTxt});
-            PubSub.publish('info-topic','Media Items data loaded \nat ' + new Date());
+            PubSub.publish('info-topic','Media Items data loaded \nat ' + new Date());                        
           }.bind(this),
           error: function(response) {
             PubSub.publish('error-topic','Error to access api service!');
           }
         });
+
     }
 
     componentDidMount() {
@@ -45,7 +47,7 @@ export class DashboardBox extends Component {
             UIMessageDispatcher.showErrorMessage(content);                        
         });
         PubSub.subscribe('info-topic', function(topico, content) {
-            UIMessageDispatcher.showInfoMessage(content);                        
+            UIMessageDispatcher.showInfoMessage(content);            
         });
     }
 
@@ -54,7 +56,11 @@ export class DashboardBox extends Component {
             
             <div>
 
-                <MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
+                {this.state.totalAudio > 0 ? (
+                    <MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
+                ) : (
+                    'Loading data...'
+                )}
 
                 <MediaTables totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
 
