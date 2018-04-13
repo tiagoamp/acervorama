@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import SideMenu from './SideMenu';
 import Header from './commom/Header';
+import ScanForm from './scanner/ScanForm';
 
 import './css/bootstrap.min.css';
 import './css/pnotify.custom.min.css';
@@ -28,7 +29,7 @@ class Scan extends Component {
             
             <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
-              <h1>Test !!!!</h1>
+              <ScanForm/>
 
             </main>
 
