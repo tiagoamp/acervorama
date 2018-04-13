@@ -12,10 +12,6 @@ export default class MediaCharts extends Component {
     componentWillMount() {
         const mediaLabels = [ 'Audio', 'Video', 'Image', 'Text' ];
         const mediaTotals = [this.props.totalAudio, this.props.totalVideo, this.props.totalImage, this.props.totalText ];
-        //const mediaTotals = [ 10, 20, 30, 40 ];
-
-        //console.log(this.props);
-        //console.log(mediaTotals);
 
         const data = {
             labels: mediaLabels,
@@ -42,8 +38,7 @@ export default class MediaCharts extends Component {
     render() {
 
         const data = this.state.data;
-        console.log(data);
-
+        
         return(
 
             <div>
