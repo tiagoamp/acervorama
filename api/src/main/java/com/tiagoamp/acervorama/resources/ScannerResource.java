@@ -3,12 +3,16 @@ package com.tiagoamp.acervorama.resources;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +23,9 @@ import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.scanner.FileScanner;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
+@CrossOrigin
 @RestController
 @RequestMapping("/scanner")
 public class ScannerResource {
@@ -41,8 +48,8 @@ public class ScannerResource {
 		} catch (IOException e) {
 			throw new ResponseProcessingException(Response.serverError().build(), new AcervoramaBusinessException("IO error!", e));
 		}
-		
-		return (String[]) list.stream().map(p->toString()).toArray();
+				
+		return list.stream().map(p -> p.toAbsolutePath().toString()).toArray(String[]::new);
 	}
 	
 	
