@@ -3,10 +3,7 @@ package com.tiagoamp.acervorama.resources;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 import com.tiagoamp.acervorama.model.scanner.FileScanner;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 @CrossOrigin
 @RestController
