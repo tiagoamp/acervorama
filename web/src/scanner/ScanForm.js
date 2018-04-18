@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 
 import $ from 'jquery';
+import PubSub from 'pubsub-js';
+
+import UIMessageDispatcher from '../UIMessageDispatcher';
 
 import '../css/bootstrap.min.css';
 import '../css/pnotify.custom.min.css';
+import '../css/scanner.css';
 
 
 class ScanForm extends Component {
 
   constructor() {
     super();
-    this.state = { mediaPath:'', mediaType:'' }; 
+    this.state = { mediaPath:'', mediaType:'', mediaScannedList: [] }; 
 
     this.sendScanForm = this.sendScanForm.bind(this); 
     this.setMediaPath = this.setMediaPath.bind(this);
@@ -19,8 +23,6 @@ class ScanForm extends Component {
 
   sendScanForm(event) {
     event.preventDefault();
-
-    console.log(this.state);
 
     $.ajax({
       url:"http://localhost:8080/scanner",
@@ -34,10 +36,12 @@ class ScanForm extends Component {
       dataType: 'json',
       data: {type:this.state.mediaType , dirPath:this.state.mediaPath},
       success: function(response) {
-        console.log(response);
-      },
+        this.setState( {mediaScannedList: response} );
+        PubSub.publish('scanned-topic',response);
+      }.bind(this),
       error: function(response) {        
         console.log("Error: " + JSON.stringify(response));
+        PubSub.publish('error-topic','Error while accessing api service!');
       }
     });
 
@@ -51,6 +55,12 @@ class ScanForm extends Component {
     this.setState({mediaType:event.target.value});
   }
 
+
+  componentDidMount() {
+    PubSub.subscribe('error-topic', function(topico, content) {
+        UIMessageDispatcher.showErrorMessage(content);                        
+    });      
+  }
 
   render() {
     return (
@@ -104,7 +114,51 @@ class ScanForm extends Component {
                 </div>
               </form>
 
+              <hr/>
+              
+              <h2 className="sub-header">Media Collection List</h2>
+              <hr/>
+
+              <form onSubmit={this.sendMediaToSaveForm} method="POST">
+
+                <div className="form-group row">
+                  <div className="col-sm-10">
+                    <button type="button" className="btn btn-outline-primary">Save All</button>
+                  </div>
+                </div>               
+
+                <table className="table table-bordered table-hover">
+                  <thead>
+                    <tr key="header">
+                      <th scope="col" className="centered">#</th>
+                      <th scope="col">File Name</th>
+                      <th scope="col">Full Path</th>
+                      <th scope="col" className="centered">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    {
+                      this.state.mediaScannedList.map(function(item, index) {
+                            const filename = item.replace(/^.*[\\/]/, '');
+                            return (
+                              <tr key={index + 1 + item}>
+                                <td className="centered">{index+1}</td>
+                                <td>{filename}</td>
+                                <td>{item}</td>
+                                <td className="centered"><button type="button" className="btn btn-info">Save</button></td>
+                              </tr>      
+                            );
+                        })
+                    }
+
+                  </tbody>
+                </table>
+              </form>  
+
             </section>
+
+            
 
     );
   }
