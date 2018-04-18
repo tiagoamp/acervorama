@@ -24,25 +24,19 @@ class ScanForm extends Component {
 
     $.ajax({
       url:"http://localhost:8080/scanner",
-      headers: { 'Access-Control-Allow-Origin': '*', 
+      /*headers: { 'Access-Control-Allow-Origin': '*', 
                  'Access-Control-Allow-Credentials': true, 
                  'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
                  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token',                  
                  'Access-Control-Expose-Headers': 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization' 
-                },
+                },*/
       crossDomain: true,        
-      type: "GET",
       dataType: 'json',
       data: {type:this.state.mediaType , dirPath:this.state.mediaPath},
       success: function(response) {
-        //TODO !!!
-        //this.setState({ totalAudio: totAud, totalVideo: totVid, totalImage: totImg, totalText: totTxt});
-        //PubSub.publish('info-topic','Media Items data loaded \nat ' + new Date());                        
         console.log(response);
-      },//.bind(this),
-      error: function(response) {
-        //PubSub.publish('error-topic','Error to access api service!');
-        // TODO !!!
+      },
+      error: function(response) {        
         console.log("Error: " + JSON.stringify(response));
       }
     });
