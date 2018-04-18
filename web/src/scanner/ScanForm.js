@@ -146,7 +146,7 @@ class ScanForm extends Component {
                                 <td className="centered">{index+1}</td>
                                 <td>{filename}</td>
                                 <td>{item}</td>
-                                <td className="centered"><button type="button" className="btn btn-info">Save</button></td>
+                                <td className="centered"><button type="button" className="btn btn-outline-info">Save</button></td>
                               </tr>      
                             );
                         })
