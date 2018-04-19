@@ -6,56 +6,61 @@ import '../css/scanner.css';
 
 
 class ScanTable extends Component {
- 
-  render() {
-    return (
 
-      <div>
+    constructor() {
+        super();
+        this.state = { selectedItem: {} };        
+    }
+
+    render() {
+        return (
+
+            <div>
 
                 <h2 className="sub-header">Media Collection List</h2>
                 <hr/>
 
                 <form onSubmit={this.sendMediaToSaveForm} method="POST">
 
-                  <div className="form-group row">
+                    <div className="form-group row">
                     <div className="col-sm-10">
-                      <button type="button" className="btn btn-outline-primary">Save All</button>
+                        <button type="button" className="btn btn-outline-primary">Save All</button>
                     </div>
-                  </div>               
+                    </div>               
 
-                  <table className="table table-bordered table-hover">
+                    <table className="table table-bordered table-hover">
                     <thead>
-                      <tr key="header">
+                        <tr key="header">
                         <th scope="col" className="centered">#</th>
                         <th scope="col">File Name</th>
                         <th scope="col">Full Path</th>
                         <th scope="col" className="centered">Action</th>
-                      </tr>
+                        </tr>
                     </thead>
                     <tbody>
 
-                      {
+                        {
                         this.props.scannedList.map(function(item, index) {
-                              const filename = item.replace(/^.*[\\/]/, '');
-                              return (
+                                const filename = item.replace(/^.*[\\/]/, '');
+                                return (
                                 <tr key={index + 1 + item}>
-                                  <td className="centered">{index+1}</td>
-                                  <td>{filename}</td>
-                                  <td>{item}</td>
-                                  <td className="centered"><button type="button" className="btn btn-outline-info">Save</button></td>
+                                    <td className="centered">{index+1}</td>
+                                    <td>{filename}</td>
+                                    <td>{item}</td>
+                                    <td className="centered"><button type="button" className="btn btn-outline-info">Save</button></td>
                                 </tr>      
-                              );
-                          })
-                      }
+                                );
+                            })
+                        }
 
                     </tbody>
-                  </table>
+                    </table>
                 </form>  
 
-      </div>
+            </div>
 
-    );
-  }
+        );
+    }
 
 }
 

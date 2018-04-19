@@ -18,17 +18,42 @@ class Scan extends Component {
 
   constructor() {
     super();
-    this.state = { activePanel: 1 };
+    this.state = { activePanel: 1, mediaPath:'', mediaType:'', mediaScannedList: [], formErrors: new Map() }; 
 
-    this.state = { mediaPath:'', mediaType:'', mediaScannedList: [] }; 
+    this.sendScanForm = this.sendScanForm.bind(this);
+    this._cleanFormErrorMessages = this._cleanFormErrorMessages.bind(this);
 
-    this.sendScanForm = this.sendScanForm.bind(this); 
     this.setMediaPath = this.setMediaPath.bind(this);
     this.setMediaType = this.setMediaType.bind(this);
   }
 
+  _cleanFormErrorMessages() {
+    this.setState ( {formErrors: new Map()} ); // clean errors msgs
+  }
+
+  _validateScanForm() {    
+    let errorsMap = new Map();
+    if (this.state.mediaPath === '') {
+      errorsMap.set('media-path','Empty media path');      
+    }
+    if (this.state.mediaType === '') {
+      errorsMap.set('media-type','Empty media type');
+    }
+    return errorsMap;
+  }
+
   sendScanForm(event) {
     event.preventDefault();
+
+    this._cleanFormErrorMessages();
+
+    const errors = this._validateScanForm();
+    if (errors.size > 0) {
+      console.log("Form validation Errors ocurred!");
+      PubSub.publish('error-topic','Input validation errors found!');
+      this.setState ( {formErrors: new Map(errors)} );      
+      return;
+    }
 
     $.ajax({
       url:"http://localhost:8080/scanner",
@@ -43,7 +68,7 @@ class Scan extends Component {
       data: {type:this.state.mediaType , dirPath:this.state.mediaPath},
       success: function(response) {
         this.setState( {mediaScannedList: response} );
-        PubSub.publish('scanned-topic',response);
+        PubSub.publish('info-topic','Scan Performed!');
       }.bind(this),
       error: function(response) {        
         console.log("Error: " + JSON.stringify(response));
@@ -64,11 +89,15 @@ class Scan extends Component {
 
   componentDidMount() {
     PubSub.subscribe('error-topic', function(topico, content) {
-        UIMessageDispatcher.showErrorMessage(content);                        
-    });      
+      UIMessageDispatcher.showErrorMessage(content);                        
+    }); 
+    PubSub.subscribe('info-topic', function(topico, content) {
+      UIMessageDispatcher.showInfoMessage(content);            
+    });   
   }
   
   render() {
+
     return (
 
       <div>
@@ -90,36 +119,37 @@ class Scan extends Component {
                   <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Directory path: </label>
                     <div className="col-sm-10">
-                      <input type="text" className="form-control" id="inputDirectory" name="inputDirectory" value={this.state.mediaPath} onChange={this.setMediaPath} placeholder="Enter directory path" />
-                    </div>
+                      <input type="text" className={ 'form-control'.concat(this.state.formErrors.get('media-path') === undefined ? '' : " is-invalid") } id="inputDirectory" name="inputDirectory" value={this.state.mediaPath} onChange={this.setMediaPath} placeholder="Enter directory path" />                      
+                      <div className="invalid-feedback"> {this.state.formErrors.get('media-path')} </div>
+                    </div>                    
                   </div>                
                   <fieldset className="form-group">
                     <div className="row">
-                      <legend className="col-form-label col-sm-2 pt-0">Media Type: </legend>
+                      <legend className="col-form-label col-sm-2 pt-0">Media Type: </legend>                      
                       <div className="col-sm-10">
                         <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio" name="inputMediaType" id="inputAudio" value="AUDIO" onClick={this.setMediaType} />
+                          <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputAudio" value="AUDIO" onClick={this.setMediaType} />
                           <label className="form-check-label" htmlFor="inputAudio">
                             Audio
-                          </label>
+                          </label>                          
                         </div>
                         <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio" name="inputMediaType" id="inputImage" value="IMAGE" onClick={this.setMediaType} />
+                          <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputImage" value="IMAGE" onClick={this.setMediaType} />
                           <label className="form-check-label" htmlFor="inputImage">
                             Image
-                          </label>
+                          </label>                          
                         </div>
                         <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio" name="inputMediaType" id="inputText" value="TEXT" onClick={this.setMediaType} />
+                          <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputText" value="TEXT" onClick={this.setMediaType} />
                           <label className="form-check-label" htmlFor="inputText">
                             Text
-                          </label>
+                          </label>                          
                         </div>
                         <div className="form-check form-check-inline">
-                          <input className="form-check-input" type="radio" name="inputMediaType" id="inputVideo" value="VIDEO" onClick={this.setMediaType} />
+                          <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputVideo" value="VIDEO" onClick={this.setMediaType} />
                           <label className="form-check-label" htmlFor="inputVideo">
                             Video
-                          </label>
+                          </label>                          
                         </div> 
                       </div>
                     </div>
