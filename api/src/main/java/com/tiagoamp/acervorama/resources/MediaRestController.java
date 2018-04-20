@@ -81,9 +81,9 @@ public class MediaRestController {
 	@ResponseBody
 	public MediaItemResource add(@RequestBody MediaItem item) {
 		try {
-			item = service.insert(item);
+			item = service.insert(item);			
 		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.serverError().build(), e.getBusinessMessage());
+			throw new ResponseProcessingException(Response.notModified().build(), e.getBusinessMessage());
 		}	
 		return new MediaItemResource(item);
 	}

@@ -35,7 +35,7 @@ public class MediaItemService {
 	public MediaItem insert(MediaItem item) throws AcervoramaBusinessException  {
 		if (item.getHash() == null) item = MediaItemFactory.getItemSubclassInstance(item.getClass(), item.getFilePath());
 		Optional<MediaItem> dbItem = Optional.ofNullable(dao.findByHash(item.getHash()));
-		if (dbItem.isPresent()) throw new AcervoramaBusinessException("File path already exists!");
+		if (dbItem.isPresent()) throw new AcervoramaBusinessException("File path already exists: " + item.getFilePath());
 		dao.create(item);
 		return dao.findByHash(item.getHash());
 	}
