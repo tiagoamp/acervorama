@@ -54,7 +54,7 @@ public abstract class MediaItem {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="ID")
-	private long id;
+	private Long id;
 	
 	@Convert(converter = PathConverter.class)
 	@Column(name="PATH")	
@@ -107,8 +107,6 @@ public abstract class MediaItem {
 	
 	
 	public String toJson() throws JsonProcessingException {
-		/*Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(Path.class, new MyPathConverter()).create();
-		return gson.toJson(this);*/
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.findAndRegisterModules();
 		return mapper.writeValueAsString(this);
@@ -153,10 +151,10 @@ public abstract class MediaItem {
 	}
 		
 		
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getFilename() {

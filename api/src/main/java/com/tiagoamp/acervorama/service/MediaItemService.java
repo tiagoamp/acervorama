@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.tiagoamp.acervorama.dao.MediaItemDao;
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
+import com.tiagoamp.acervorama.model.MediaItemFactory;
 import com.tiagoamp.acervorama.model.MediaTypeAcervo;
 
 @Service
@@ -31,7 +32,8 @@ public class MediaItemService {
 	 * @param item
 	 * @throws AcervoramaBusinessException
 	 */
-	public MediaItem insert(MediaItem item) throws AcervoramaBusinessException  {		 
+	public MediaItem insert(MediaItem item) throws AcervoramaBusinessException  {
+		if (item.getHash() == null) item = MediaItemFactory.getItemSubclassInstance(item.getClass(), item.getFilePath());
 		Optional<MediaItem> dbItem = Optional.ofNullable(dao.findByHash(item.getHash()));
 		if (dbItem.isPresent()) throw new AcervoramaBusinessException("File path already exists!");
 		dao.create(item);
