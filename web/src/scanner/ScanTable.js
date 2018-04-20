@@ -14,13 +14,15 @@ class ScanTable extends Component {
 
     constructor() {
         super();
-        this.state = { scannedList: [], mediaType: '' };        
+        this.state = { scannedList: [], mediaType: '', hasUnsavedMedia: true };        
         
         this.saveSelectedMedias = this.saveSelectedMedias.bind(this);
+        this._updateState = this._updateState.bind(this);
     }
 
     componentWillMount() {
-        this.setState( {scannedList: this.props.scannedList, mediaType: this.props.mediaType} );
+        const mediaList = this.props.scannedList.map( (path) => { return { path: path, isSaved: false}; } );        
+        this.setState( {scannedList: mediaList, mediaType: this.props.mediaType} );
     }
 
     componentDidMount() {
@@ -35,8 +37,8 @@ class ScanTable extends Component {
     saveSelectedMedias(event) {
         event.preventDefault();
 
-        this.state.scannedList.forEach( (path) => {
-            const media = { filePath: path, type: this.state.mediaType };
+        this.state.scannedList.forEach( (m) => {
+            const media = { filePath: m.path, type: this.state.mediaType };
             
             $.ajax({
                 url:"http://localhost:8080/media",
@@ -46,25 +48,30 @@ class ScanTable extends Component {
                 dataType: 'json',
                 data: JSON.stringify(media),
                 success: function(response) {
-                  console.log('Item saved: ', JSON.stringify(response));
-                  PubSub.publish('info-topic','Saved item: ' + JSON.stringify(response.resource.filename));
-
-                //   const newList = this.state.scannedList.map( (path) => {
-                //       if (path === media.resource.filename) {
-
-                //       }
-                //   } );
-
-                },//.bind(this),
+                    PubSub.publish('info-topic','Saved item: ' + JSON.stringify(response.resource.filename));
+                    this._updateState(m);
+                }.bind(this),
                 error: function(response) {        
-                  console.log("Error: " + JSON.stringify(response));
-                  PubSub.publish('error-topic',response.responseJSON.message);
+                    console.log("Error: " + JSON.stringify(response));
+                    PubSub.publish('error-topic',response.responseJSON.message);
                 }
               });
         } );
-
             
       }
+
+    _updateState(savedMedia) {
+        let savedCounter = 0;
+
+        const newList = this.state.scannedList.map( (media) => {
+            if (media.path === savedMedia.path) media.isSaved = true;
+            if (media.isSaved) savedCounter++;
+            return media;
+        } );
+
+        const hasUnsavedMedia = savedCounter < newList.length;
+        this.setState( {scannedList: newList, hasUnsavedMedia: hasUnsavedMedia} )        
+    }
 
 
     render() {
@@ -81,7 +88,11 @@ class ScanTable extends Component {
 
                     <div className="form-group row">
                         <div className="col-sm-10">
-                            <button type="submit" className="btn btn-outline-primary">Save All</button>
+                            {this.state.hasUnsavedMedia ? (
+                                <button type="submit" className="btn btn-outline-primary">Save All</button>
+                            ) : (
+                                <button disabled type="submit" className="btn btn-outline-primary">All Saved!</button>
+                            )}
                         </div>
                     </div>               
                 
@@ -99,13 +110,20 @@ class ScanTable extends Component {
 
                         {
                         this.state.scannedList.map(function(item, index) {
-                                const filename = item.replace(/^.*[\\/]/, '');
+                                const filename = item.path.replace(/^.*[\\/]/, '');                                
                                 return (
                                 <tr key={index + 1 + item}>
                                     <td className="centered">{index+1}</td>
-                                    <td>{filename}</td>
-                                    <td>{item}</td>
-                                    <td className="centered"><button type="button" className="btn btn-outline-info">Save</button></td>
+                                    <td>{filename + " - " + item.isSaved}</td>
+                                    <td>{item.path}</td>
+                                    <td className="centered">
+                                        {item.isSaved ? (
+                                            <button disabled type="button" className="btn btn-outline-info">Saved!</button>
+                                        ) : (
+                                            <button type="button" className="btn btn-outline-info">Save</button>
+                                        )}
+
+                                    </td>
                                 </tr>      
                                 );
                             })
