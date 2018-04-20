@@ -16,7 +16,8 @@ class ScanTable extends Component {
         super();
         this.state = { scannedList: [], mediaType: '', hasUnsavedMedia: true };        
         
-        this.saveAllMedias = this.saveAllMedias.bind(this);
+        this.saveAllMedia = this.saveAllMedia.bind(this);
+        this.saveSelectedMedia = this.saveSelectedMedia.bind(this);
         this._updateState = this._updateState.bind(this);
     }
 
@@ -34,7 +35,7 @@ class ScanTable extends Component {
         });   
       }
 
-    saveAllMedias(event) {
+    saveAllMedia(event) {
         event.preventDefault();
 
         this.state.scannedList.forEach( (m) => {
@@ -60,6 +61,14 @@ class ScanTable extends Component {
             
       }
 
+    saveSelectedMedia(event) {
+        event.preventDefault();
+
+        console.log('Save button clicked!!', event.target.value)
+
+        //TODO: finish this!!!!
+    }
+
     _updateState(savedMedia) {
         let savedCounter = 0;
 
@@ -84,7 +93,7 @@ class ScanTable extends Component {
                 <h2 className="sub-header">Media Collection List</h2>
                 <hr/>
 
-                <form onSubmit={this.saveAllMedias} method="POST">
+                <form onSubmit={this.saveAllMedia} method="POST">
 
                     <div className="form-group row">
                         <div className="col-sm-10">
@@ -110,7 +119,7 @@ class ScanTable extends Component {
 
                         {
                         this.state.scannedList.map(function(item, index) {
-                                const filename = item.path.replace(/^.*[\\/]/, '');                                
+                                const filename = item.path.replace(/^.*[\\/]/, '');
                                 return (
                                 <tr key={index + 1 + item}>
                                     <td className="centered">{index+1}</td>
@@ -120,13 +129,13 @@ class ScanTable extends Component {
                                         {item.isSaved ? (
                                             <button disabled type="button" className="btn btn-outline-info">Saved!</button>
                                         ) : (
-                                            <button type="button" className="btn btn-outline-info" onClick='alert("oi")'>Save</button>
+                                            <button type="button" className="btn btn-outline-info" onClick={this.saveSelectedMedia} >Save</button>
                                         )}
 
                                     </td>
                                 </tr>      
                                 );
-                            })
+                            }.bind(this))
                         }
 
 
