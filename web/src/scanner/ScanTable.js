@@ -16,7 +16,7 @@ class ScanTable extends Component {
         super();
         this.state = { scannedList: [], mediaType: '', hasUnsavedMedia: true };        
         
-        this.saveSelectedMedias = this.saveSelectedMedias.bind(this);
+        this.saveAllMedias = this.saveAllMedias.bind(this);
         this._updateState = this._updateState.bind(this);
     }
 
@@ -34,7 +34,7 @@ class ScanTable extends Component {
         });   
       }
 
-    saveSelectedMedias(event) {
+    saveAllMedias(event) {
         event.preventDefault();
 
         this.state.scannedList.forEach( (m) => {
@@ -84,7 +84,7 @@ class ScanTable extends Component {
                 <h2 className="sub-header">Media Collection List</h2>
                 <hr/>
 
-                <form onSubmit={this.saveSelectedMedias} method="POST">
+                <form onSubmit={this.saveAllMedias} method="POST">
 
                     <div className="form-group row">
                         <div className="col-sm-10">
@@ -120,7 +120,7 @@ class ScanTable extends Component {
                                         {item.isSaved ? (
                                             <button disabled type="button" className="btn btn-outline-info">Saved!</button>
                                         ) : (
-                                            <button type="button" className="btn btn-outline-info">Save</button>
+                                            <button type="button" className="btn btn-outline-info" onClick='alert("oi")'>Save</button>
                                         )}
 
                                     </td>
