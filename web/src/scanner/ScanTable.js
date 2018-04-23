@@ -17,7 +17,6 @@ class ScanTable extends Component {
         this.state = { scannedList: [], mediaType: '', hasUnsavedMedia: true };        
         
         this.saveAllMedia = this.saveAllMedia.bind(this);
-        this.saveSelectedMedia = this.saveSelectedMedia.bind(this);
         this._updateState = this._updateState.bind(this);
     }
 
@@ -33,40 +32,41 @@ class ScanTable extends Component {
         PubSub.subscribe('info-topic', function(topico, content) {
           UIMessageDispatcher.showInfoMessage(content);            
         });   
-      }
+    }
+
+    _postMedia(m) {
+        const media = { filePath: m.path, type: this.state.mediaType };
+            
+        $.ajax({
+            url:"http://localhost:8080/media",
+            headers: { 'Content-Type': 'application/json' },
+            type: 'POST',
+            crossDomain: true,        
+            dataType: 'json',
+            data: JSON.stringify(media),
+            success: function(response) {
+                PubSub.publish('info-topic','Saved item: ' + JSON.stringify(response.resource.filename));
+                this._updateState(m);
+            }.bind(this),
+            error: function(response) {        
+                console.log("Error: " + JSON.stringify(response));
+                PubSub.publish('error-topic',response.responseJSON.message);
+            }
+          });
+    }
 
     saveAllMedia(event) {
         event.preventDefault();
 
         this.state.scannedList.forEach( (m) => {
-            const media = { filePath: m.path, type: this.state.mediaType };
-            
-            $.ajax({
-                url:"http://localhost:8080/media",
-                headers: { 'Content-Type': 'application/json' },
-                type: 'POST',
-                crossDomain: true,        
-                dataType: 'json',
-                data: JSON.stringify(media),
-                success: function(response) {
-                    PubSub.publish('info-topic','Saved item: ' + JSON.stringify(response.resource.filename));
-                    this._updateState(m);
-                }.bind(this),
-                error: function(response) {        
-                    console.log("Error: " + JSON.stringify(response));
-                    PubSub.publish('error-topic',response.responseJSON.message);
-                }
-              });
+            if (!m.isSaved) this._postMedia(m);            
         } );
             
       }
 
-    saveSelectedMedia(event) {
+    saveSelectedMedia(index,event) {
         event.preventDefault();
-
-        console.log('Save button clicked!!', event.target.value)
-
-        //TODO: finish this!!!!
+        this._postMedia(this.state.scannedList[index]);
     }
 
     _updateState(savedMedia) {
@@ -123,13 +123,13 @@ class ScanTable extends Component {
                                 return (
                                 <tr key={index + 1 + item}>
                                     <td className="centered">{index+1}</td>
-                                    <td>{filename + " - " + item.isSaved}</td>
+                                    <td>{filename}</td>
                                     <td>{item.path}</td>
                                     <td className="centered">
                                         {item.isSaved ? (
                                             <button disabled type="button" className="btn btn-outline-info">Saved!</button>
                                         ) : (
-                                            <button type="button" className="btn btn-outline-info" onClick={this.saveSelectedMedia} >Save</button>
+                                            <button type="button" className="btn btn-outline-info" onClick={this.saveSelectedMedia.bind(this,index)} >Save</button>
                                         )}
 
                                     </td>

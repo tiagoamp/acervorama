@@ -10,7 +10,9 @@ export default class UIMessageDispatcher {
             shadow:true,
             hide:true,
             nonblock:false,
-            desktop:false
+            remove: true,
+            destroy: true,
+            desktop:false            
         });
     }
 
@@ -22,6 +24,8 @@ export default class UIMessageDispatcher {
             shadow:true,
             hide:true,
             nonblock:false,
+            remove: true,
+            destroy: true,
             desktop:false
         });
     }
@@ -34,7 +38,9 @@ export default class UIMessageDispatcher {
             shadow:true,
             hide:true,
             nonblock:false,
-            desktop:false
+            remove: true,
+            destroy: true,
+            desktop:false            
         });
     }
     
