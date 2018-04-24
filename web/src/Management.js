@@ -53,7 +53,13 @@ class Management extends Component {
                     <div className="col-sm-10">
                       <input type="text" className="form-control" id="inputClassification" name="inputClassification" value="" placeholder="Enter classification" />
                     </div>                    
-                  </div>                
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-2 col-form-label">Tags: </label>
+                    <div className="col-sm-10">
+                      <TagsInput value={this.state.tags} onChange={this.handleTagsChange.bind(this)} />  
+                    </div>                    
+                  </div>
                   <fieldset className="form-group">
                     <div className="row">
                       <legend className="col-form-label col-sm-2 pt-0">Media Type: </legend>                      
@@ -84,13 +90,7 @@ class Management extends Component {
                         </div> 
                       </div>
                     </div>
-                  </fieldset>
-                  <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Tags: </label>
-                    <div className="col-sm-10">
-                      <TagsInput value={this.state.tags} onChange={this.handleTagsChange.bind(this)} />  
-                    </div>                    
-                  </div>                   
+                  </fieldset>                                     
                   <div className="form-group row">
                     <div className="col-sm-10">
                       <button type="submit" className="btn btn-primary">Search!</button>
