@@ -13,7 +13,8 @@
     "react-pnotify": "0.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "react-tagsinput": "^3.19.0"
   },
   "scripts": {
     "start": "react-scripts start",
