@@ -44,13 +44,15 @@ public class MediaRestController {
 										 		 @RequestParam(value = "tags", required=false) String tagsParam ) {
 		List<MediaItem> itemsList;
 		
-		if (nameParam != null || classificationParam != null || mediatypeParam != null) {
+		final boolean hasParamsFilled = (nameParam != null && !nameParam.isEmpty()) || (classificationParam != null && !classificationParam.isEmpty()) || mediatypeParam != null; 
+		if (hasParamsFilled) {
 			itemsList = service.findByFields(nameParam, classificationParam, mediatypeParam); 
 		} else {
 			itemsList = service.getAll();
 		}		
 		
 		if (tagsParam != null) {
+			tagsParam = tagsParam.toUpperCase();
 			List<String> tagsList = Arrays.asList(tagsParam.split(","));
 			Predicate<MediaItem> notContainsTags = m -> tagsList.stream().anyMatch(tag -> !m.containsTag(tag));
 			itemsList.removeIf(notContainsTags);			

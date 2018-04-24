@@ -3,6 +3,11 @@ import TagsInput from 'react-tagsinput'
 
 import 'react-tagsinput/react-tagsinput.css' // If using WebPack and style-loader.
 
+import $ from 'jquery';
+import PubSub from 'pubsub-js';
+
+import UIMessageDispatcher from './UIMessageDispatcher';
+
 import SideMenu from './SideMenu';
 import Header from './commom/Header';
 
@@ -15,6 +20,8 @@ class Management extends Component {
   constructor() {
     super();
     this.state = { activePanel: 2, filename:'', classification:'', mediaType:'', tags: [] };
+
+    this.sendSearchForm = this.sendSearchForm.bind(this);
   }
 
 
@@ -26,6 +33,42 @@ class Management extends Component {
 
   handleTagsChange(tags) {
     this.setState({tags})
+  }
+
+  componentDidMount() {
+    PubSub.subscribe('error-topic', function(topico, content) {
+      UIMessageDispatcher.showErrorMessage(content);                        
+    }); 
+    PubSub.subscribe('info-topic', function(topico, content) {
+      UIMessageDispatcher.showInfoMessage(content);            
+    });   
+  }
+
+  sendSearchForm(event) {
+    event.preventDefault();
+
+    const tagsCsv = this.state.tags.join(",");
+    console.log(this.state.tags);
+    console.log(tagsCsv);
+
+    $.ajax({
+      url:"http://localhost:8080/media",
+      crossDomain: true,        
+      dataType: 'json',
+      data: {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv},
+      success: function(response) {
+        this.setState( {mediaList: response} );
+
+        console.log(response);
+
+        PubSub.publish('info-topic','Search Performed!');       
+      }.bind(this),
+      error: function(response) {
+        console.log('Error: ', response);
+        PubSub.publish('error-topic','Error to access api service!');        
+      }
+    });
+
   }
 
   

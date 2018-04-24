@@ -25,6 +25,13 @@ public class TextItem extends MediaItem {
 	}
 	
 	
+	public void transformAttributesInCapitalLetters() {
+		super.transformAttributesInCapitalLetters();
+		if (title != null) this.setTitle(title.toUpperCase());
+		if (author != null) this.setAuthor(author.toUpperCase());
+	}
+	
+	
 	public String getTitle() {
 		return title;
 	}

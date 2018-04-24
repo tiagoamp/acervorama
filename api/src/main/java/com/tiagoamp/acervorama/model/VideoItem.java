@@ -22,6 +22,12 @@ public class VideoItem extends MediaItem {
 	}
 	
 	
+	public void transformAttributesInCapitalLetters() {
+		super.transformAttributesInCapitalLetters();
+		if (title != null) this.setTitle(title.toUpperCase());		
+	}
+	
+	
 	public String getTitle() {
 		return title;
 	}

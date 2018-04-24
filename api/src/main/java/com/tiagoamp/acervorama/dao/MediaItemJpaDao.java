@@ -34,11 +34,13 @@ public class MediaItemJpaDao implements MediaItemDao {
 			
 	@Override
 	public void create(MediaItem item) {
+		item.transformAttributesInCapitalLetters();
 		em.persist(item);
 	}
 
 	@Override
 	public void update(MediaItem item) {
+		item.transformAttributesInCapitalLetters();
 		em.merge(item);		
 	}
 
@@ -114,7 +116,7 @@ public class MediaItemJpaDao implements MediaItemDao {
 			predicates.add(filenameLike);
 		}
 		if (classification != null && !classification.isEmpty()) {
-			Predicate classificationEqual = criteriaBuilder.equal(classificationPath, classification);
+			Predicate classificationEqual = criteriaBuilder.equal(classificationPath, classification.toUpperCase());
 			predicates.add(classificationEqual);
 		}
 		if (mediatype != null) {
