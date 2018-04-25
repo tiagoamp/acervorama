@@ -13,13 +13,14 @@ import Header from './commom/Header';
 
 import './css/bootstrap.min.css';
 import './css/pnotify.custom.min.css';
+import ManagementTable from './management/ManagementTable';
 
 
 class Management extends Component {
 
   constructor() {
     super();
-    this.state = { activePanel: 2, filename:'', classification:'', mediaType:'', tags: [] };
+    this.state = { activePanel: 2, filename:'', classification:'', mediaType:'', tags: [], mediaList: [] };
 
     this.sendSearchForm = this.sendSearchForm.bind(this);
   }
@@ -48,9 +49,7 @@ class Management extends Component {
     event.preventDefault();
 
     const tagsCsv = this.state.tags.join(",");
-    console.log(this.state.tags);
-    console.log(tagsCsv);
-
+    
     $.ajax({
       url:"http://localhost:8080/media",
       crossDomain: true,        
@@ -58,9 +57,6 @@ class Management extends Component {
       data: {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv},
       success: function(response) {
         this.setState( {mediaList: response} );
-
-        console.log(response);
-
         PubSub.publish('info-topic','Search Performed!');       
       }.bind(this),
       error: function(response) {
@@ -87,6 +83,7 @@ class Management extends Component {
             <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
               <section>
+
                 <h2 className="sub-header">Media Collection Management</h2>
                 <hr />
 
@@ -105,7 +102,7 @@ class Management extends Component {
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Tags: </label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-10">                    
                       <TagsInput value={this.state.tags} onChange={this.handleTagsChange.bind(this)} />  
                     </div>                    
                   </div>
@@ -147,12 +144,20 @@ class Management extends Component {
                   </div>
                 </form>
 
+                {this.state.mediaList.length > 0 ? (
+                  <ManagementTable mediaList={this.state.mediaList} />
+                ) : (
+                  null
+                )}
+                
+
               </section>
 
             </main>
 
           </div>
         </div>
+
       </div>
 
     );

@@ -51,7 +51,8 @@ public class MediaRestController {
 			itemsList = service.getAll();
 		}		
 		
-		if (tagsParam != null) {
+		final boolean isTagsFilled = tagsParam != null && !tagsParam.isEmpty(); 
+		if (isTagsFilled) {
 			tagsParam = tagsParam.toUpperCase();
 			List<String> tagsList = Arrays.asList(tagsParam.split(","));
 			Predicate<MediaItem> notContainsTags = m -> tagsList.stream().anyMatch(tag -> !m.containsTag(tag));
