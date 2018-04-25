@@ -16,6 +16,7 @@ public class MediaItemResource extends ResourceSupport {
 	}
 	
 	public MediaItemResource(MediaItem item) {
+		if (item.getFilePathAsString() == null) item.setFilePathAsString(item.getFilePath().toString());
 		this.resource = item;		
 		this.add(linkTo(MediaItemResource.class).slash(item.getId()).withSelfRel());
 	}

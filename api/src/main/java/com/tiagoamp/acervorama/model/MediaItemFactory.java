@@ -20,11 +20,7 @@ public class MediaItemFactory {
 		String mediaTypeStr = jsonNode.get("type").asText();
 		MediaTypeAcervo itemMediaType = MediaTypeAcervo.valueOf(mediaTypeStr);
 		T item = (T) fromJson(jsonString, getItemSubclass(itemMediaType));
-		
-		/*if (item.getRegisterDate() == null) item.setRegisterDate(LocalDateTime.now());
-		if (item.getFilename() == null) item.setFilename(item.getFilePath().getFileName().toString());
-		if (item.getHash() == null) item.fillHash();*/
-		
+				
 		return item;
 	}
 	
@@ -98,8 +94,6 @@ public class MediaItemFactory {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.findAndRegisterModules();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//		objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-//		objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 		return objectMapper;
 	}
 		

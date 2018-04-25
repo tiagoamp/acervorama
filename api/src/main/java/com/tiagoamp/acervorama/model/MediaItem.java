@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -85,6 +86,9 @@ public abstract class MediaItem {
 		
 	@Column(name="ADDITIONAL_INFO")
 	private String additionalInformation;
+	
+	@Transient
+	private String filePathAsString;
 			
 	
 	@Deprecated
@@ -94,6 +98,7 @@ public abstract class MediaItem {
 	public MediaItem(Path path) {
 		this.filePath = path;
 		this.filename = path.getFileName().toString();
+		this.filePathAsString = path.toString();
 		this.hash = generateHash();
 		this.registerDate = LocalDateTime.now();		
 	}
@@ -179,6 +184,7 @@ public abstract class MediaItem {
 	}
 	public void setFilePath(Path filePath) {
 		this.filePath = filePath;
+		this.filePathAsString = filePath.toString();
 	}
 	public LocalDateTime getRegisterDate() {
 		return registerDate;
@@ -215,6 +221,13 @@ public abstract class MediaItem {
 	}
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+	public void setFilePathAsString(String filePathAsString) {
+		this.filePathAsString = filePathAsString;
+	}
+	public String getFilePathAsString() {
+		if (filePathAsString == null) filePathAsString = filePath.toString();
+		return filePathAsString;
 	}
 	
 }
