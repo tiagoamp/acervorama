@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import $ from 'jquery';
 import PubSub from 'pubsub-js';
 
 import UIMessageDispatcher from '../UIMessageDispatcher';
+import MediaItemView from './MediaItemView';
 
 import '../css/bootstrap.min.css';
 import '../css/pnotify.custom.min.css';
@@ -13,7 +13,7 @@ class ManagementTable extends Component {
 
     constructor() {
         super();
-        this.state = { mediaList: [] };
+        this.state = { mediaList: [], showModal: false, selectedMedia: {} };
     }
 
     componentWillMount() {
@@ -29,6 +29,17 @@ class ManagementTable extends Component {
         UIMessageDispatcher.showInfoMessage(content);            
         });   
     }
+
+
+    handleModalClose() {
+        this.setState({ showModal: false });
+    }
+    
+    handleModalShow(index,event) {
+        event.preventDefault();
+        this.setState({ showModal: true, selectedMedia: this.state.mediaList[index] });        
+    }
+
 
   render() {
       return(
@@ -55,51 +66,28 @@ class ManagementTable extends Component {
 
                   {
                   this.state.mediaList.map(function(media, index) {
-                          const filename = media.filePathAsString.replace(/^.*[\\/]/, '');
-                          return (
-                          <tr key={media.hash}>
-                              <td className="centered">{index+1}</td>
-                              <td>{filename}</td>
-                              <td>{media.filePathAsString}</td>
-                              <td>{media.tags}</td>
-                              <td className="centered">
-                                <button type="button" className="btn btn-outline-info" data-toggle="modal" data-target="#viewMediaModal" >View</button>
-                              </td>
-                          </tr>      
-                          );
-                      })
+                    const filename = media.filePathAsString.replace(/^.*[\\/]/, '');
+                    return (
+                    <tr key={media.hash}>
+                        <td className="centered">{index+1}</td>
+                        <td>{filename}</td>
+                        <td>{media.filePathAsString}</td>
+                        <td>{media.tags}</td>
+                        <td className="centered">
+                        <button type="button" className="btn btn-outline-info" onClick={this.handleModalShow.bind(this,index)} >View</button>
+                        </td>
+                    </tr>      
+                    );
+                    }.bind(this))
                   }
-
 
                 </tbody>
               </table>
             </form> 
 
+            { this.state.showModal ? (<MediaItemView cbClose={this.handleModalClose.bind(this)} media={this.state.selectedMedia} />) : null }            
 
-
-            {/* <!-- Modal --> */}
-<div className="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div className="modal-dialog" role="document">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div className="modal-body">
-        ...
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" className="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
+            
         </div>
         
       );
