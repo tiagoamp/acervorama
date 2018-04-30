@@ -44,8 +44,13 @@ public class MediaItemService {
 	 * Updates a Media Item.
 	 * 
 	 * @param item
+	 * @throws AcervoramaBusinessException 
 	 */
-	public void update(MediaItem item)  {		
+	public void update(MediaItem item) throws AcervoramaBusinessException  {
+		if (item.getHash() == null) item.fillHash();
+		Optional<MediaItem> dbItem = Optional.ofNullable(dao.findByHash(item.getHash()));
+		if (!dbItem.isPresent()) throw new AcervoramaBusinessException("File path do not exists: " + item.getFilePath());
+		if (item.getType() == null) item.setType(dbItem.get().getType());
 		dao.update(item);		 
 	}
 	

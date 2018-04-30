@@ -98,10 +98,13 @@ public class MediaRestController {
 	}
 	
 	@RequestMapping(value="{id}", method = RequestMethod.PUT, consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	public void update(@PathVariable("id") Long id, @RequestBody MediaItem item) {
 		item.setId(id);
-		service.update(item);
+		try {
+			service.update(item);
+		} catch (AcervoramaBusinessException e) {
+			throw new ResponseProcessingException(Response.notModified().build(), e.getBusinessMessage());
+		}
 	}
 	
 }

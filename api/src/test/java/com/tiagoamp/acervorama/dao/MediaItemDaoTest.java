@@ -216,8 +216,8 @@ public class MediaItemDaoTest {
 	private AudioItem getItemForTests() {
 		Path testFilePath = Paths.get("fake","test","file.txt");
 		AudioItem item = new AudioItem(testFilePath);
-		item.setClassification("Classification");
-		item.setTags("Tag 01 ; Tag 02; Tag 03");
+		item.setClassification("Classification".toUpperCase());
+		item.setTags("TAG 01,TAG 02,TAG 03");
 		item.setDescription("Description");
 		item.setTitle("Title");
 		item.setAuthor("Author");
@@ -241,7 +241,7 @@ public class MediaItemDaoTest {
 		MediaItem item3 = new TextItem(testFilePath3);
 		MediaItem item4 = new VideoItem(testFilePath4);
 		
-		((AudioItem)item1).setTitle("New Title");
+		((AudioItem)item1).setTitle("NEW TITLE");
 		
 		List<MediaItem> list = Arrays.asList(item1, item2, item3, item4);
 		

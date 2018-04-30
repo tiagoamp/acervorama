@@ -3,6 +3,11 @@ import { Modal, Button } from 'react-bootstrap';
 
 import TagsInput from 'react-tagsinput';
 
+import $ from 'jquery';
+import PubSub from 'pubsub-js';
+
+import UIMessageDispatcher from '../UIMessageDispatcher';
+
 import 'react-tagsinput/react-tagsinput.css';
 
 import '../css/bootstrap.min.css';
@@ -13,6 +18,17 @@ class MediaItemView extends Component {
     constructor(props) {
         super(props);
         this.state = { media: this.props.media };        
+
+        this.updateMedia = this.updateMedia.bind(this);
+    }
+
+    componentDidMount() {
+        PubSub.subscribe('error-topic', function(topico, content) {
+          UIMessageDispatcher.showErrorMessage(content);                        
+        }); 
+        PubSub.subscribe('info-topic', function(topico, content) {
+          UIMessageDispatcher.showInfoMessage(content);            
+        });   
     }
     
     setInputValueToState(inputName,event) {
@@ -36,6 +52,31 @@ class MediaItemView extends Component {
         return this.state.media.type === 'AUDIO'  || this.state.media.type === 'TEXT' || this.state.media.type === 'VIDEO';
     }
 
+    updateMedia(event) {
+        event.preventDefault();
+    
+        //TODO: validate form !!!
+    
+        const media = this.state.media;
+            
+        $.ajax({
+            url:"http://localhost:8080/media/" + media.id,
+            headers: { 'Content-Type': 'application/json' },
+            type: 'PUT',
+            crossDomain: true,        
+            data: JSON.stringify(media),
+            success: function(response) {
+                PubSub.publish('info-topic','Updated item: ' + JSON.stringify(media.filename));                
+                this.props.cbUpdateState(media, 'UPDATE');
+            }.bind(this),
+            error: function(response) {        
+                console.log("Error: " + JSON.stringify(response));
+                PubSub.publish('error-topic','Error from api!');
+            }
+          });
+    
+      }
+
 
     render() {
         const media = this.state.media;
@@ -48,13 +89,9 @@ class MediaItemView extends Component {
                         <Modal.Title>Media Item</Modal.Title>
                     </Modal.Header>
                 
-                    <form onSubmit={this.editMedia} method="POST">
+                    <form onSubmit={this.updateMedia} method="POST">
 
                         <Modal.Body>
-                            <p>
-                                { JSON.stringify(media) }
-                            </p>
-                            
                             <div className="form-group row">
                                 <label htmlFor="input-filepath" className="col-sm-2 col-form-label col-form-label-sm">File Path</label>
                                 <div className="col-sm-10">

@@ -72,7 +72,14 @@ public class MediaItemServiceTest {
 	}
 	
 	@Test
-	public void testUpdate() {
+	public void testUpdate() throws AcervoramaBusinessException {
+		Mockito.when(daoMock.findByHash(item.getHash())).thenReturn(item);
+		mediaItemService.update(item);		
+	}
+	
+	@Test(expected=AcervoramaBusinessException.class)
+	public void testUpdate_noExistingItem_shouldThrowException() throws AcervoramaBusinessException {
+		Mockito.when(daoMock.findByHash(item.getHash())).thenReturn(null);
 		mediaItemService.update(item);		
 	}
 	
@@ -116,8 +123,8 @@ public class MediaItemServiceTest {
 	private MediaItem getItemForTests() {
 		Path testFilePath = Paths.get("fake", "test", "file.txt");
 		MediaItem item = new AudioItem(testFilePath);
-		item.setClassification("Classification");
-		item.setTags("Tag 01 ; Tag 02");
+		item.setClassification("Classification".toUpperCase());
+		item.setTags("Tag 01,Tag 02");
 		item.setDescription("Description");
 		item.setId(20L);
 		return item;
