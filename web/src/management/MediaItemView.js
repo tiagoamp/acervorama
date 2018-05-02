@@ -17,9 +17,16 @@ class MediaItemView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { media: this.props.media };        
+
+        const media = this.props.media;
+        for (let prop in media) {
+            if (media[prop] == null) media[prop] = '';
+        }
+
+        this.state = { media: media };        
 
         this.updateMedia = this.updateMedia.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
     }
 
     componentDidMount() {
@@ -75,6 +82,27 @@ class MediaItemView extends Component {
             }
           });
     
+      }
+
+      deleteItem(event) {
+        event.preventDefault();
+    
+        const media = this.state.media;
+        
+        $.ajax({
+            url:"http://localhost:8080/media/" + media.id,
+            //headers: { 'Content-Type': 'application/json' },
+            type: 'DELETE',
+            crossDomain: true,        
+            success: function(response) {
+                PubSub.publish('info-topic','Deleted item: ' + JSON.stringify(media.filename));                
+                this.props.cbUpdateState(media, 'DELETE');
+            }.bind(this),
+            error: function(response) {        
+                console.log("Error: " + JSON.stringify(response));
+                PubSub.publish('error-topic','Error from api!');
+            }
+          });
       }
 
 
@@ -144,19 +172,19 @@ class MediaItemView extends Component {
                             <div className="form-group row">
                                 <label htmlFor="input-description" className="col-sm-2 col-form-label col-form-label-sm">Description</label>
                                 <div className="col-sm-10">
-                                    <textarea className="form-control" id="input-description" rows="2" value={media.description} onChange={this.setInputValueToState.bind(this,'description')} placeholder="Enter description..."></textarea>                                    
+                                    <textarea className="form-control form-control-sm" id="input-description" rows="2" value={media.description} onChange={this.setInputValueToState.bind(this,'description')} placeholder="Enter description..."></textarea>                                    
                                 </div>
                             </div>
                             <div className="form-group row">
                                 <label htmlFor="input-comments" className="col-sm-2 col-form-label col-form-label-sm">Comments</label>
                                 <div className="col-sm-10">
-                                    <textarea className="form-control" id="input-comments" rows="2" value={media.additionalInformation} onChange={this.setInputValueToState.bind(this,'additionalInformation')} placeholder="Enter comments..."></textarea>                                    
+                                    <textarea className="form-control form-control-sm" id="input-comments" rows="2" value={media.additionalInformation} onChange={this.setInputValueToState.bind(this,'additionalInformation')} placeholder="Enter comments..."></textarea>                                    
                                 </div>
                             </div>
                             <div className="form-group row">
                                 <label htmlFor="input-tags" className="col-sm-2 col-form-label col-form-label-sm">Tags</label>
                                 <div className="col-sm-10">
-                                    <TagsInput value={this.state.media.tags.split(",")} onChange={this.handleTagsChange.bind(this)} />  
+                                    <TagsInput value={this.state.media.tags ? this.state.media.tags.split(",") : []} onChange={this.handleTagsChange.bind(this)} />  
                                 </div>
                             </div>
                             
@@ -164,7 +192,7 @@ class MediaItemView extends Component {
                     
                         <Modal.Footer>
                             <Button bsSize="small" onClick={this.props.cbClose}>Close</Button>
-                            <Button bsStyle="danger" bsSize="small">Delete</Button>
+                            <Button bsStyle="danger" bsSize="small" onClick={this.deleteItem}>Delete</Button>
                             <Button bsStyle="primary" bsSize="small" type="submit">Save changes</Button>
                         </Modal.Footer>
 

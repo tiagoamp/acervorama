@@ -1,6 +1,7 @@
 package com.tiagoamp.acervorama.model;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -136,6 +137,24 @@ public abstract class MediaItem {
 	public void transformAttributesInCapitalLetters() {
 		if (classification != null) this.setClassification(classification.toUpperCase());
 		if (tags != null) this.setTags(tags.toUpperCase());
+	}
+	
+	public void nullifyEmptyAttributes() {
+		Field[] fields = this.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			if (field.getType().getName().endsWith(".String")) {
+				String value;
+				try {
+					value = (String) field.get(this);
+					if ( value != null && value.isEmpty()) field.set(this, null);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				
+			}
+		}
 	}
 	
 	/**

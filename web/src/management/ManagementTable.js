@@ -45,6 +45,7 @@ class ManagementTable extends Component {
 
         if (action === 'DELETE') {
             mediaList.splice(index, 1);
+            this.handleModalClose();
         } else {
             mediaList[index] = alteredMedia;
         }

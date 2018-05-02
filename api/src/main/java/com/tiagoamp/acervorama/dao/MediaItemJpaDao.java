@@ -35,12 +35,14 @@ public class MediaItemJpaDao implements MediaItemDao {
 	@Override
 	public void create(MediaItem item) {
 		item.transformAttributesInCapitalLetters();
+		item.nullifyEmptyAttributes();
 		em.persist(item);
 	}
 
 	@Override
 	public void update(MediaItem item) {
 		item.transformAttributesInCapitalLetters();
+		item.nullifyEmptyAttributes();
 		em.merge(item);		
 	}
 
