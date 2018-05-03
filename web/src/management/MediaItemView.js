@@ -62,26 +62,24 @@ class MediaItemView extends Component {
     updateMedia(event) {
         event.preventDefault();
     
-        //TODO: validate form !!!
-    
         const media = this.state.media;
-            
-        $.ajax({
-            url:"http://localhost:8080/media/" + media.id,
-            headers: { 'Content-Type': 'application/json' },
-            type: 'PUT',
-            crossDomain: true,        
-            data: JSON.stringify(media),
-            success: function(response) {
+
+        const options = {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(media)
+        };
+
+        fetch('http://localhost:8080/media/' + media.id, options)
+            .then( res => {
                 PubSub.publish('info-topic','Updated item: ' + JSON.stringify(media.filename));                
                 this.props.cbUpdateState(media, 'UPDATE');
-            }.bind(this),
-            error: function(response) {        
-                console.log("Error: " + JSON.stringify(response));
+            })
+            .catch( err => {
+                console.log("Error: " + JSON.stringify(err));
                 PubSub.publish('error-topic','Error from api!');
-            }
-          });
-    
+            });
+        
       }
 
       deleteItem(event) {

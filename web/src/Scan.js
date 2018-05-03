@@ -56,8 +56,8 @@ class Scan extends Component {
       dirPath: this.state.mediaPath
     };
   
-    var esc = encodeURIComponent;
-    var queryParams = Object.keys(params).map(k => esc(k) + '=' + esc(params[k])).join('&');
+    var enc = encodeURIComponent;
+    var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
 
     fetch('http://localhost:8080/scanner?' + queryParams)
       .then(response => response.json())
