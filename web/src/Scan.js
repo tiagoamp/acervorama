@@ -4,7 +4,6 @@ import SideMenu from './SideMenu';
 import Header from './commom/Header';
 import ScanTable from './scanner/ScanTable';
 
-import $ from 'jquery';
 import PubSub from 'pubsub-js';
 
 import UIMessageDispatcher from './UIMessageDispatcher';
@@ -52,26 +51,24 @@ class Scan extends Component {
       return;
     }
 
-    $.ajax({
-      url:"http://localhost:8080/scanner",
-      /*headers: { 'Access-Control-Allow-Origin': '*', 
-                 'Access-Control-Allow-Credentials': true, 
-                 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token',                  
-                 'Access-Control-Expose-Headers': 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept, Authorization' 
-                },*/
-      crossDomain: true,        
-      dataType: 'json',
-      data: {type:this.state.mediaType , dirPath:this.state.mediaPath},
-      success: function(response) {
-        this.setState( {mediaScannedList: response} );
+    var params = {
+      type: this.state.mediaType,
+      dirPath: this.state.mediaPath
+    };
+  
+    var esc = encodeURIComponent;
+    var queryParams = Object.keys(params).map(k => esc(k) + '=' + esc(params[k])).join('&');
+
+    fetch('http://localhost:8080/scanner?' + queryParams)
+      .then(response => response.json())
+      .then( res => {
+        this.setState( {mediaScannedList: res} );
         PubSub.publish('info-topic','Scan Performed!');
-      }.bind(this),
-      error: function(response) {        
-        console.log("Error: " + JSON.stringify(response));
+      })
+      .catch( err => {
+        console.log("Error: " + JSON.stringify(err));
         PubSub.publish('error-topic','Error while accessing api service!');
-      }
-    });
+      });
 
   }
 
