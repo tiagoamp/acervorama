@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import TagsInput from 'react-tagsinput'
 
-import 'react-tagsinput/react-tagsinput.css' // If using WebPack and style-loader.
+import 'react-tagsinput/react-tagsinput.css'; 
 
-import $ from 'jquery';
 import PubSub from 'pubsub-js';
 
 import UIMessageDispatcher from './UIMessageDispatcher';
@@ -49,22 +48,23 @@ class Management extends Component {
     event.preventDefault();
 
     const tagsCsv = this.state.tags.join(",");
-    
-    $.ajax({
-      url:"http://localhost:8080/media",
-      crossDomain: true,        
-      dataType: 'json',
-      data: {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv},
-      success: function(response) {
-        this.setState( {mediaList: response} );
-        PubSub.publish('info-topic','Search Performed!');       
-      }.bind(this),
-      error: function(response) {
-        console.log('Error: ', response);
-        PubSub.publish('error-topic','Error to access api service!');        
-      }
-    });
 
+    var params = {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv};
+      
+    var enc = encodeURIComponent;
+    var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+
+    fetch('http://localhost:8080/media?' + queryParams)
+      .then(response => response.json())
+      .then( res => {
+        this.setState( {mediaList: res} );
+        PubSub.publish('info-topic','Search Performed!');
+      })
+      .catch( err => {
+        console.log('Error: ', err);
+        PubSub.publish('error-topic','Error to access api service!');
+      });
+    
   }
 
   

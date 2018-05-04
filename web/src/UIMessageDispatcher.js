@@ -1,4 +1,4 @@
-import PNotify from 'pnotify/dist/es';
+import PNotify from 'pnotify';
 
 export default class UIMessageDispatcher {
 

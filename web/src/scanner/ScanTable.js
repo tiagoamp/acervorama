@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import $ from 'jquery';
 import PubSub from 'pubsub-js';
 
 import UIMessageDispatcher from '../UIMessageDispatcher';
@@ -36,23 +35,24 @@ class ScanTable extends Component {
 
     _postMedia(m) {
         const media = { filePath: m.path, type: this.state.mediaType };
-            
-        $.ajax({
-            url:"http://localhost:8080/media",
-            headers: { 'Content-Type': 'application/json' },
-            type: 'POST',
-            crossDomain: true,        
-            dataType: 'json',
-            data: JSON.stringify(media),
-            success: function(response) {
-                PubSub.publish('info-topic','Saved item: ' + JSON.stringify(response.resource.filename));
+        
+        const options = {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(media)
+        };
+
+        fetch('http://localhost:8080/media', options)
+            .then(response =>  response.json())
+            .then( res => {
+                if (res.status !== 201 && res.message) throw new Error(res.message);   
+                PubSub.publish('info-topic','Saved item: ' + JSON.stringify(res.resource.filename));
                 this._updateState(m);
-            }.bind(this),
-            error: function(response) {        
-                console.log("Error: " + JSON.stringify(response));
-                PubSub.publish('error-topic',response.responseJSON.message);
-            }
-          });
+            })
+            .catch( err => {
+                console.log("Error: " + JSON.stringify(err));
+                PubSub.publish('error-topic',err);
+            });
     }
 
     saveAllMedia(event) {
