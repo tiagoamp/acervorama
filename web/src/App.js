@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SideMenu from './commom/SideMenu';
-import { DashboardBox } from './dashboard/Dashboard';
+import { DashboardBox } from './dashboard/DashboardBox';
 
 import './css/bootstrap.min.css';
 import './css/dashboard.css';
