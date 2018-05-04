@@ -50,7 +50,7 @@ class Management extends Component {
     const tagsCsv = this.state.tags.join(",");
 
     var params = {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv};
-  
+      
     var enc = encodeURIComponent;
     var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
 
