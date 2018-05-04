@@ -18,16 +18,16 @@ export default class MediaCharts extends Component {
             datasets: [{
                 data: mediaTotals,
                 backgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
-                '#FF00FF'
+                '#F14D39',
+                '#008080',
+                '#E86800',
+                '#6B0021'
                 ],
                 hoverBackgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
-                '#FF00FF'
+                '#F14D39',
+                '#008080',
+                '#E86800',
+                '#6B0021'
                 ]
             }]
         };
