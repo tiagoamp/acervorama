@@ -23,9 +23,10 @@ ReactDOM.render(
                     <Route path='/scan' component={Scan}/>
                     <Route path='/management' component={Management}/>
                 </Switch>
-            </BrowserRouter>        
-        
+            </BrowserRouter>              
+
         </div>
+
     ),
 
     document.getElementById('root'));

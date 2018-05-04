@@ -7,7 +7,7 @@ import PubSub from 'pubsub-js';
 
 import UIMessageDispatcher from './UIMessageDispatcher';
 
-import SideMenu from './SideMenu';
+import SideMenu from './commom/SideMenu';
 
 import './css/bootstrap.min.css';
 import './css/pnotify.custom.min.css';

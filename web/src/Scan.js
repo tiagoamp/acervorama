@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import SideMenu from './SideMenu';
+import SideMenu from './commom/SideMenu';
 import ScanTable from './scanner/ScanTable';
 
 import PubSub from 'pubsub-js';
