@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import SideMenu from './SideMenu';
-import Header from './commom/Header';
 import { DashboardBox } from './dashboard/Dashboard';
 
 import './css/bootstrap.min.css';
@@ -21,8 +20,6 @@ class App extends Component {
 
       <div>
         
-        <Header />
-
         <div className="container-fluid">
           <div className="row">
 

@@ -8,7 +8,6 @@ import PubSub from 'pubsub-js';
 import UIMessageDispatcher from './UIMessageDispatcher';
 
 import SideMenu from './SideMenu';
-import Header from './commom/Header';
 
 import './css/bootstrap.min.css';
 import './css/pnotify.custom.min.css';
@@ -73,8 +72,6 @@ class Management extends Component {
 
       <div>
         
-        <Header/> 
-
         <div className="container-fluid">
           <div className="row">
 

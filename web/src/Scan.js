@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import SideMenu from './SideMenu';
-import Header from './commom/Header';
 import ScanTable from './scanner/ScanTable';
 
 import PubSub from 'pubsub-js';
@@ -94,8 +93,6 @@ class Scan extends Component {
 
       <div>
         
-        <Header/> 
-
         <div className="container-fluid">
           <div className="row">
 
