@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 
-import SideMenu from './commom/SideMenu';
-import ScanTable from './scanner/ScanTable';
+import SideMenu from '../commom/SideMenu';
+import ScanTable from '../scanner/ScanTable';
 
 import PubSub from 'pubsub-js';
 
-import UIMessageDispatcher from './UIMessageDispatcher';
+import UIMessageDispatcher from '../UIMessageDispatcher';
 
-import './css/bootstrap.min.css';
-import './css/pnotify.custom.min.css';
-import './css/scanner.css';
+import '../css/bootstrap.min.css';
+import '../css/pnotify.custom.min.css';
+import '../css/scanner.css';
 
 
 class Scan extends Component {
