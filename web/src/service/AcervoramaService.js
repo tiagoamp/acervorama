@@ -31,7 +31,8 @@ export default class AcervoramaService {
 
     subscribeToTopic(topic) {
         PubSub.subscribe(topic, function(topic, content) {
-            UIMessageDispatcher.showInfoMessage(content);            
+            if (topic === 'info-topic') UIMessageDispatcher.showInfoMessage(content);
+            else if (topic === 'error-topic') UIMessageDispatcher.showErrorMessage(content);
         });
     }
 
