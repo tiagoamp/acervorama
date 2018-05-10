@@ -9,7 +9,7 @@ export default class MediaCharts extends Component {
         this.state = { data: {} };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const mediaLabels = [ 'Audio', 'Video', 'Image', 'Text' ];
         const mediaTotals = [this.props.totalAudio, this.props.totalVideo, this.props.totalImage, this.props.totalText ];
 

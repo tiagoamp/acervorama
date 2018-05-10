@@ -37,16 +37,21 @@ export class DashboardBox extends Component {
         this._service.subscribeToTopic('info-topic');
     }
 
+    showMediaCharts() {
+        const noMediaWasRegistered = (this.state.totalAudio + this.state.totalVideo + this.state.totalImage + this.state.totalText) === 0;
+        if (noMediaWasRegistered) return null;
+        return (<MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} 
+                             totalImage={this.state.totalImage} totalText={this.state.totalText} />);
+    }
+
     render() {
+        
+
         return(
             
             <div>
 
-                {this.state.totalAudio > 0 ? (
-                    <MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
-                ) : (
-                    'Loading data...'
-                )}
+                { this.showMediaCharts() }
 
                 <MediaTables totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} totalImage={this.state.totalImage} totalText={this.state.totalText} />
 
