@@ -18,11 +18,12 @@ export default class AcervoramaService {
     getMediaItems() {
         return fetch(this._MEDIA_API_URL)
                     .then(response => {
-                        if (!response.ok) throw new Error(response);
+                        if (!response.ok) throw new Error('Error to access api service!');
                         return response.json();
                     }) 
                     .catch(err => { 
-                        throw new Error(err.message); 
+                        console.log(JSON.stringify(err.message)); 
+                        throw err;
                     });
     }
 
@@ -37,11 +38,13 @@ export default class AcervoramaService {
       
         return fetch(this._SCANNER_API_URL + '?' + queryParams)
                 .then(response => {
-                    if (!response.ok) throw new Error(response);
+                    if (response.status === 400) throw new Error('Bad parameters!');
+                    else if (response.status === 500) throw new Error('Error to access api service!');
                     return response.json()
                 })
                 .catch( err => {
-                    throw new Error(err.message) 
+                    console.log(JSON.stringify(err.message)); 
+                    throw err;
                 });
     }
 

@@ -26,8 +26,7 @@ export class DashboardBox extends Component {
                 this._service.publishMessage('info-topic','Media Items data loaded \nat ' + new Date());
             })
             .catch(err => {
-                console.log(err);
-                this._service.publishMessage('error-topic','Error to access api service!');
+                this._service.publishMessage('error-topic',err.message);
             });
       
     }

@@ -24,7 +24,7 @@ class Scan extends Component {
     let errorsMap = new Map();
     if (this.state.mediaPath === '') errorsMap.set('media-path','Empty media path');
     if (this.state.mediaType === '') errorsMap.set('media-type','Empty media type');
-    
+
     this.setState ( {formErrors: errorsMap} );
     return errorsMap;
   }
@@ -44,8 +44,7 @@ class Scan extends Component {
                       this._service.publishMessage('info-topic','Scan Performed!');
                     })
                     .catch(err => {
-                      console.log("Error: " + JSON.stringify(err));
-                      this._service.publishMessage('error-topic','Error to access api service!');
+                      this._service.publishMessage('error-topic',err.message);
                     });
   }
 
