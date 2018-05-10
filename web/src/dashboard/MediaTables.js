@@ -6,7 +6,7 @@ export default class MediaTables extends Component {
         return(
             
             <div>
-                <h2>Media Types</h2>
+                <h4>Media Types</h4>
                 <div className="table-responsive">
                     <table className="table table-striped table-sm">
                         <thead>

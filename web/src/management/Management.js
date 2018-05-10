@@ -5,14 +5,13 @@ import 'react-tagsinput/react-tagsinput.css';
 
 import PubSub from 'pubsub-js';
 
-import UIMessageDispatcher from './UIMessageDispatcher';
+import UIMessageDispatcher from '../UIMessageDispatcher';
 
-import SideMenu from './SideMenu';
-import Header from './commom/Header';
+import SideMenu from '../commom/SideMenu';
 
-import './css/bootstrap.min.css';
-import './css/pnotify.custom.min.css';
-import ManagementTable from './management/ManagementTable';
+import '../css/bootstrap.min.css';
+import '../css/pnotify.custom.min.css';
+import ManagementTable from './ManagementTable';
 
 
 class Management extends Component {
@@ -73,8 +72,6 @@ class Management extends Component {
 
       <div>
         
-        <Header/> 
-
         <div className="container-fluid">
           <div className="row">
 

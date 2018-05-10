@@ -5,20 +5,28 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import App from './App';
-import Scan from './Scan';
-import Management from './Management';
+import Header from './commom/Header';
+import Dashboard from './dashboard/Dashboard';
+import Scan from './scanner/Scan';
+import Management from './management/Management';
 
 ReactDOM.render(
 
     (
-        <BrowserRouter>
-            <Switch>
-                <Route exact path='/' component={App}/>
-                <Route path='/scan' component={Scan}/>
-                <Route path='/management' component={Management}/>
-            </Switch>
-        </BrowserRouter>        
+        <div>
+
+            <Header />
+
+            <BrowserRouter>
+                <Switch>
+                    <Route exact path='/' component={Dashboard}/>
+                    <Route path='/scan' component={Scan}/>
+                    <Route path='/management' component={Management}/>
+                </Switch>
+            </BrowserRouter>              
+
+        </div>
+
     ),
 
     document.getElementById('root'));
