@@ -17,35 +17,24 @@ class Scan extends Component {
 
     this._service = new AcervoramaService();
 
-    this.sendScanForm = this.sendScanForm.bind(this);
-    this._cleanFormErrorMessages = this._cleanFormErrorMessages.bind(this);
-  }
-
-  _cleanFormErrorMessages() {
-    this.setState ( {formErrors: new Map()} );
+    this.sendScanForm = this.sendScanForm.bind(this);    
   }
 
   _validateScanForm() {    
     let errorsMap = new Map();
-    if (this.state.mediaPath === '') {
-      errorsMap.set('media-path','Empty media path');      
-    }
-    if (this.state.mediaType === '') {
-      errorsMap.set('media-type','Empty media type');
-    }
+    if (this.state.mediaPath === '') errorsMap.set('media-path','Empty media path');
+    if (this.state.mediaType === '') errorsMap.set('media-type','Empty media type');
+    
+    this.setState ( {formErrors: errorsMap} );
     return errorsMap;
   }
 
   sendScanForm(event) {
     event.preventDefault();
 
-    this._cleanFormErrorMessages();
-
     const errors = this._validateScanForm();
     if (errors.size > 0) {
-      console.log("Form validation Errors ocurred!");
-      this._service.publishMessage('error-topic','Input validation errors found!');      
-      this.setState({formErrors: errors});
+      this._service.publishMessage('error-topic','Input validation errors found!');            
       return;
     }
 
