@@ -8,7 +8,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Header from './commom/Header';
 import Dashboard from './dashboard/Dashboard';
 import Scan from './scanner/Scan';
-import Management from './Management';
+import Management from './management/Management';
 
 ReactDOM.render(
 
