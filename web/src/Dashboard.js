@@ -8,7 +8,7 @@ import './css/dashboard.css';
 import './css/pnotify.custom.min.css';
 
 
-class App extends Component {
+class Dashboard extends Component {
 
   constructor() {
     super();
@@ -41,4 +41,4 @@ class App extends Component {
 
 }
 
-export default App;
+export default Dashboard;

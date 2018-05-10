@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Header from './commom/Header';
-import App from './App';
+import Dashboard from './Dashboard';
 import Scan from './Scan';
 import Management from './Management';
 
@@ -19,7 +19,7 @@ ReactDOM.render(
 
             <BrowserRouter>
                 <Switch>
-                    <Route exact path='/' component={App}/>
+                    <Route exact path='/' component={Dashboard}/>
                     <Route path='/scan' component={Scan}/>
                     <Route path='/management' component={Management}/>
                 </Switch>
