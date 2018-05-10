@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 
 import SideMenu from '../commom/SideMenu';
 import ScanTable from '../scanner/ScanTable';
-
-import PubSub from 'pubsub-js';
-
-import UIMessageDispatcher from '../UIMessageDispatcher';
+import AcervoramaService from '../service/AcervoramaService'
 
 import '../css/bootstrap.min.css';
 import '../css/pnotify.custom.min.css';
@@ -17,6 +14,8 @@ class Scan extends Component {
   constructor() {
     super();
     this.state = { activePanel: 1, mediaPath:'', mediaType:'', mediaScannedList: [], formErrors: new Map() }; 
+
+    this._service = new AcervoramaService();
 
     this.sendScanForm = this.sendScanForm.bind(this);
     this._cleanFormErrorMessages = this._cleanFormErrorMessages.bind(this);
@@ -45,30 +44,19 @@ class Scan extends Component {
     const errors = this._validateScanForm();
     if (errors.size > 0) {
       console.log("Form validation Errors ocurred!");
-      PubSub.publish('error-topic','Input validation errors found!');
-      this.setState ( {formErrors: new Map(errors)} );      
+      this._service.publishMessage('error-topic','Input validation errors found!');      
       return;
     }
 
-    var params = {
-      type: this.state.mediaType,
-      dirPath: this.state.mediaPath
-    };
-  
-    var enc = encodeURIComponent;
-    var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
-
-    fetch('http://localhost:8080/scanner?' + queryParams)
-      .then(response => response.json())
-      .then( res => {
-        this.setState( {mediaScannedList: res} );
-        PubSub.publish('info-topic','Scan Performed!');
-      })
-      .catch( err => {
-        console.log("Error: " + JSON.stringify(err));
-        PubSub.publish('error-topic','Error while accessing api service!');
-      });
-
+    this._service.scanDirectory(this.state.mediaType, this.state.mediaPath)
+                    .then( res => {
+                      this.setState( {mediaScannedList: res} );
+                      this._service.publishMessage('info-topic','Scan Performed!');
+                    })
+                    .catch(err => {
+                      console.log("Error: " + JSON.stringify(err));
+                      this._service.publishMessage('error-topic','Error to access api service!');
+                    });
   }
 
   setInputValueToState(inputName,event) {
@@ -79,12 +67,8 @@ class Scan extends Component {
 
 
   componentDidMount() {
-    PubSub.subscribe('error-topic', function(topico, content) {
-      UIMessageDispatcher.showErrorMessage(content);                        
-    }); 
-    PubSub.subscribe('info-topic', function(topico, content) {
-      UIMessageDispatcher.showInfoMessage(content);            
-    });   
+      this._service.subscribeToTopic('error-topic');
+      this._service.subscribeToTopic('info-topic');      
   }
   
   render() {
