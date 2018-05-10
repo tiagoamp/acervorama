@@ -36,22 +36,13 @@ export default class MediaCharts extends Component {
     }
 
     render() {
-
-        const data = this.state.data;
-        
         return(
 
             <div>
-                <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                    <h1 className="h2">Dashboard</h1>
-                </div>
-
-                <div>
-                    <h4>Media Amount</h4>
-                    <Pie data={data} height={60} width={400} />
-                </div>
+                <h4>Media Amount</h4>
+                <Pie data={this.state.data} height={60} width={400} />
             </div>
-
+            
         );
     }
 
