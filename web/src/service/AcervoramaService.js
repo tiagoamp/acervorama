@@ -1,4 +1,8 @@
-const fetch = require('node-fetch'); 
+import PubSub from 'pubsub-js';
+import fetch from 'node-fetch'; 
+
+import UIMessageDispatcher from '../UIMessageDispatcher';
+
 
 export default class AcervoramaService {
 
@@ -20,5 +24,15 @@ export default class AcervoramaService {
                     });
     }
 
+
+    publishMessage(topic, content) {
+        PubSub.publish(topic,content);  
+    }
+
+    subscribeToTopic(topic) {
+        PubSub.subscribe(topic, function(topic, content) {
+            UIMessageDispatcher.showInfoMessage(content);            
+        });
+    }
 
 } 
