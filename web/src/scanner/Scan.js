@@ -45,6 +45,7 @@ class Scan extends Component {
     if (errors.size > 0) {
       console.log("Form validation Errors ocurred!");
       this._service.publishMessage('error-topic','Input validation errors found!');      
+      this.setState({formErrors: errors});
       return;
     }
 
@@ -92,7 +93,7 @@ class Scan extends Component {
                   <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Directory path: </label>
                     <div className="col-sm-10">
-                      <input type="text" className={ 'form-control'.concat(this.state.formErrors.get('media-path') === undefined ? '' : " is-invalid") } id="inputDirectory" name="inputDirectory" value={this.state.mediaPath} onChange={this.setInputValueToState.bind(this,'mediaPath')} placeholder="Enter directory path" />                      
+                      <input type="text" className={ 'form-control'.concat(this.state.formErrors.get('media-path') === undefined ? '' : " is-invalid") } id="inputDirectory" name="inputDirectory" value={this.state.mediaPath} onChange={this.setInputValueToState.bind(this,'mediaPath')} placeholder="Enter directory path" />
                       <div className="invalid-feedback"> {this.state.formErrors.get('media-path')} </div>
                     </div>                    
                   </div>                
