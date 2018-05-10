@@ -53,11 +53,13 @@ export default class AcervoramaService {
         PubSub.publish(topic,content);  
     }
 
-    subscribeToTopic(topic) {
-        PubSub.subscribe(topic, function(topic, content) {
-            if (topic === 'info-topic') UIMessageDispatcher.showInfoMessage(content);
-            else if (topic === 'error-topic') UIMessageDispatcher.showErrorMessage(content);
-        });
+    subscribeToTopics(topicsArr) {
+        topicsArr.forEach( topic => {
+            PubSub.subscribe(topic, function(topic, content) {
+                if (topic === 'info-topic') UIMessageDispatcher.showInfoMessage(content);
+                else if (topic === 'error-topic') UIMessageDispatcher.showErrorMessage(content);
+            });
+        });        
     }
 
 } 

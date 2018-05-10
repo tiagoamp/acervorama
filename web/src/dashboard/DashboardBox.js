@@ -32,8 +32,7 @@ export class DashboardBox extends Component {
     }
 
     componentDidMount() {
-        this._service.subscribeToTopic('error-topic');
-        this._service.subscribeToTopic('info-topic');
+        this._service.subscribeToTopics(['error-topic','info-topic']);
     }
 
     _showMediaCharts() {
