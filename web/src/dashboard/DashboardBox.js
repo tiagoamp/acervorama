@@ -37,10 +37,9 @@ export class DashboardBox extends Component {
     }
 
     _showMediaCharts() {
-        const noMediaWasRegistered = (this.state.totalAudio + this.state.totalVideo + this.state.totalImage + this.state.totalText) === 0;
-        if (noMediaWasRegistered) return null;
-        return (<MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} 
-                             totalImage={this.state.totalImage} totalText={this.state.totalText} />);
+        const existsMediaRegistered = (this.state.totalAudio + this.state.totalVideo + this.state.totalImage + this.state.totalText) > 0;
+        if (existsMediaRegistered) return (<MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} 
+                                                        totalImage={this.state.totalImage} totalText={this.state.totalText} />);
     }
 
     render() {

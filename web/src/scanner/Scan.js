@@ -41,7 +41,7 @@ class Scan extends Component {
     this._service.scanDirectory(this.state.mediaType, this.state.mediaPath)
                     .then( res => {
                       this.setState( {mediaScannedList: res} );
-                      this._service.publishMessage('info-topic','Scan Performed!');
+                      this._service.publishMessage('info-topic','Scan Performed! \n Found ' + res.length + ' files!');
                     })
                     .catch(err => {
                       this._service.publishMessage('error-topic',err.message);
@@ -58,6 +58,12 @@ class Scan extends Component {
   componentDidMount() {
       this._service.subscribeToTopic('error-topic');
       this._service.subscribeToTopic('info-topic');      
+  }
+
+  _showScanResultTable() {
+    if (this.state.mediaScannedList.length > 0) {
+      return (<ScanTable scannedList={this.state.mediaScannedList} mediaType={this.state.mediaType} />);
+    } 
   }
   
   render() {
@@ -124,13 +130,9 @@ class Scan extends Component {
                 </form>
 
 
-                {this.state.mediaScannedList.length > 0 ? (
-                    <ScanTable scannedList={this.state.mediaScannedList} mediaType={this.state.mediaType} />
-                ) : (
-                    ''
-                )}               
+                { this._showScanResultTable() }  
+                             
                 
-
               </section>
 
             </main>
