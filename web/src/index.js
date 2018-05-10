@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Header from './commom/Header';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import Scan from './Scan';
 import Management from './Management';
 

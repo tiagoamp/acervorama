@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import SideMenu from './commom/SideMenu';
-import { DashboardBox } from './dashboard/DashboardBox';
+import SideMenu from '../commom/SideMenu';
+import { DashboardBox } from './DashboardBox';
 
-import './css/bootstrap.min.css';
-import './css/dashboard.css';
-import './css/pnotify.custom.min.css';
+import '../css/bootstrap.min.css';
+import '../css/dashboard.css';
+import '../css/pnotify.custom.min.css';
 
 
 class Dashboard extends Component {
