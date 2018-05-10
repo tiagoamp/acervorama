@@ -96,27 +96,19 @@ class Scan extends Component {
                       <div className="col-sm-10">
                         <div className="form-check form-check-inline">
                           <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputAudio" value="AUDIO" onClick={this.setInputValueToState.bind(this,'mediaType')} />
-                          <label className="form-check-label" htmlFor="inputAudio">
-                            Audio
-                          </label>                          
+                          <label className="form-check-label" htmlFor="inputAudio"> Audio </label>                          
                         </div>
                         <div className="form-check form-check-inline">
                           <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputImage" value="IMAGE" onClick={this.setInputValueToState.bind(this,'mediaType')} />
-                          <label className="form-check-label" htmlFor="inputImage">
-                            Image
-                          </label>                          
+                          <label className="form-check-label" htmlFor="inputImage"> Image </label>                          
                         </div>
                         <div className="form-check form-check-inline">
                           <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputText" value="TEXT" onClick={this.setInputValueToState.bind(this,'mediaType')} />
-                          <label className="form-check-label" htmlFor="inputText">
-                            Text
-                          </label>                          
+                          <label className="form-check-label" htmlFor="inputText"> Text </label>                          
                         </div>
                         <div className="form-check form-check-inline">
                           <input className={ 'form-check-input'.concat(this.state.formErrors.get('media-type') === undefined ? '' : " is-invalid") } type="radio" name="inputMediaType" id="inputVideo" value="VIDEO" onClick={this.setInputValueToState.bind(this,'mediaType')} />
-                          <label className="form-check-label" htmlFor="inputVideo">
-                            Video
-                          </label>                          
+                          <label className="form-check-label" htmlFor="inputVideo"> Video </label>
                         </div> 
                       </div>
                     </div>
