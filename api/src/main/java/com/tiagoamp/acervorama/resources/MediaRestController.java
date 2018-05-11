@@ -104,7 +104,7 @@ public class MediaRestController {
 		try {
 			service.update(item);
 		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.notModified().build(), e.getBusinessMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getBusinessMessage(), e);
 		}
 	}
 	

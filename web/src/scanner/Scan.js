@@ -39,13 +39,13 @@ class Scan extends Component {
     }
 
     this._service.scanDirectory(this.state.mediaType, this.state.mediaPath)
-                    .then( res => {
-                      this.setState( {mediaScannedList: res} );
-                      this._service.publishMessage('info-topic','Scan Performed! \n Found ' + res.length + ' files!');
-                    })
-                    .catch(err => {
-                      this._service.publishMessage('error-topic',err.message);
-                    });
+      .then( res => {
+        this.setState( {mediaScannedList: res} );
+        this._service.publishMessage('info-topic','Scan Performed! \n Found ' + res.length + ' files!');
+      })
+      .catch(err => {
+        this._service.publishMessage('error-topic',err.message);
+      });
   }
 
   setInputValueToState(inputName,event) {

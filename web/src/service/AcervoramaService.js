@@ -17,22 +17,18 @@ export default class AcervoramaService {
 
     getMediaItems() {
         return fetch(this._MEDIA_API_URL)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Error to access api service!');
-                        return response.json();
-                    }) 
-                    .catch(err => { 
-                        console.log(JSON.stringify(err.message)); 
-                        throw err;
-                    });
+            .then(response => {
+                if (!response.ok) throw new Error('Error to access api service!');
+                return response.json();
+            }) 
+            .catch(err => { 
+                console.log(JSON.stringify(err.message)); 
+                throw err;
+            });
     }
 
     scanDirectory(mediaType, mediaPath) {
-        var params = {
-            type: mediaType,
-            dirPath: mediaPath
-        };
-        
+        var params = { type: mediaType, dirPath: mediaPath };        
         var enc = encodeURIComponent;
         var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
       
@@ -49,8 +45,7 @@ export default class AcervoramaService {
     }
 
     saveScannedMedia(filePath, mediaType) {
-        const media = { filePath, type: mediaType };
-        
+        const media = { filePath, type: mediaType };        
         const options = {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -70,8 +65,7 @@ export default class AcervoramaService {
     }
 
     searchMediaItems(filename, classification, mediaType, tagsCsv) {
-        var params = {filename, classification, type: mediaType, tags: tagsCsv};
-        
+        var params = {filename, classification, type: mediaType, tags: tagsCsv};        
         var enc = encodeURIComponent;
         var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
 
@@ -86,6 +80,35 @@ export default class AcervoramaService {
             });
     }
 
+    updateMediaItem(media) {
+        const options = {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(media)
+        };
+
+        return fetch(this._MEDIA_API_URL + "/" + media.id, options)
+            .then(response => { 
+                if (response.status === 404) throw new Error('File path do not exists: ' + media.filePathAsString);
+                else if (response.status !== 200) throw new Error('Error to access api service!');                
+            })
+            .catch( err => {
+                console.log(JSON.stringify(err.message)); 
+                throw err;
+            });
+    }
+
+    deleteMediaItem(media) {
+        const options = { method: 'DELETE' };
+        return fetch(this._MEDIA_API_URL + '/' + media.id, options)
+            .then(response => { 
+                if (response.status !== 204) throw new Error('Error to access api service!');                
+            })
+            .catch( err => {
+                console.log(JSON.stringify(err.message)); 
+                throw err;
+            });
+    }
 
     publishMessage(topic, content) {
         PubSub.publish(topic,content);  
