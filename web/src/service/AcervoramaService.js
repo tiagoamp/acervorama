@@ -55,11 +55,11 @@ export default class AcervoramaService {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(media)
-        };
+        }; 
 
         return fetch(this._MEDIA_API_URL, options)
             .then(response => {
-                if (response.status === 400) throw new Error('Bad parameters!');
+                if (response.status === 409) throw new Error('File path already exists: ' + filePath);
                 else if (response.status !== 201 && response.message) throw new Error(response.message);
                 return response.json();
             })
