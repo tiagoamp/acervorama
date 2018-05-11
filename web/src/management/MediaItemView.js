@@ -38,7 +38,7 @@ class MediaItemView extends Component {
 
     handleTagsChange(tags) {
         const media = this.state.media;
-        media.tags = tags.join(',');
+        media.tags = tags.join(',').toUpperCase();
         this.setState({media});
     }
 
