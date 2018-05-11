@@ -40,7 +40,6 @@ class ScanTable extends Component {
 
     saveAllMedia(event) {
         event.preventDefault();
-
         this.state.scannedList.forEach( (m) => {
             if (!m.isSaved) this._postMedia(m);            
         } );            

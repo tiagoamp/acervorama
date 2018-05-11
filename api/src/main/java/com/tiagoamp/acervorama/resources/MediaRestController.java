@@ -1,6 +1,5 @@
 package com.tiagoamp.acervorama.resources;
 
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

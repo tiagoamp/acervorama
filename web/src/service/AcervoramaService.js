@@ -69,6 +69,23 @@ export default class AcervoramaService {
             });
     }
 
+    searchMediaItems(filename, classification, mediaType, tagsCsv) {
+        var params = {filename, classification, type: mediaType, tags: tagsCsv};
+        
+        var enc = encodeURIComponent;
+        var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+
+        return fetch(this._MEDIA_API_URL + '?' + queryParams)
+            .then(response => { 
+                if (response.status !== 200) throw new Error('Error to access api service!');
+                return response.json();
+            })
+            .catch( err => {
+                console.log(JSON.stringify(err.message)); 
+                throw err;
+            });
+    }
+
 
     publishMessage(topic, content) {
         PubSub.publish(topic,content);  
