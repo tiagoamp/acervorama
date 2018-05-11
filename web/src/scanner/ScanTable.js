@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import PubSub from 'pubsub-js';
-
-import UIMessageDispatcher from '../UIMessageDispatcher';
+import AcervoramaService from '../service/AcervoramaService';
 
 import '../css/bootstrap.min.css';
 import '../css/pnotify.custom.min.css';
@@ -14,7 +12,8 @@ class ScanTable extends Component {
     constructor() {
         super();
         this.state = { scannedList: [], mediaType: '', hasUnsavedMedia: true };        
-        
+        this._service = new AcervoramaService();
+
         this.saveAllMedia = this.saveAllMedia.bind(this);
         this._updateState = this._updateState.bind(this);
     }
@@ -25,43 +24,25 @@ class ScanTable extends Component {
     }
 
     componentDidMount() {
-        PubSub.subscribe('error-topic', function(topico, content) {
-          UIMessageDispatcher.showErrorMessage(content);                        
-        }); 
-        PubSub.subscribe('info-topic', function(topico, content) {
-          UIMessageDispatcher.showInfoMessage(content);            
-        });   
+        this._service.subscribeToTopics(['error-topic','info-topic']);        
     }
 
     _postMedia(m) {
-        const media = { filePath: m.path, type: this.state.mediaType };
-        
-        const options = {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(media)
-        };
-
-        fetch('http://localhost:8080/media', options)
-            .then(response =>  response.json())
+        this._service.saveScannedMedia(m.path, this.state.mediaType)
             .then( res => {
-                if (res.status !== 201 && res.message) throw new Error(res.message);   
-                PubSub.publish('info-topic','Saved item: ' + JSON.stringify(res.resource.filename));
+                this._service.publishMessage('info-topic','Saved item: ' + JSON.stringify(res.resource.filename));
                 this._updateState(m);
             })
-            .catch( err => {
-                console.log("Error: " + JSON.stringify(err));
-                PubSub.publish('error-topic',err);
+            .catch(err => {
+                this._service.publishMessage('error-topic',err.message);
             });
     }
 
     saveAllMedia(event) {
         event.preventDefault();
-
         this.state.scannedList.forEach( (m) => {
             if (!m.isSaved) this._postMedia(m);            
-        } );
-            
+        } );            
       }
 
     saveSelectedMedia(index,event) {
@@ -69,14 +50,16 @@ class ScanTable extends Component {
         this._postMedia(this.state.scannedList[index]);
     }
 
-    _updateState(savedMedia) {
-        let savedCounter = 0;
-
+    _updateState(savedMedia) {        
         const newList = this.state.scannedList.map( (media) => {
             if (media.path === savedMedia.path) media.isSaved = true;
-            if (media.isSaved) savedCounter++;
             return media;
-        } );
+        });
+        
+        let savedCounter = newList.reduce((acc,curr) => {
+            if (curr.isSaved) acc++;
+            return acc;
+        },0);
 
         const hasUnsavedMedia = savedCounter < newList.length;
         this.setState( {scannedList: newList, hasUnsavedMedia: hasUnsavedMedia} )        

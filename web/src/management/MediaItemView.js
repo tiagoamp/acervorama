@@ -3,12 +3,9 @@ import { Modal, Button } from 'react-bootstrap';
 
 import TagsInput from 'react-tagsinput';
 
-import PubSub from 'pubsub-js';
-
-import UIMessageDispatcher from '../UIMessageDispatcher';
+import AcervoramaService from '../service/AcervoramaService';
 
 import 'react-tagsinput/react-tagsinput.css';
-
 import '../css/bootstrap.min.css';
 
 
@@ -16,6 +13,7 @@ class MediaItemView extends Component {
 
     constructor(props) {
         super(props);
+        this._service = new AcervoramaService();
 
         const media = this.props.media;
         for (let prop in media) {
@@ -29,12 +27,7 @@ class MediaItemView extends Component {
     }
 
     componentDidMount() {
-        PubSub.subscribe('error-topic', function(topico, content) {
-          UIMessageDispatcher.showErrorMessage(content);                        
-        }); 
-        PubSub.subscribe('info-topic', function(topico, content) {
-          UIMessageDispatcher.showInfoMessage(content);            
-        });   
+        this._service.subscribeToTopics(['error-topic','info-topic']);        
     }
     
     setInputValueToState(inputName,event) {
@@ -49,53 +42,57 @@ class MediaItemView extends Component {
         this.setState({media});
     }
 
-
-    _shouldShowAuthorField() {
-        return this.state.media.type === 'AUDIO' || this.state.media.type === 'TEXT';
+    _showAuthorField(media) {
+        if (this.state.media.type === 'AUDIO' || this.state.media.type === 'TEXT') {
+            return (
+                <div className="form-group row">
+                    <label htmlFor="input-title" className="col-sm-2 col-form-label col-form-label-sm">Title</label>
+                    <div className="col-sm-10">
+                        <input type="text" className="form-control form-control-sm" id="input-title" value={media.title} onChange={this.setInputValueToState.bind(this,'title')} placeholder="Enter title..." />
+                    </div>
+                </div>
+            );
+        }
     }
 
-    _shouldShowTitleField() {
-        return this.state.media.type === 'AUDIO'  || this.state.media.type === 'TEXT' || this.state.media.type === 'VIDEO';
+    _showTitleField(media) {
+        if (this.state.media.type === 'AUDIO'  || this.state.media.type === 'TEXT' || this.state.media.type === 'VIDEO') {
+            return (
+                <div className="form-group row">
+                    <label htmlFor="input-author" className="col-sm-2 col-form-label col-form-label-sm">Author</label>
+                    <div className="col-sm-10">
+                        <input type="text" className="form-control form-control-sm" id="input-author" value={media.author} onChange={this.setInputValueToState.bind(this,'author')} placeholder="Enter author..." />
+                    </div>
+                </div>
+            );
+        }
     }
 
     updateMedia(event) {
-        event.preventDefault();
-    
+        event.preventDefault();    
         const media = this.state.media;
 
-        const options = {
-            method: 'PUT',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(media)
-        };
-
-        fetch('http://localhost:8080/media/' + media.id, options)
+        this._service.updateMediaItem(media)
             .then( res => {
-                PubSub.publish('info-topic','Updated item: ' + JSON.stringify(media.filename));                
+                this._service.publishMessage('info-topic','Updated item: ' + JSON.stringify(media.filename));
                 this.props.cbUpdateState(media, 'UPDATE');
             })
-            .catch( err => {
-                console.log("Error: " + JSON.stringify(err));
-                PubSub.publish('error-topic','Error from api!');
-            });
-        
+            .catch(err => {
+                this._service.publishMessage('error-topic',err.message);
+            });         
       }
 
     deleteItem(event) {
-        event.preventDefault();
-    
+        event.preventDefault();    
         const media = this.state.media;
 
-        const options = { method: 'DELETE' };
-
-        fetch('http://localhost:8080/media/' + media.id, options)
-            .then( res => {
-                PubSub.publish('info-topic','Deleted item: ' + JSON.stringify(media.filename));                
+        this._service.deleteMediaItem(media)
+            .then( res => {                
+                this._service.publishMessage('info-topic','Deleted item: ' + JSON.stringify(media.filename));
                 this.props.cbUpdateState(media, 'DELETE');
             })
-            .catch( err => {
-                console.log("Error: " + JSON.stringify(err));
-                PubSub.publish('error-topic','Error from api!');
+            .catch(err => {
+                this._service.publishMessage('error-topic',err.message);
             });
     }
 
@@ -145,23 +142,11 @@ class MediaItemView extends Component {
                                 </div>
                             </div>
 
-                            {this._shouldShowTitleField() ? (
-                                <div className="form-group row">
-                                    <label htmlFor="input-title" className="col-sm-2 col-form-label col-form-label-sm">Title</label>
-                                    <div className="col-sm-10">
-                                        <input type="text" className="form-control form-control-sm" id="input-title" value={media.title} onChange={this.setInputValueToState.bind(this,'title')} placeholder="Enter title..." />
-                                    </div>
-                                </div>
-                            ) : null }
+
+                            { this._showTitleField(media) }
                             
-                            {this._shouldShowAuthorField() ? (
-                                <div className="form-group row">
-                                    <label htmlFor="input-author" className="col-sm-2 col-form-label col-form-label-sm">Author</label>
-                                    <div className="col-sm-10">
-                                        <input type="text" className="form-control form-control-sm" id="input-author" value={media.author} onChange={this.setInputValueToState.bind(this,'author')} placeholder="Enter author..." />
-                                    </div>
-                                </div>
-                            ) : null }
+                            { this._showAuthorField(media) }
+
                             
                             <div className="form-group row">
                                 <label htmlFor="input-description" className="col-sm-2 col-form-label col-form-label-sm">Description</label>
@@ -172,7 +157,7 @@ class MediaItemView extends Component {
                             <div className="form-group row">
                                 <label htmlFor="input-comments" className="col-sm-2 col-form-label col-form-label-sm">Comments</label>
                                 <div className="col-sm-10">
-                                    <textarea className="form-control form-control-sm" id="input-comments" rows="2" value={media.additionalInformation} onChange={this.setInputValueToState.bind(this,'additionalInformation')} placeholder="Enter comments..."></textarea>                                    
+                                    <textarea className="form-control form-control-sm" id="input-comments" rows="2" value={media.additionalInformation} onChange={this.setInputValueToState.bind(this,'additionalInformation')} placeholder="Enter comments..."></textarea>
                                 </div>
                             </div>
                             <div className="form-group row">

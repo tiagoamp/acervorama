@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import TagsInput from 'react-tagsinput'
 
-import 'react-tagsinput/react-tagsinput.css'; 
-
-import PubSub from 'pubsub-js';
-
-import UIMessageDispatcher from '../UIMessageDispatcher';
-
+import AcervoramaService from '../service/AcervoramaService';
 import SideMenu from '../commom/SideMenu';
+import ManagementTable from './ManagementTable';
 
+import 'react-tagsinput/react-tagsinput.css'; 
 import '../css/bootstrap.min.css';
 import '../css/pnotify.custom.min.css';
-import ManagementTable from './ManagementTable';
 
 
 class Management extends Component {
@@ -19,10 +15,14 @@ class Management extends Component {
   constructor() {
     super();
     this.state = { activePanel: 2, filename:'', classification:'', mediaType:'', tags: [], mediaList: [] };
+    this._service = new AcervoramaService();
 
     this.sendSearchForm = this.sendSearchForm.bind(this);
   }
 
+  componentDidMount() {
+    this._service.subscribeToTopics(['error-topic','info-topic']);        
+  }
 
   setInputValueToState(inputName,event) {
     let alteredInput = {};
@@ -34,36 +34,24 @@ class Management extends Component {
     this.setState({tags})
   }
 
-  componentDidMount() {
-    PubSub.subscribe('error-topic', function(topico, content) {
-      UIMessageDispatcher.showErrorMessage(content);                        
-    }); 
-    PubSub.subscribe('info-topic', function(topico, content) {
-      UIMessageDispatcher.showInfoMessage(content);            
-    });   
-  }
+  _showManagementTable() {
+    if (this.state.mediaList.length > 0) {
+      return (<ManagementTable mediaList={this.state.mediaList} />);
+    } 
+  }  
 
   sendSearchForm(event) {
     event.preventDefault();
-
     const tagsCsv = this.state.tags.join(",");
 
-    var params = {filename:this.state.filename , classification:this.state.classification, type: this.state.mediaType, tags: tagsCsv};
-      
-    var enc = encodeURIComponent;
-    var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
-
-    fetch('http://localhost:8080/media?' + queryParams)
-      .then(response => response.json())
+    this._service.searchMediaItems(this.state.filename, this.state.classification, this.state.mediaType, tagsCsv)
       .then( res => {
         this.setState( {mediaList: res} );
-        PubSub.publish('info-topic','Search Performed!');
+        this._service.publishMessage('info-topic','Search Performed! \nFound ' + res.length + ' items.');
       })
-      .catch( err => {
-        console.log('Error: ', err);
-        PubSub.publish('error-topic','Error to access api service!');
-      });
-    
+      .catch(err => {
+        this._service.publishMessage('error-topic',err.message);
+      });         
   }
 
   
@@ -141,11 +129,8 @@ class Management extends Component {
                   </div>
                 </form>
 
-                {this.state.mediaList.length > 0 ? (
-                  <ManagementTable mediaList={this.state.mediaList} />
-                ) : (
-                  null
-                )}
+
+                { this._showManagementTable() }
                 
 
               </section>

@@ -123,6 +123,7 @@ public abstract class MediaItem {
 	}
 	
 	public Boolean containsTag(String tag) {
+		if (tags == null) return false;
 		String[] tagsArr = tags.split(",");
 		for (int i = 0; i < tagsArr.length; i++) {
 			if( tag.equalsIgnoreCase(tagsArr[i].trim()) ) return true;

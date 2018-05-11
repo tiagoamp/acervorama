@@ -26,22 +26,19 @@ export class DashboardBox extends Component {
                 this._service.publishMessage('info-topic','Media Items data loaded \nat ' + new Date());
             })
             .catch(err => {
-                console.log(err);
-                this._service.publishMessage('error-topic','Error to access api service!');
+                this._service.publishMessage('error-topic',err.message);
             });
       
     }
 
     componentDidMount() {
-        this._service.subscribeToTopic('error-topic');
-        this._service.subscribeToTopic('info-topic');
+        this._service.subscribeToTopics(['error-topic','info-topic']);
     }
 
     _showMediaCharts() {
-        const noMediaWasRegistered = (this.state.totalAudio + this.state.totalVideo + this.state.totalImage + this.state.totalText) === 0;
-        if (noMediaWasRegistered) return null;
-        return (<MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} 
-                             totalImage={this.state.totalImage} totalText={this.state.totalText} />);
+        const existsMediaRegistered = (this.state.totalAudio + this.state.totalVideo + this.state.totalImage + this.state.totalText) > 0;
+        if (existsMediaRegistered) return (<MediaCharts totalAudio={this.state.totalAudio} totalVideo={this.state.totalVideo} 
+                                                        totalImage={this.state.totalImage} totalText={this.state.totalText} />);
     }
 
     render() {

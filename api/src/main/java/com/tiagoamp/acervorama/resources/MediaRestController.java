@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.tiagoamp.acervorama.model.AcervoramaBusinessException;
 import com.tiagoamp.acervorama.model.MediaItem;
@@ -86,7 +87,7 @@ public class MediaRestController {
 		try {
 			item = service.insert(item);			
 		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.notModified().build(), e.getBusinessMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getBusinessMessage(), e);
 		}	
 		return new MediaItemResource(item);
 	}
@@ -103,7 +104,7 @@ public class MediaRestController {
 		try {
 			service.update(item);
 		} catch (AcervoramaBusinessException e) {
-			throw new ResponseProcessingException(Response.notModified().build(), e.getBusinessMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getBusinessMessage(), e);
 		}
 	}
 	

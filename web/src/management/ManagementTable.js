@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import PubSub from 'pubsub-js';
-
-import UIMessageDispatcher from '../UIMessageDispatcher';
+import AcervoramaService from '../service/AcervoramaService';
 import MediaItemView from './MediaItemView';
 
 import '../css/bootstrap.min.css';
@@ -14,6 +12,7 @@ class ManagementTable extends Component {
     constructor() {
         super();
         this.state = { mediaList: [], showModal: false, selectedMedia: {} };
+        this._service = new AcervoramaService();
     }
 
     componentWillMount() {
@@ -22,12 +21,7 @@ class ManagementTable extends Component {
     }
 
     componentDidMount() {
-        PubSub.subscribe('error-topic', function(topico, content) {
-        UIMessageDispatcher.showErrorMessage(content);                        
-        }); 
-        PubSub.subscribe('info-topic', function(topico, content) {
-        UIMessageDispatcher.showInfoMessage(content);            
-        });   
+        this._service.subscribeToTopics(['error-topic','info-topic']);        
     }
    
     handleModalClose() {
@@ -53,6 +47,13 @@ class ManagementTable extends Component {
         this.setState(mediaList);
     }
 
+    _showModalFrame() {
+        if (this.state.showModal) {
+          return (<MediaItemView cbClose={this.handleModalClose.bind(this)} cbUpdateState={this.updateMediaListAfterAction.bind(this)} 
+                                 media={this.state.selectedMedia} />);
+        } 
+      } 
+
 
     render() {
       return(
@@ -74,30 +75,30 @@ class ManagementTable extends Component {
                     <th scope="col" className="centered">Action</th>
                     </tr>
                 </thead>
-            <tbody>
+                <tbody>
 
-                {
-                this.state.mediaList.map(function(media, index) {
-                const filename = media.filePathAsString.replace(/^.*[\\/]/, '');
-                return (
-                <tr key={media.hash}>
-                    <td className="centered">{index+1}</td>
-                    <td>{filename}</td>
-                    <td>{media.filePathAsString}</td>
-                    <td>{media.tags}</td>
-                    <td className="centered">
-                    <button type="button" className="btn btn-outline-info" onClick={this.handleModalShow.bind(this,index)} >View</button>
-                    </td>
-                </tr>      
-                );
-                }.bind(this))
-                }
+                    {
+                        this.state.mediaList.map(function(media, index) {
+                            const filename = media.filePathAsString.replace(/^.*[\\/]/, '');
+                            return (
+                                <tr key={media.hash}>
+                                    <td className="centered">{index+1}</td>
+                                    <td>{filename}</td>
+                                    <td>{media.filePathAsString}</td>
+                                    <td>{media.tags}</td>
+                                    <td className="centered">
+                                    <button type="button" className="btn btn-outline-info" onClick={this.handleModalShow.bind(this,index)} >View</button>
+                                    </td>
+                                </tr>
+                            );
+                        }.bind(this))
+                    }
 
-            </tbody>
+                </tbody>
             </table>
             
 
-            { this.state.showModal ? (<MediaItemView cbClose={this.handleModalClose.bind(this)} cbUpdateState={this.updateMediaListAfterAction.bind(this)} media={this.state.selectedMedia} />) : null }            
+            { this._showModalFrame() }
 
             
         </div>
