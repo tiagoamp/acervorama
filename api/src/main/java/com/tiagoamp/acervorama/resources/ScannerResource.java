@@ -44,7 +44,7 @@ public class ScannerResource {
 		try {
 			list = scanner.perform();
 		} catch (IOException e) {
-			if (e instanceof NoSuchFileException) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Diretorório inválido!", new AcervoramaBusinessException("Diretório inválido")); 
+			if (e instanceof NoSuchFileException) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Diretório inválido!", new AcervoramaBusinessException("Diretório inválido")); 
 			throw new ResponseProcessingException(Response.serverError().build(), new AcervoramaBusinessException("IO error!", e));
 		}
 				

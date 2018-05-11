@@ -48,6 +48,27 @@ export default class AcervoramaService {
                 });
     }
 
+    saveScannedMedia(filePath, mediaType) {
+        const media = { filePath, type: mediaType };
+        
+        const options = {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(media)
+        };
+
+        return fetch(this._MEDIA_API_URL, options)
+            .then(response => {
+                if (response.status === 400) throw new Error('Bad parameters!');
+                else if (response.status !== 201 && response.message) throw new Error(response.message);
+                return response.json();
+            })
+            .catch( err => {
+                console.log(JSON.stringify(err.message)); 
+                throw err;
+            });
+    }
+
 
     publishMessage(topic, content) {
         PubSub.publish(topic,content);  
