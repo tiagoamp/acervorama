@@ -12,12 +12,11 @@ describe('Acervorama Api calls', () => {
         expect.assertions(2);
         api.get(service._MEDIA_RESOURCE)
             .reply(200, 
-                [                    
+                [ 
                     { resource: { type: 'AUDIO', id: 387, filename: 'music1.mp3' } },
-                    { resource: { type: 'AUDIO', id: 388, filename: 'music2.mp3' } }
-               ]
+                    { resource: { type: 'AUDIO', id: 388, filename: 'music2.mp3' } } 
+                ]
             );
-
         const data = await service.getMediaItems();        
         expect(data).not.toBeUndefined();        
         expect(data).toHaveLength(2);
@@ -49,9 +48,7 @@ describe('Acervorama Api calls', () => {
     it('should return error when client request fail', async () => {
         expect.assertions(1);
         const params = {type: 'AUDIO', dirPath: '/home/musics'};
-        api.get(service._SCANNER_RESOURCE)
-            .query(params)
-            .reply(400);
+        api.get(service._SCANNER_RESOURCE).query(params).reply(400);
 
         try {
             await service.scanDirectory(params.type, params.dirPath);
@@ -63,9 +60,7 @@ describe('Acervorama Api calls', () => {
     it('should return error when server processing fail', async () => {
         expect.assertions(1);
         const params = {type: 'AUDIO', dirPath: '/home/musics'};
-        api.get(service._SCANNER_RESOURCE)
-            .query(params)
-            .reply(500);
+        api.get(service._SCANNER_RESOURCE).query(params).reply(500);
 
         try {
             await service.scanDirectory(params.type, params.dirPath);
@@ -75,7 +70,7 @@ describe('Acervorama Api calls', () => {
     });
       
     it('should save scanned medias when request ok', async () => {
-        expect.assertions(2);
+        expect.assertions(1);
         const params = {type: 'AUDIO', filePath: '/home/musics'};
         const result = { resource: { type: 'AUDIO', id: 387, filename: 'music1.mp3' } };
         api.filteringRequestBody(/.*/, '*')
@@ -83,16 +78,13 @@ describe('Acervorama Api calls', () => {
             .reply(201, result);
 
         const data = await service.saveScannedMedia(params.filePath, params.type);
-        expect(data).not.toBeUndefined();        
         expect(data).toMatchObject(result);
     });
 
     it('should return error when file to be saved already exists', async () => {
         expect.assertions(1);
         const params = {type: 'AUDIO', filePath: '/home/musics'};
-        api.filteringRequestBody(/.*/, '*')
-            .post(service._MEDIA_RESOURCE,'*')            
-            .reply(409);
+        api.post(service._MEDIA_RESOURCE,'*').reply(409);
 
         try {
             await service.saveScannedMedia(params.filePath, params.type);
@@ -104,15 +96,94 @@ describe('Acervorama Api calls', () => {
     it('should return error when request fail', async () => {
         expect.assertions(1);
         const params = {type: 'AUDIO', filePath: '/home/musics'};
-        api.filteringRequestBody(/.*/, '*')
-            .post(service._MEDIA_RESOURCE,'*')            
-            .reply(500);
+        api.post(service._MEDIA_RESOURCE,'*').reply(500);
 
         try {
             await service.saveScannedMedia(params.filePath, params.type);
         } catch(e) {
             expect(e.message).toMatch('Error');
         }        
+    });
+
+    it('should return media item when request ok', async () => {
+        expect.assertions(1);
+        const params = {filename: 'music1', classification: 'classif', type: 'AUDIO', tags: 'TAG01,TAG02'};        
+        const result = { resource: { type: 'AUDIO', id: 387, filename: 'music1.mp3' } };
+        api.get(service._MEDIA_RESOURCE).query(params)
+            .reply(200, result);
+
+        const data = await service.searchMediaItems(params.filename, params.classification, params.type, params.tags);
+        expect(data).toMatchObject(result);
+    });
+
+    it('should return Error when request fail', async () => {
+        expect.assertions(1);
+        const params = {filename: 'music1', classification: 'classif', type: 'AUDIO', tags: 'TAG01,TAG02'};        
+        api.get(service._MEDIA_RESOURCE).query(params)
+            .reply(500);
+
+        try {
+            await service.searchMediaItems(params.filename, params.classification, params.type, params.tags);
+        } catch(e) {
+            expect(e.message).toMatch('Error');
+        }
+    });
+
+    it('should update media file when request ok', async () => {
+        const media = {id: '1', type: 'AUDIO', filePath: '/home/musics'};
+        api.put(service._MEDIA_RESOURCE + "/" + media.id).reply(200);
+
+        try {
+            await service.updateMediaItem(media);
+        } catch(e) {
+            expect(e).toBeUndefined();
+        }
+    });
+
+    it('should return error when client request fail', async () => {
+        expect.assertions(1);
+        const media = {id: '1', type: 'AUDIO', filePath: '/home/musics'};
+        api.put(service._MEDIA_RESOURCE + "/" + media.id).reply(404);
+
+        try {
+            await service.updateMediaItem(media);
+        } catch(e) {
+            expect(e.message).toMatch('File path do not exists:');
+        }
+    });
+
+    it('should return error when request processing fail', async () => {
+        expect.assertions(1);
+        const media = {id: '1', type: 'AUDIO', filePath: '/home/musics'};
+        api.put(service._MEDIA_RESOURCE + "/" + media.id).reply(500);
+
+        try {
+            await service.updateMediaItem(media);
+        } catch(e) {
+            expect(e.message).toMatch('Error');
+        }
+    });
+
+    it('should delete media file when request ok', async () => {
+        const media = {id: '1', type: 'AUDIO', filePath: '/home/musics'};
+        api.delete(service._MEDIA_RESOURCE + "/" + media.id).reply(204);
+
+        try { 
+            await service.deleteMediaItem(media);
+        } catch(e) {
+            expect(e).toBeUndefined();
+        }
+    });
+
+    it('should return error when requests fail', async () => {
+        const media = {id: '1', type: 'AUDIO', filePath: '/home/musics'};
+        api.delete(service._MEDIA_RESOURCE + "/" + media.id).reply(500);
+
+        try {
+            await service.deleteMediaItem(media);
+        } catch(e) {
+            expect(e.message).toMatch('Error');
+        }
     });
 
 }); 

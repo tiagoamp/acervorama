@@ -28,9 +28,9 @@ export default class AcervoramaService {
     }
 
     scanDirectory(mediaType, mediaPath) {
-        var params = { type: mediaType, dirPath: mediaPath };        
-        var enc = encodeURIComponent;
-        var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+        const params = { type: mediaType, dirPath: mediaPath };        
+        const enc = encodeURIComponent;
+        const queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
       
         return fetch(this._SCANNER_API_URL + '?' + queryParams)
                 .then(response => {
@@ -65,10 +65,10 @@ export default class AcervoramaService {
             });
     }
 
-    searchMediaItems(filename, classification, mediaType, tagsCsv) {
-        var params = {filename, classification, type: mediaType, tags: tagsCsv};        
-        var enc = encodeURIComponent;
-        var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+    searchMediaItems(filename, classification, type, tagsCsv) {
+        const params = {filename, classification, type, tags: tagsCsv};        
+        const enc = encodeURIComponent;
+        const queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
 
         return fetch(this._MEDIA_API_URL + '?' + queryParams)
             .then(response => { 
