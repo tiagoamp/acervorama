@@ -5,7 +5,9 @@ import { DashboardBox } from './DashboardBox';
 
 import '../css/bootstrap.min.css';
 import '../css/dashboard.css';
-import '../css/pnotify.custom.min.css';
+
+import '../../node_modules/noty/lib/noty.css';
+import '../../node_modules/noty/lib/themes/mint.css';
 
 
 class Dashboard extends Component {

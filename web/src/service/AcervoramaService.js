@@ -2,21 +2,17 @@ import PubSub from 'pubsub-js';
 import fetch from 'node-fetch'; 
 
 import UIMessageDispatcher from '../UIMessageDispatcher';
-
+import { config } from './config';
 
 export default class AcervoramaService {
 
     constructor() {
-        this._API_BASE_URL = 'http://localhost:8080';
-        this._MEDIA_RESOURCE = '/media';
-        this._SCANNER_RESOURCE = '/scanner';
-        this._MEDIA_API_URL = this._API_BASE_URL + this._MEDIA_RESOURCE;
-        this._SCANNER_API_URL = this._API_BASE_URL + this._SCANNER_RESOURCE;
+        this.config = config;        
     }
 
 
     getMediaItems() {
-        return fetch(this._MEDIA_API_URL)
+        return fetch(this.config.MEDIA_API_URL)
             .then(response => {
                 if (!response.ok) throw new Error('Error to access api service!');
                 return response.json();
@@ -28,11 +24,11 @@ export default class AcervoramaService {
     }
 
     scanDirectory(mediaType, mediaPath) {
-        var params = { type: mediaType, dirPath: mediaPath };        
-        var enc = encodeURIComponent;
-        var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+        const params = { type: mediaType, dirPath: mediaPath };        
+        const enc = encodeURIComponent;
+        const queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
       
-        return fetch(this._SCANNER_API_URL + '?' + queryParams)
+        return fetch(this.config.SCANNER_API_URL + '?' + queryParams)
                 .then(response => {
                     if (response.status === 400) throw new Error('Bad parameters!');
                     else if (response.status === 500) throw new Error('Error to access api service!');
@@ -44,17 +40,18 @@ export default class AcervoramaService {
                 });
     }
 
-    saveScannedMedia(filePath, mediaType) {
-        const media = { filePath, type: mediaType };        
+    saveScannedMedia(filePath, type) {
+        const media = { filePath, type };        
         const options = {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(media)
         }; 
 
-        return fetch(this._MEDIA_API_URL, options)
+        return fetch(this.config.MEDIA_API_URL, options)
             .then(response => {
                 if (response.status === 409) throw new Error('File path already exists: ' + filePath);
+                else if (response.status === 500) throw new Error('Error to access api service!');
                 else if (response.status !== 201 && response.message) throw new Error(response.message);
                 return response.json();
             })
@@ -64,12 +61,12 @@ export default class AcervoramaService {
             });
     }
 
-    searchMediaItems(filename, classification, mediaType, tagsCsv) {
-        var params = {filename, classification, type: mediaType, tags: tagsCsv};        
-        var enc = encodeURIComponent;
-        var queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
+    searchMediaItems(filename, classification, type, tagsCsv) {
+        const params = {filename, classification, type, tags: tagsCsv};        
+        const enc = encodeURIComponent;
+        const queryParams = Object.keys(params).map(k => enc(k) + '=' + enc(params[k])).join('&');
 
-        return fetch(this._MEDIA_API_URL + '?' + queryParams)
+        return fetch(this.config.MEDIA_API_URL + '?' + queryParams)
             .then(response => { 
                 if (response.status !== 200) throw new Error('Error to access api service!');
                 return response.json();
@@ -87,7 +84,7 @@ export default class AcervoramaService {
             body: JSON.stringify(media)
         };
 
-        return fetch(this._MEDIA_API_URL + "/" + media.id, options)
+        return fetch(this.config.MEDIA_API_URL + "/" + media.id, options)
             .then(response => { 
                 if (response.status === 404) throw new Error('File path do not exists: ' + media.filePathAsString);
                 else if (response.status !== 200) throw new Error('Error to access api service!');                
@@ -100,7 +97,7 @@ export default class AcervoramaService {
 
     deleteMediaItem(media) {
         const options = { method: 'DELETE' };
-        return fetch(this._MEDIA_API_URL + '/' + media.id, options)
+        return fetch(this.config.MEDIA_API_URL + '/' + media.id, options)
             .then(response => { 
                 if (response.status !== 204) throw new Error('Error to access api service!');                
             })

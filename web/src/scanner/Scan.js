@@ -5,8 +5,10 @@ import ScanTable from '../scanner/ScanTable';
 import AcervoramaService from '../service/AcervoramaService'
 
 import '../css/bootstrap.min.css';
-import '../css/pnotify.custom.min.css';
 import '../css/scanner.css';
+
+import '../../node_modules/noty/lib/noty.css';
+import '../../node_modules/noty/lib/themes/mint.css';
 
 
 class Scan extends Component {
