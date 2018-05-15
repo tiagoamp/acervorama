@@ -1,47 +1,35 @@
-import PNotify from 'pnotify';
+import Noty from 'noty';
 
 export default class UIMessageDispatcher {
 
     static showSuccessMessage(msg) {
-        return PNotify.success({
-            title: 'Success!',
-            text: msg,
-            delay:3000,
-            shadow:true,
-            hide:true,
-            nonblock:false,
-            remove: true,
-            destroy: true,
-            desktop:false            
-        });
+        return new Noty({
+            type: 'success',
+            layout: 'centerRight',
+            killer: true,
+            timeout: 3000,
+            text: msg
+        }).show();
     }
 
-    static showErrorMessage(msg) {
-        return PNotify.error({
-            title: 'Error!',
-            text: msg,
-            delay:3000,
-            shadow:true,
-            hide:true,
-            nonblock:false,
-            remove: true,
-            destroy: true,
-            desktop:false
-        });
+    static showErrorMessage(msg) {        
+        return new Noty({
+            type: 'error',
+            layout: 'centerRight',
+            killer: true,
+            timeout: 3000,
+            text: msg
+        }).show();
     }
 
     static showInfoMessage(msg) {
-        return PNotify.info({
-            title: 'Info!',
-            text: msg,
-            delay:3000,
-            shadow:true,
-            hide:true,
-            nonblock:false,
-            remove: true,
-            destroy: true,
-            desktop:false            
-        });
+        return new Noty({
+            type: 'info',
+            layout: 'centerRight',
+            killer: true,
+            timeout: 3000,
+            text: msg
+        }).show();
     }
     
 }

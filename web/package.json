@@ -6,7 +6,7 @@
     "animate.css": "^3.6.1",
     "chart.js": "^2.7.2",
     "jquery": "^3.3.1",
-    "pnotify": "^4.0.0-alpha.3",
+    "noty": "^3.2.0-beta",
     "pubsub-js": "^1.6.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
