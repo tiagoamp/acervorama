@@ -44,8 +44,8 @@ export default class AcervoramaService {
                 });
     }
 
-    saveScannedMedia(filePath, mediaType) {
-        const media = { filePath, type: mediaType };        
+    saveScannedMedia(filePath, type) {
+        const media = { filePath, type };        
         const options = {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
@@ -55,6 +55,7 @@ export default class AcervoramaService {
         return fetch(this._MEDIA_API_URL, options)
             .then(response => {
                 if (response.status === 409) throw new Error('File path already exists: ' + filePath);
+                else if (response.status === 500) throw new Error('Error to access api service!');
                 else if (response.status !== 201 && response.message) throw new Error(response.message);
                 return response.json();
             })
