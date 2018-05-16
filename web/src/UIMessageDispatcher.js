@@ -6,7 +6,7 @@ export default class UIMessageDispatcher {
         return new Noty({
             type: 'success',
             layout: 'centerRight',
-            killer: true,
+            //killer: true,
             timeout: 3000,
             text: msg
         }).show();
@@ -16,7 +16,7 @@ export default class UIMessageDispatcher {
         return new Noty({
             type: 'error',
             layout: 'centerRight',
-            killer: true,
+            //killer: true,
             timeout: 3000,
             text: msg
         }).show();
@@ -26,7 +26,7 @@ export default class UIMessageDispatcher {
         return new Noty({
             type: 'info',
             layout: 'centerRight',
-            killer: true,
+            //killer: true,
             timeout: 3000,
             text: msg
         }).show();
