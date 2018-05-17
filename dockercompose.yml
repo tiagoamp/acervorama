@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+    db:
+        image: mysql
+        restart: always
+        container_name: MYSQL_CONTAINER_ACERVO
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_ROOT_PASSWORD=admin
+            - MYSQL_DATABASE=acervorama
+            - MYSQL_USER=acervorama
+            - MYSQL_PASSWORD=acervorama
+        ports:
+            - "3307:3306"
+        networks:
+            - acervorama-network
+        volumes:
+            - "./data:/var/lib/mysql"
+            - "./initdb:/docker-entrypoint-initdb.d/:ro"
+        expose:
+            - "3306"
+
+networks:
+    acervorama-network:
+        driver: bridge
