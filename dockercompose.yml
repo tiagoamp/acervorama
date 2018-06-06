@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+    db:
+        image: mysql
+        restart: always
+        container_name: MYSQL_CONTAINER_ACERVO
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_ROOT_PASSWORD=admin
+            - MYSQL_DATABASE=acervorama
+            - MYSQL_USER=acervorama
+            - MYSQL_PASSWORD=acervorama
+        ports:
+            - "3307:3306"
+        networks:
+            - acervorama-network
+        volumes:
+            - "./data:/var/lib/mysql"
+            - "./initdb:/docker-entrypoint-initdb.d/:ro"
+        expose:
+            - "3306"
+
+    api:
+        image: openjdk:8-jdk-alpine
+        environment:
+            - MYSQL_HOST=MYSQL_CONTAINER_ACERVO
+            - MYSQL_PORT=3306
+            - MYSQL_APP_USER=acervorama
+            - MYSQL_APP_PASSWD=acervorama
+        ports:
+            - "8080:8080"
+        volumes:
+            - "./apijar:/home"
+        entrypoint: ["java", "-jar", "home/acervorama-0.0.1-SNAPSHOT.jar"]
+        networks:
+            - acervorama-network
+        volumes:
+            - "./apijar:/home"
+        expose:
+            - "8080"
+        depends_on:
+            - db
+        links:
+            - db
+
+networks:
+    acervorama-network:
+        driver: bridge
